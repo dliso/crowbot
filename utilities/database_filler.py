@@ -15,3 +15,12 @@ def list_of_codes(base_url):
         code = courses['course'][i]['code']
         codes.append(code)
     return codes
+
+
+#function for name
+def get_name(course):
+    try:
+        name = course["course"]["name"]
+        return name
+    except:
+        return ""
