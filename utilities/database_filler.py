@@ -123,4 +123,14 @@ def get_teacher_email(course):
 
 
 
+# function for ects_credit
+def get_credit(course):
+    try:
+        ects_credits = course["course"]["credit"]
+        return ects_credits
+    except:
+        return
+
+
+
 
