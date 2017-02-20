@@ -69,3 +69,12 @@ def get_exam_support_code(course):
         return ""
 
 
+# function for exam_support_name
+def get_exam_support_name(course):
+    try:
+        exam_support_name = course["course"]["assessment"][0]["examinationSupport"][0]["name"]
+        return exam_support_name
+    except:
+        return ""
+
+
