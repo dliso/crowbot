@@ -158,4 +158,7 @@ def fill_database():
 
 
 
+if __name__ == '__main__':
+    fill_database()
+
 
