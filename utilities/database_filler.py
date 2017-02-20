@@ -78,3 +78,12 @@ def get_exam_support_name(course):
         return ""
 
 
+# function for location
+def get_location(course):
+    try:
+        location = course["course"]["location"]
+        return location
+    except:
+        return ""
+
+
