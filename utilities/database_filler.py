@@ -36,3 +36,16 @@ def get_recommended_prev_know(course):
                 return recommended_previous_knowledge
     except:
         return ""
+
+
+
+# function for required_previous_knowledge
+def get_required_prev_know(course):
+    try:
+        for i in range(len(course["course"]["infoType"])):
+            if course["course"]["infoType"][i]["code"] == "FORK":
+                required_previous_knowledge = course["course"]["infoType"][i]["text"]
+                return required_previous_knowledge
+    except:
+        return ""
+
