@@ -59,3 +59,13 @@ def get_exam_date(course):
     except:
         return ""
 
+
+# function for exam_support_code
+def get_exam_support_code(course):
+    try:
+        exam_support_code = course["course"]["assessment"][0]["examinationSupport"][0]["code"]
+        return exam_support_code
+    except:
+        return ""
+
+
