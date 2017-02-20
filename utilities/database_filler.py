@@ -24,3 +24,15 @@ def get_name(course):
         return name
     except:
         return ""
+
+
+
+#function for recommended_previous_knowledge
+def get_recommended_prev_know(course):
+    try:
+        for i in range(len(course["course"]["infoType"])):
+            if course["course"]["infoType"][i]["code"] == "ANBFORK":
+                recommended_previous_knowledge = course["course"]["infoType"][i]["text"]
+                return recommended_previous_knowledge
+    except:
+        return ""
