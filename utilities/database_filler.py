@@ -113,4 +113,14 @@ def get_teacher_name(course):
 
 
 
+# function for teacher_email
+def get_teacher_email(course):
+    try:
+        teacher_email = course["course"]["educationalRole"][0]["person"]["email"]
+        return teacher_email
+    except:
+        return ""
+
+
+
 
