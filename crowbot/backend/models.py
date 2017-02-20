@@ -5,12 +5,16 @@ from django.db import models
 class Course(models.Model):
     code = models.CharField(max_length=15)
     name = models.CharField(max_length=100)
-    year = models.DateField()
+    recommended_previous_knowledge = models.CharField(max_length=500)
+    required_previous_knowledge = models.CharField(max_length=500)
     exam_date = models.DateField()
-    exam_aids_code = models.CharField(max_length=10)
-    exam_aids_name = models.CharField(max_length=100)
+    exam_support_code = models.CharField(max_length=10)
+    exam_support_name = models.CharField(max_length=100)
     location = models.CharField(max_length=50)
     semester = models.CharField(max_length=10)
+    teacher_name = models.CharField(max_length=100)
+    teacher_email = models.CharField(max_length=100)
+    ects_credits = models.DecimalField(max_digits=4, decimal_places=2)
 
 class Book(models.Model):
     name = models.CharField(max_length=100)
