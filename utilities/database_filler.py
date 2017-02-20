@@ -87,3 +87,20 @@ def get_location(course):
         return ""
 
 
+# function for semester
+def get_semester(course):
+    try:
+        if course["course"]["taughtInSpring"] and course["course"]["taughtInAutumn"]:
+            semester = 'Autumn and Spring'
+            return semester
+        elif course["course"]["taughtInSpring"]:
+            semester = 'Spring'
+            return semester
+        elif course["course"]["taughtInAutumn"]:
+            semester = 'Autumn'
+            return semester
+    except:
+        return ""
+
+
+
