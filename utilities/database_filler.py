@@ -103,4 +103,14 @@ def get_semester(course):
         return ""
 
 
+# function for teacher_name
+def get_teacher_name(course):
+    try:
+        teacher_name = course["course"]["educationalRole"][0]["person"]["displayName"]
+        return teacher_name
+    except:
+        return ""
+
+
+
 
