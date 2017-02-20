@@ -49,3 +49,13 @@ def get_required_prev_know(course):
     except:
         return ""
 
+
+
+# function for exam_date
+def get_exam_date(course):
+    try:
+        exam_date = course["course"]["assessment"][0]["date"]
+        return exam_date
+    except:
+        return ""
+
