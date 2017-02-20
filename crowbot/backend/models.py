@@ -7,7 +7,7 @@ class Course(models.Model):
     name = models.CharField(max_length=100)
     recommended_previous_knowledge = models.CharField(max_length=500)
     required_previous_knowledge = models.CharField(max_length=500)
-    exam_date = models.DateField()
+    exam_date = models.DateField(null=True)
     exam_support_code = models.CharField(max_length=10)
     exam_support_name = models.CharField(max_length=100)
     location = models.CharField(max_length=50)
