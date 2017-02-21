@@ -34,6 +34,8 @@ def get_recommended_prev_know(course):
             if course["course"]["infoType"][i]["code"] == "ANBFORK":
                 recommended_previous_knowledge = course["course"]["infoType"][i]["text"]
                 return recommended_previous_knowledge
+            else:
+                return ""
     except:
         return ""
 
@@ -46,6 +48,8 @@ def get_required_prev_know(course):
             if course["course"]["infoType"][i]["code"] == "FORK":
                 required_previous_knowledge = course["course"]["infoType"][i]["text"]
                 return required_previous_knowledge
+            else:
+                return ""
     except:
         return ""
 
@@ -57,7 +61,7 @@ def get_exam_date(course):
         exam_date = course["course"]["assessment"][0]["date"]
         return exam_date
     except:
-        return ""
+        return
 
 
 # function for exam_support_code
@@ -99,6 +103,8 @@ def get_semester(course):
         elif course["course"]["taughtInAutumn"]:
             semester = 'Autumn'
             return semester
+        else:
+            return ""
     except:
         return ""
 
@@ -136,6 +142,7 @@ def get_credit(course):
 def fill_database():
     #go trough every course code to add to database
     for code in list_of_codes(base_url):
+
         # Fetch the course
         course = requests.get(base_url + code).json()
         name = get_name(course)
