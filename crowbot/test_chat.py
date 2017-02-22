@@ -4,9 +4,13 @@
 # Feel free to insert your own client access token to connect your own bot
 # Author: Audun Liberg
 
+from django.conf import settings
+#settings.configure()
 import sys, json, codecs, apiai
 import requests
-from crowbot.backend.models import Course
+import django
+django.setup()
+from backend.models import Course
 
 
 
