@@ -1,0 +1,64 @@
+body, html {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+
+h1 {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background: #c00000;
+}
+
+header {
+    background: white;
+    border-bottom: 2px solid #c00000;
+    box-shadow: 0 0 0.5em black;
+    padding: 0.5rem;
+    z-index: -10;
+}
+
+.main-column {
+    background: white;
+    max-width: 40em;
+    min-height: 80%;
+    margin: 0 auto 0 auto;
+    /* border-left: 2px solid #c00000; */
+    /* border-right: 2px solid #c00000; */
+    /* box-shadow: 0 0 0.5em black; */
+}
+
+.message-box {
+    /* background: green; */
+    /* height: 20em; */
+    overflow: auto;
+}
+
+.input-field {
+    border-top: 2px solid #c00000;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-shrink {
+    flex: 0 1 90%;
+}
+
+.flex-grow {
+    flex: 1 0 5%;
+}
+
+.text-input {
+    border: none;
+    border-top: 1px solid #c00000;
+    font: inherit;
+    padding: 0.2rem;
+    resize: none;
+}
