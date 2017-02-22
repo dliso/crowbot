@@ -72,19 +72,29 @@ def get_exam_date(course):
 # function for exam_support_code
 def get_exam_support_code(course):
     try:
-        exam_support_code = course["course"]["assessment"][0]["examinationSupport"][0]["code"]
-        return exam_support_code
+        for i in range(len(course["course"]["assessment"])):
+            try:
+                exam_support_code = course["course"]["assessment"][i]["examinationSupport"][0]["code"]
+                return exam_support_code
+            except KeyError:
+                continue
     except:
         return ""
+    return ""
 
 
 # function for exam_support_name
 def get_exam_support_name(course):
     try:
-        exam_support_name = course["course"]["assessment"][0]["examinationSupport"][0]["name"]
-        return exam_support_name
+        for i in range(len(course["course"]["assessment"])):
+            try:
+                exam_support_name = course["course"]["assessment"][i]["examinationSupport"][0]["name"]
+                return exam_support_name
+            except KeyError:
+                continue
     except:
         return ""
+    return ""
 
 
 # function for location
@@ -146,28 +156,29 @@ def get_credit(course):
 
 def fill_database():
     #go trough every course code to add to database
-    for code in list_of_codes(base_url):
+    #for code in list_of_codes(base_url):
     #code = 'AAR4990'
-        # Fetch the course
-        course = requests.get(base_url + code).json()
-        name = get_name(course)
-        recommended_previous_knowledge = get_recommended_prev_know(course)
-        required_previous_knowledge = get_required_prev_know(course)
-        exam_date = get_exam_date(course)
-        exam_support_code = get_exam_support_code(course)
-        exam_support_name = get_exam_support_name(course)
-        location = get_location(course)
-        semester = get_semester(course)
-        teacher_name = get_teacher_name(course)
-        teacher_email = get_teacher_email(course)
-        ects_credits = get_credit(course)
-        attributes = {'code':code,'name':name, 'recommended_previous_knowledge':recommended_previous_knowledge,
-                                         'required_previous_knowledge':required_previous_knowledge, 'exam_date':exam_date,
-                                         'exam_support_code':exam_support_code, 'exam_support_name':exam_support_name,
-                                         'location':location, 'semester':semester, 'teacher_name':teacher_name,
-                                         'teacher_email':teacher_email, 'ects_credits':ects_credits}
-        requests.post('http://localhost:8000/api/add_course',
-                      data = json.dumps(attributes))
+    code = 'TMA4100'
+    # Fetch the course
+    course = requests.get(base_url + code).json()
+    name = get_name(course)
+    recommended_previous_knowledge = get_recommended_prev_know(course)
+    required_previous_knowledge = get_required_prev_know(course)
+    exam_date = get_exam_date(course)
+    exam_support_code = get_exam_support_code(course)
+    exam_support_name = get_exam_support_name(course)
+    location = get_location(course)
+    semester = get_semester(course)
+    teacher_name = get_teacher_name(course)
+    teacher_email = get_teacher_email(course)
+    ects_credits = get_credit(course)
+    attributes = {'code':code,'name':name, 'recommended_previous_knowledge':recommended_previous_knowledge,
+                                     'required_previous_knowledge':required_previous_knowledge, 'exam_date':exam_date,
+                                     'exam_support_code':exam_support_code, 'exam_support_name':exam_support_name,
+                                     'location':location, 'semester':semester, 'teacher_name':teacher_name,
+                                     'teacher_email':teacher_email, 'ects_credits':ects_credits}
+    requests.post('http://localhost:8000/api/add_course',
+                  data = json.dumps(attributes))
 
 
 
