@@ -58,10 +58,15 @@ def get_required_prev_know(course):
 # function for exam_date
 def get_exam_date(course):
     try:
-        exam_date = course["course"]["assessment"][0]["date"]
-        return exam_date
+        for i in range(len(course["course"]["assessment"])):
+            try:
+                exam_date = course["course"]["assessment"][i]["date"]
+                return exam_date
+            except KeyError:
+                continue
     except:
         return
+    return
 
 
 # function for exam_support_code
