@@ -1,5 +1,6 @@
 import requests
 import json
+from datetime import datetime
 
 #base for IME API
 base_url = "http://www.ime.ntnu.no/api/course/en/"
@@ -57,16 +58,22 @@ def get_required_prev_know(course):
 
 # function for exam_date
 def get_exam_date(course):
+    list_of_dates = []
     try:
         for i in range(len(course["course"]["assessment"])):
             try:
                 exam_date = course["course"]["assessment"][i]["date"]
-                return exam_date
+                list_of_dates.append(exam_date)
             except KeyError:
                 continue
     except:
         return
-    return
+    if not list_of_dates:
+        return
+    else:
+        sorted(list_of_dates, key=lambda date: datetime.strptime(date, "%Y-%m-%d"))
+        exam_date = list_of_dates[-1]
+        return exam_date
 
 
 # function for exam_support_code
@@ -158,7 +165,7 @@ def fill_database():
     #go trough every course code to add to database
     #for code in list_of_codes(base_url):
     #code = 'AAR4990'
-    code = 'TMA4100'
+    code = 'EXPH0004'
     # Fetch the course
     course = requests.get(base_url + code).json()
     name = get_name(course)
