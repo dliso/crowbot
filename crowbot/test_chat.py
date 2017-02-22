@@ -19,7 +19,7 @@ from backend.models import Course
 CLIENT_ACCESS_TOKEN = '1b0f421f4b1045c5a9b29c8372573383'
 ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
 
-def greeting_goodbye(response):
+def crowbot_answer(response):
     print(response["result"]["fulfillment"]["speech"])
 
 
@@ -72,7 +72,7 @@ def user_request(response):
         elif action == 'find_recommended_previous_knowledge':
             recommended_previous_knowledge(course, response, code, name)
             return
-    except backend.models.DoesNotExist:
+    except django.core.exceptions.ObjectDoesNotExist:
     #if no code matches
         print("No course with code", code)
 
@@ -85,7 +85,7 @@ def user_request(response):
 #FUNCTIONS FOR DIFFERENT ACTIONS
 
 #function for credit
-#må muligens endre litt på denne for å få ut tallet i bra format
+#må muligens endre litt på denne for å få ut tallet i bra format, nei trenger ikke
 def credit(course, response, code, name):
     try:
 
@@ -93,7 +93,7 @@ def credit(course, response, code, name):
         print(response["result"]["fulfillment"]["speech"])
         # real response
         credit = course.ects_credits
-        print("Credit for", code, name, ":", credit, "points")
+        print("Credits for", code, name, "is:", credit, "points")
     except:
         print('No information about credits in this course,', code, name)
 
@@ -102,7 +102,7 @@ def credit(course, response, code, name):
 #må muligens endre litt på denne for å få ut datoen i bra format, OK I think now
 def exam_date(course, response, code, name):
     try:
-        exam_date = course.exam_date.strftime('&d/%m/%Y')
+        exam_date = course.exam_date.strftime('%d/%m/%Y')
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         #real response
@@ -155,9 +155,9 @@ def semester_taught(course, response, code, name):
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        print(code, name, "is taught in ", semester)
+        print(code, name, "is taught in", semester)
     except:
-        print("No information about semesters in ", code, name)
+        print("No information about semesters in", code, name)
 
 #function for exam aids, code and text
 def exam_aids(course, response, code, name):
@@ -213,11 +213,13 @@ if __name__ == '__main__':
 
         #what do the user want: geeting/goodbye/dont know/request
         if response["result"]["metadata"]["intentName"] == 'Default Welcome Intent':
-            greeting_goodbye(response)
+            crowbot_answer(response)
         elif response["result"]["metadata"]["intentName"] == 'Default Goodbye Intent':
-            greeting_goodbye(response)
+            crowbot_answer(response)
         elif response["result"]["metadata"]["intentName"] == "Default Fallback Intent":
-            greeting_goodbye(response)
+            crowbot_answer(response)
+        elif response["result"]["metadata"]["intentName"] == "Default Help Intent":
+            crowbot_answer(response)
         else:
             user_request(response)
         print()

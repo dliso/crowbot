@@ -163,29 +163,27 @@ def get_credit(course):
 
 def fill_database():
     #go trough every course code to add to database
-    #for code in list_of_codes(base_url):
-    #code = 'AAR4990'
-    code = 'EXPH0004'
+    for code in list_of_codes(base_url):
     # Fetch the course
-    course = requests.get(base_url + code).json()
-    name = get_name(course)
-    recommended_previous_knowledge = get_recommended_prev_know(course)
-    required_previous_knowledge = get_required_prev_know(course)
-    exam_date = get_exam_date(course)
-    exam_support_code = get_exam_support_code(course)
-    exam_support_name = get_exam_support_name(course)
-    location = get_location(course)
-    semester = get_semester(course)
-    teacher_name = get_teacher_name(course)
-    teacher_email = get_teacher_email(course)
-    ects_credits = get_credit(course)
-    attributes = {'code':code,'name':name, 'recommended_previous_knowledge':recommended_previous_knowledge,
-                                     'required_previous_knowledge':required_previous_knowledge, 'exam_date':exam_date,
-                                     'exam_support_code':exam_support_code, 'exam_support_name':exam_support_name,
-                                     'location':location, 'semester':semester, 'teacher_name':teacher_name,
-                                     'teacher_email':teacher_email, 'ects_credits':ects_credits}
-    requests.post('http://localhost:8000/api/add_course',
-                  data = json.dumps(attributes))
+        course = requests.get(base_url + code).json()
+        name = get_name(course)
+        recommended_previous_knowledge = get_recommended_prev_know(course)
+        required_previous_knowledge = get_required_prev_know(course)
+        exam_date = get_exam_date(course)
+        exam_support_code = get_exam_support_code(course)
+        exam_support_name = get_exam_support_name(course)
+        location = get_location(course)
+        semester = get_semester(course)
+        teacher_name = get_teacher_name(course)
+        teacher_email = get_teacher_email(course)
+        ects_credits = get_credit(course)
+        attributes = {'code':code,'name':name, 'recommended_previous_knowledge':recommended_previous_knowledge,
+                                         'required_previous_knowledge':required_previous_knowledge, 'exam_date':exam_date,
+                                         'exam_support_code':exam_support_code, 'exam_support_name':exam_support_name,
+                                         'location':location, 'semester':semester, 'teacher_name':teacher_name,
+                                         'teacher_email':teacher_email, 'ects_credits':ects_credits}
+        requests.post('http://localhost:8000/api/add_course',
+                      data = json.dumps(attributes))
 
 
 
