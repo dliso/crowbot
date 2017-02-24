@@ -18,13 +18,14 @@
         </header>
         <div class="main-column flex-container">
             <ul class="message-box flex-shrink" id="message-box">
-                <li>Message 1</li>
+                <li class="message bot-msg">Hi! Welcome to Crowbot!</li>
+                <li class="message user-msg">hey crowbot</li>
             </ul>
-            <form id="message-form" action="">
+            <form id="message-form" action="" class="flex-shrink">
                 <textarea id="user-input" name="input-field" type="textarea" value=""
                           placeholder="Ask Crowbot something"
                           class="text-input"></textarea>
-                <input name="" type="submit" value="Send"/>
+                <input id="send-button" name="send-button" type="submit" value="Send"/>
             </form>
         </div>
     </body>

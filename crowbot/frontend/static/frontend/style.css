@@ -35,11 +35,15 @@ header {
 .message-box {
     /* background: green; */
     /* height: 20em; */
+    margin: 0;
+    padding: 0;
     overflow: auto;
+    list-style: none;
+    border-bottom: 2px solid #c00000;
 }
 
 .input-field {
-    border-top: 2px solid #c00000;
+    /* border-top: 2px solid #c00000; */
 }
 
 .flex-container {
@@ -57,8 +61,32 @@ header {
 
 .text-input {
     border: none;
-    border-top: 1px solid #c00000;
+    /* border-top: 1px solid #c00000; */
+    margin: 0;
+    width: 90%;
     font: inherit;
     padding: 0.2rem;
     resize: none;
+}
+
+#send-button {
+    color: gray;
+    border: none;
+    background: white;
+}
+
+.message {
+    border-radius: 9px;
+    margin: 5px;
+    padding: 5px;
+}
+
+.user-msg {
+    background: lightblue;
+    margin-left: 10%;
+}
+
+.bot-msg {
+    background: lightgreen;
+    margin-right: 10%;
 }

@@ -50,8 +50,8 @@ $( document).ready(function(){
 
         //Finds user input and appends it
         var input = $( "#user-input").val();
-        input = "<li>" + input + "</li>";
-        $( "#message-box").append(input);
+        input_html = "<li class='message user-msg'>" + input + "</li>";
+        $( "#message-box").append(input_html);
 
         //Sends input to URL
         $.ajax({
@@ -66,12 +66,11 @@ $( document).ready(function(){
             //var data = JSON.parse(data);
             var output = data.body;
             console.log(output);
-            $( "#message-box").append("Caw caw " + output);
+            $( "#message-box").append("<li class='message bot-msg'>Caw caw! You said '" + output + "'.</li>");
         });
         //preventDefault prevents the site from updating. I think.
         event.preventDefault();
     });
-
 
 
 
