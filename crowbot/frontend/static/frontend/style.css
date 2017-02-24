@@ -1,92 +1,84 @@
 body, html {
-    padding: 0;
     margin: 0;
-    height: 100%;
+    padding: 0;
     width: 100%;
+    height: 100%;
+    background: #c00000;
 }
 
 h1 {
-    padding: 0;
     margin: 0;
-}
-
-body {
-    background: #c00000;
 }
 
 header {
     background: white;
     border-bottom: 2px solid #c00000;
-    box-shadow: 0 0 0.5em black;
-    padding: 0.5rem;
-    z-index: -10;
+    width: 100%;
+    box-shadow: 0 0 5px 5px rgba(0,0,0,0.2);
 }
 
-.main-column {
+.content-column {
     background: white;
+    width: 100%;
     max-width: 40em;
-    min-height: 80%;
-    margin: 0 auto 0 auto;
-    /* border-left: 2px solid #c00000; */
-    /* border-right: 2px solid #c00000; */
-    /* box-shadow: 0 0 0.5em black; */
-}
-
-.message-box {
-    /* background: green; */
-    /* height: 20em; */
-    margin: 0;
-    padding: 0;
-    overflow: auto;
-    list-style: none;
-    border-bottom: 2px solid #c00000;
-}
-
-.input-field {
-    /* border-top: 2px solid #c00000; */
+    height: 100%;
+    justify-content: flex-end;
 }
 
 .flex-container {
     display: flex;
+    overflow: hidden;
+}
+
+.flex-column {
     flex-direction: column;
+    align-items: center;
 }
 
-.flex-shrink {
-    flex: 0 1 90%;
+.dont-flex {
+    flex: 0 0 auto;
 }
 
-.flex-grow {
-    flex: 1 0 5%;
+.do-flex {
+    flex 1 1 auto;
 }
 
-.text-input {
-    border: none;
-    /* border-top: 1px solid #c00000; */
+.message-box {
+    list-style: none;
     margin: 0;
-    width: 90%;
-    font: inherit;
-    padding: 0.2rem;
-    resize: none;
+    padding: 0;
+
+    overflow-y: auto;
 }
 
-#send-button {
-    color: gray;
+.message-form {
+    border-top: 2px solid #c00000;
+    width: 100%;
+}
+
+.input-field {
+    width: 98%;
     border: none;
-    background: white;
+    font: inherit;
+    resize: none;
+    padding: 5px;
+    overflow-y: auto;
 }
 
 .message {
-    border-radius: 9px;
     margin: 5px;
-    padding: 5px;
-}
-
-.user-msg {
-    background: lightblue;
-    margin-left: 10%;
+    padding: 3px;
+    border-radius: 7px;
 }
 
 .bot-msg {
-    background: lightgreen;
-    margin-right: 10%;
+    margin-right: 45px;
+    background: #c00000;
+    color: white;
+}
+
+.user-msg {
+    margin-left: 45px;
+    border-color: blue;
+    background: lightgrey;
 }
