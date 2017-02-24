@@ -3,13 +3,16 @@
 let birdSounds = [
     'Caw caw!',
     'Squawk!',
-    '🐦',
-    '🍰',
-    'Chirp chirp!'
+    'Chirp chirp!',
+    ''
 ];
 
 function randomBirdSound() {
-    return birdSounds[Math.floor(Math.random() * birdSounds.length)];
+    let sound = '';
+    if (Math.random(0,10) < 2) {
+        sound = birdSounds[Math.floor(Math.random() * birdSounds.length)];
+    }
+    return sound;
 }
 
 $( document).ready(function(){
