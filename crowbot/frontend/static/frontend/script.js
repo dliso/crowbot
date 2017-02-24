@@ -60,13 +60,22 @@ $( document).ready(function(){
         msgBox.scrollTop = msgBox.scrollHeight;
     }
 
+    msgList = $("#message-box");
+    function addMessage(msg, botOrUser) {
+        msgList.append(
+            $(`<li>${msg}</li>`)
+                .addClass(botOrUser === 'bot' ? 'bot-msg' : 'user-msg')
+                .addClass('message')
+        );
+    }
+
     //When a user writes in the box and clicks send, the user input is appended to the list
     $( "#message-form" ).submit(function( event ) {
 
         //Finds user input and appends it
         var input = $( "#user-input").val();
         input_html = "<li class='message user-msg'>" + input + "</li>";
-        $( "#message-box").append(input_html);
+        addMessage(input, 'user');
         updateScroll();
 
         root = '/api/ask_question';
@@ -84,7 +93,12 @@ $( document).ready(function(){
             //var data = JSON.parse(data);
             var output = data.body;
             console.log(output);
-            $( "#message-box").append("<li class='message bot-msg'>" + randomBirdSound() + ' ' + output + "</li>");
+            message = randomBirdSound() + ' ' + output;
+            if (message.slice(-1) != '.') {
+                message += '.';
+            }
+            addMessage(message, 'bot');
+            // $( "#message-box").append("<li class='message bot-msg'>" + randomBirdSound() + ' ' + output + "</li>");
             updateScroll();
         });
         //preventDefault prevents the site from updating. I think.
