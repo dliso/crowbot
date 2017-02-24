@@ -81,7 +81,7 @@ $( document).ready(function(){
             //var data = JSON.parse(data);
             var output = data.body;
             console.log(output);
-            $( "#message-box").append("<li class='message bot-msg'>" + randomBirdSound() + ' ' + output + ".</li>");
+            $( "#message-box").append("<li class='message bot-msg'>" + randomBirdSound() + ' ' + output + "</li>");
             updateScroll();
         });
         //preventDefault prevents the site from updating. I think.
