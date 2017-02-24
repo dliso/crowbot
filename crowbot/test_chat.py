@@ -27,7 +27,7 @@ def crowbot_answer(response):
 def user_request(response):
 
     #what course are the user interested in
-    code = response["result"]["parameters"]["course"]
+    code = response["result"]["parameters"]["course"].upper()
 
 
     #find what action to perform
@@ -46,35 +46,26 @@ def user_request(response):
 
         # find the action of the question and to a specific task based on that
         if action == 'find_credit':
-            credit(course, response, code, name)
-            return
+            return(credit(course, response, code, name))
         elif action == 'find_exam_date':
-            exam_date(course, response, code, name)
-            return
+            return(exam_date(course, response, code, name))
         elif action == 'find_location':
-            location(course, response, code, name)
-            return
+            return(location(course, response, code, name))
         elif action == 'find_lecturer_name':
-            professor_name(course, response, code, name)
-            return
+            return(professor_name(course, response, code, name))
         elif action == 'find_email_address':
-            professor_mail(course, response, code, name)
-            return
+            return(professor_mail(course, response, code, name))
         elif action == 'find_semester':
-            semester_taught(course, response, code, name)
-            return
+            return(semester_taught(course, response, code, name))
         elif action == 'find_aids':
-            exam_aids(course, response, code, name)
-            return
+            return(exam_aids(course, response, code, name))
         elif action == 'find_needed_previous_knowledge':
-            needed_previous_knowledge(course, response, code, name)
-            return
+            return(needed_previous_knowledge(course, response, code, name))
         elif action == 'find_recommended_previous_knowledge':
-            recommended_previous_knowledge(course, response, code, name)
-            return
+            return(recommended_previous_knowledge(course, response, code, name))
     except django.core.exceptions.ObjectDoesNotExist:
     #if no code matches
-        print("No course with code", code)
+        return("No course with code", code)
 
     #just test prints
     print("Course:",code)
@@ -93,7 +84,7 @@ def credit(course, response, code, name):
         print(response["result"]["fulfillment"]["speech"])
         # real response
         credit = course.ects_credits
-        print("Credits for", code, name, "is:", credit, "points")
+        return("Credits for", code, name, "is:", credit, "points")
     except:
         print('No information about credits in this course,', code, name)
 
@@ -106,7 +97,7 @@ def exam_date(course, response, code, name):
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         #real response
-        print("Exam date for", code, name, "is:", exam_date)
+        return("Exam date for {:s} {:s} is {:s}".format(code, name, exam_date))
     except:
         print("No info about the exam in this course", code, name)
 
@@ -117,7 +108,7 @@ def location(course, response, code, name):
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        print("Location for", code, name, "is:", location)
+        return("Location for", code, name, "is:", location)
     except:
         print("No location information for ", code, name)
 
@@ -129,7 +120,7 @@ def professor_name(course, response, code, name):
         #crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        print("Lecturer for", code, name, "is", teacher_name)
+        return("Lecturer for", code, name, "is", teacher_name)
     except:
         print('No information about the lecturer in this course,', code, name)
 
@@ -142,8 +133,8 @@ def professor_mail(course, response, code, name):
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        print("Lecturer for", code, name, "is", teacher_name)
-        print("You can contact", teacher_name, "at", teacher_mail)
+        return("Lecturer for", code, name, "is", teacher_name +
+        ". You can contact", teacher_name, "at", teacher_mail)
     except:
         print('No information about the professors email in this course,', code, name)
 
@@ -155,7 +146,7 @@ def semester_taught(course, response, code, name):
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        print(code, name, "is taught in", semester)
+        return(code, name, "is taught in", semester)
     except:
         print("No information about semesters in", code, name)
 
@@ -167,7 +158,7 @@ def exam_aids(course, response, code, name):
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        print("Examination support for ", code, name, " is ", exam_support_code, ": ", exam_support_name)
+        return("Examination support for ", code, name, " is ", exam_support_code, ": ", exam_support_name)
     except:
         print("No information about examination support in ", code, name)
 
@@ -179,7 +170,7 @@ def needed_previous_knowledge(course, response, code, name):
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        print("Needed previous knowledge is:", required_previous_knowledge)
+        return("Needed previous knowledge is:", required_previous_knowledge)
     except:
         print('No information about required previous knowledge in this course (', code, name, ")")
 
@@ -191,10 +182,18 @@ def recommended_previous_knowledge(course, response, code, name):
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        print("Recommended previous knowledge in", code, name, " is :", recommended_previous_knowledge)
+        return("Recommended previous knowledge in", code, name, " is :", recommended_previous_knowledge)
     except:
         print('No information about recommended previous knowledge in this course (', code, name, ")")
 
+
+def ask_apiai(text):
+    request = ai.text_request()
+    request.query = text
+    response = request.getresponse().read().decode()
+    response = json.loads(response)
+    print(response)
+    return user_request(response)
 
 #main function
 if __name__ == '__main__':

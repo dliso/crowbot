@@ -8,6 +8,8 @@ from django.core import serializers
 
 from backend.models import Course
 
+import test_chat
+
 # Create your views here.
 
 @csrf_exempt
@@ -22,3 +24,19 @@ def add_course(request):
         return HttpResponse('Added %s to the database.' % d.object.code)
     else:
         return HttpResponse('Send POST requests here to add courses to the database.')
+
+@csrf_exempt
+def respond_to_message(request):
+    print(request)
+    res = ''
+    if request.method == 'GET':
+        res += 'GET'
+        for i in request.GET.items():
+            res += str(i)
+        res += '\n'
+        res += str(test_chat.ask_apiai(request.GET['q']))
+    if request.method == 'POST':
+        res += 'POST request received'
+        res_data = {}
+        res_data['body'] = str(test_chat.ask_apiai(request.POST['body']))
+    return HttpResponse(json.dumps(res_data), content_type="application/json")

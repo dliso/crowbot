@@ -1,5 +1,17 @@
 // This file is loaded and executed when the main Crowbot page is opened.
 
+let birdSounds = [
+    'Caw caw!',
+    'Squawk!',
+    '🐦',
+    '🍰',
+    'Chirp chirp!'
+];
+
+function randomBirdSound() {
+    return birdSounds[Math.floor(Math.random() * birdSounds.length)];
+}
+
 $( document).ready(function(){
 
     // jQuery example:
@@ -49,9 +61,11 @@ $( document).ready(function(){
         input_html = "<li class='message user-msg'>" + input + "</li>";
         $( "#message-box").append(input_html);
 
+        root = '/api/ask_question';
+
         //Sends input to URL
         $.ajax({
-            url: root + '/posts',
+            url: root,
             method: "POST",
             data: {
                 body: input
@@ -62,7 +76,7 @@ $( document).ready(function(){
             //var data = JSON.parse(data);
             var output = data.body;
             console.log(output);
-            $( "#message-box").append("<li class='message bot-msg'>Caw caw! You said '" + output + "'.</li>");
+            $( "#message-box").append("<li class='message bot-msg'>" + randomBirdSound() + ' ' + output + ".</li>");
         });
         //preventDefault prevents the site from updating. I think.
         event.preventDefault();
