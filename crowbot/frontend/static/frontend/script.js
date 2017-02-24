@@ -2,10 +2,6 @@
 
 $( document).ready(function(){
 
-
-
-    console.log('Hello, World');
-
     // jQuery example:
     var root = 'https://jsonplaceholder.typicode.com';
 
@@ -72,6 +68,14 @@ $( document).ready(function(){
         event.preventDefault();
     });
 
+    // Submit when the user presses enter
+    $("#user-input").keypress(function (key) {
+        if (key.which == 13) {
+            $("#message-form").submit();
+            $("#user-input").val('');
+            return false;
+        }
+    });
 
 
 });
