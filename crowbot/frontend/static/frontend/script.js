@@ -52,6 +52,10 @@ $( document).ready(function(){
         console.log(data)
     });
 
+    msgBox = document.getElementById("message-box");
+    function updateScroll() {
+        msgBox.scrollTop = msgBox.scrollHeight;
+    }
 
     //When a user writes in the box and clicks send, the user input is appended to the list
     $( "#message-form" ).submit(function( event ) {
@@ -60,6 +64,7 @@ $( document).ready(function(){
         var input = $( "#user-input").val();
         input_html = "<li class='message user-msg'>" + input + "</li>";
         $( "#message-box").append(input_html);
+        updateScroll();
 
         root = '/api/ask_question';
 
@@ -77,6 +82,7 @@ $( document).ready(function(){
             var output = data.body;
             console.log(output);
             $( "#message-box").append("<li class='message bot-msg'>" + randomBirdSound() + ' ' + output + ".</li>");
+            updateScroll();
         });
         //preventDefault prevents the site from updating. I think.
         event.preventDefault();
