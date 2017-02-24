@@ -196,7 +196,10 @@ def ask_apiai(text):
     response = request.getresponse().read().decode()
     response = json.loads(response)
     print(response)
-    return user_request(response)
+    try:
+        return user_request(response)
+    except:
+        return "Sorry, I didn't get that."
 
 #main function
 if __name__ == '__main__':
