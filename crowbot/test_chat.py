@@ -84,7 +84,7 @@ def credit(course, response, code, name):
         print(response["result"]["fulfillment"]["speech"])
         # real response
         credit = course.ects_credits
-        return("Credits for", code, name, "is:", credit, "points")
+        return("Credits for {:s} {:s} is {:s}".format(code, name, str(credit)))
     except:
         print('No information about credits in this course,', code, name)
 
@@ -108,7 +108,7 @@ def location(course, response, code, name):
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        return("Location for", code, name, "is:", location)
+        return("{:s} {:s} is taught in {:s}".format(code, name, location))
     except:
         print("No location information for ", code, name)
 
@@ -120,7 +120,7 @@ def professor_name(course, response, code, name):
         #crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        return("Lecturer for", code, name, "is", teacher_name)
+        return("{:s} {:s} is taught by {:s}".format(code, name, teacher_name))
     except:
         print('No information about the lecturer in this course,', code, name)
 
@@ -133,8 +133,8 @@ def professor_mail(course, response, code, name):
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        return("Lecturer for", code, name, "is", teacher_name +
-        ". You can contact", teacher_name, "at", teacher_mail)
+        return("{:s} {:s} is taught by {:s}. They can be reached at {:s}"
+               .format(code, name, teacher_name, teacher_mail))
     except:
         print('No information about the professors email in this course,', code, name)
 
@@ -146,7 +146,7 @@ def semester_taught(course, response, code, name):
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        return(code, name, "is taught in", semester)
+        return("{:s} {:s} is taught in the {:s}".format(code, name, semester))
     except:
         print("No information about semesters in", code, name)
 
@@ -158,7 +158,8 @@ def exam_aids(course, response, code, name):
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        return("Examination support for ", code, name, " is ", exam_support_code, ": ", exam_support_name)
+        return("Exam support materials for {:s} {:s} is code {:s}: {:s}"
+               .format(code, name, exam_support_code, exam_support_name))
     except:
         print("No information about examination support in ", code, name)
 
@@ -170,7 +171,7 @@ def needed_previous_knowledge(course, response, code, name):
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        return("Needed previous knowledge is:", required_previous_knowledge)
+        return("Needed previous knowledge is: {:s}".format(required_previous_knowledge))
     except:
         print('No information about required previous knowledge in this course (', code, name, ")")
 
@@ -182,7 +183,9 @@ def recommended_previous_knowledge(course, response, code, name):
         # Crowbot response
         print(response["result"]["fulfillment"]["speech"])
         # real response
-        return("Recommended previous knowledge in", code, name, " is :", recommended_previous_knowledge)
+        return("Recommended previous knowledge for {:s} {:s} is {:s}"
+               .format(code, name, recommended_previous_knowledge))
+        # return("Recommended previous knowledge in", code, name, " is :", recommended_previous_knowledge)
     except:
         print('No information about recommended previous knowledge in this course (', code, name, ")")
 
