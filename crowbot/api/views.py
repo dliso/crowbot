@@ -8,7 +8,7 @@ from django.core import serializers
 
 from backend.models import Course
 
-import test_chat
+from apiai_connection import crowbot_chat
 
 # Create your views here.
 
@@ -34,9 +34,9 @@ def respond_to_message(request):
         for i in request.GET.items():
             res += str(i)
         res += '\n'
-        res += str(test_chat.ask_apiai(request.GET['q']))
+        res += str(crowbot_chat.ask_apiai(request.GET['q']))
     if request.method == 'POST':
         res += 'POST request received'
         res_data = {}
-        res_data['body'] = str(test_chat.ask_apiai(request.POST['body']))
+        res_data['body'] = str(crowbot_chat.ask_apiai(request.POST['body']))
     return HttpResponse(json.dumps(res_data), content_type="application/json")
