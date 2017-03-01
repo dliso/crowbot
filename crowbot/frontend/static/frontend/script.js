@@ -136,7 +136,23 @@ $( document).ready(function(){
     function makeListItem(question, datetime) {
         return "<li>" + "Question: " + question  + " Time: " + datetime + "</li>"
     }
+  var q_list_root = '/api/question_queue';
 
+    function addQuestionsToList(course_code){
+        $.ajax({
+        //Get the question
+            url: q_list_root + "/" + course_code,
+            method: "GET"
+        }).then(function(questions){
+            for (q of questions){
+                addQuestion(
+                    makeListItem(q.text, q.datetime)
+                );
+            }
+        });
+    }
+
+    addQuestionsToList("TDT4100");
 
 
 });
