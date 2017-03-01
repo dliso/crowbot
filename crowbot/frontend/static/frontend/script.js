@@ -120,7 +120,7 @@ $( document).ready(function(){
 
     //var course_code = ????;
 
-    var q_list_root = '/api/question_queue';
+
 
     //skirve funksjon som finner lista i html $, (message queue),
     //ber om data fra servern, bruker forrige funksjon til å legge til i lista
@@ -129,12 +129,13 @@ $( document).ready(function(){
     questionList = $("#question-queue");
     function addQuestion(question) {
         questionList.append(
-            $(`<li>${question}</li>`)
+            $(question)
         );
     }
 
-
-
+    function makeListItem(question, datetime) {
+        return "<li>" + "Question: " + question  + " Time: " + datetime + "</li>"
+    }
 
 
 
