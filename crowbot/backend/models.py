@@ -25,3 +25,52 @@ class Book(models.Model):
 
 class Room(models.Model):
     location = models.CharField(max_length=50)
+
+class User(models.Model):
+    """
+    Placeholder User model.
+    """
+
+class Question(models.Model):
+    """
+    Model for storing questions that the bot couldn't answer on its own. These will be added to a course's queue and
+    shown to a human who can answer it.
+    """
+    user_id = models.ForeignKey(
+        User,
+        on_delete = models.SET_NULL,
+        null = True,
+    )
+    course = models.ForeignKey(
+        Course,
+        on_delete = models.SET_NULL,
+        null = True,
+    )
+    creation_datetime = models.DateTimeField(auto_now_add = True)
+    text = models.TextField()
+
+class Answer(models.Model):
+    """
+    Answers to questions.
+    """
+    question = models.ForeignKey(
+        Question,
+        on_delete = models.SET_NULL,
+        null = True,
+    )
+    user_id = models.ForeignKey(
+        User,
+        on_delete = models.SET_NULL,
+        null = True,
+    )
+    creation_datetime = models.DateTimeField(auto_now_add = True)
+    text = models.TextField()
+
+class QuestionQueue(models.Model):
+    """
+    Connect Courses and Questions.
+    """
+
+class Semester(models.Model):
+    """
+    """
