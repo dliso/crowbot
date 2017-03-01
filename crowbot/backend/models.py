@@ -51,6 +51,11 @@ class Question(models.Model):
         on_delete = models.SET_NULL,
         null = True,
     )
+    semester = models.ForeignKey(
+        Semester,
+        on_delete = models.SET_NULL,
+        null = True,
+    )
     creation_datetime = models.DateTimeField(auto_now_add = True)
     text = models.TextField()
 
