@@ -114,5 +114,28 @@ $( document).ready(function(){
         }
     });
 
+    // Add questions to a list
+    // Spørsmål-API-rute: /api/question_queue/fagkode
+    // Eks.: /api/question_queue/tma4100
+
+    //var course_code = ????;
+
+    var q_list_root = '/api/question_queue';
+
+    //skirve funksjon som finner lista i html $, (message queue),
+    //ber om data fra servern, bruker forrige funksjon til å legge til i lista
+
+
+    questionList = $("#question-queue");
+    function addQuestion(question) {
+        questionList.append(
+            $(`<li>${question}</li>`)
+        );
+    }
+
+
+
+
+
 
 });
