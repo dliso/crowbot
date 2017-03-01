@@ -66,11 +66,6 @@ class Answer(models.Model):
     creation_datetime = models.DateTimeField(auto_now_add = True)
     text = models.TextField()
 
-class QuestionQueue(models.Model):
-    """
-    Connect Courses and Questions.
-    """
-
 class Semester(models.Model):
     """
     """
