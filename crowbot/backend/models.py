@@ -31,6 +31,11 @@ class User(models.Model):
     Placeholder User model.
     """
 
+class Semester(models.Model):
+    """
+    """
+    start_date = models.DateField()
+
 class Question(models.Model):
     """
     Model for storing questions that the bot couldn't answer on its own. These will be added to a course's queue and
@@ -66,6 +71,3 @@ class Answer(models.Model):
     creation_datetime = models.DateTimeField(auto_now_add = True)
     text = models.TextField()
 
-class Semester(models.Model):
-    """
-    """
