@@ -47,6 +47,31 @@ header img {
     align-items: center;
 }
 
+.flex-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.f-just-start {
+    justify-content: flex-start;
+}
+
+.bg-white {
+    background: white;
+}
+
+.border-left {
+    border-left: 1px solid #c00000;
+}
+
 .dont-flex {
     flex: 0 0 auto;
 }
