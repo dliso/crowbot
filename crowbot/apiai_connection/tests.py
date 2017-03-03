@@ -1,5 +1,5 @@
 from django.test import TestCase
-import json, apiai
+import json, apiai, datetime
 from apiai_connection.crowbot_chat import *
 from backend.models import Course
 
@@ -29,7 +29,7 @@ class TestCrowbotChat(TestCase):
                               exam_date=None,exam_support_code='D',exam_support_name='No written or handwritten examination support material is permitted. Specified simple calculator is permitted.',
                               location='Trondheim',
                               semester='Autumn and Spring',teacher_name='Bjørn-Ove Fimland',teacher_email='bjorn.fimland@ntnu.no',ects_credits=7.50)
-        #lage eksempel database objekter
+
 
 
     def load_text_request_with_query(self, query):
@@ -41,8 +41,7 @@ class TestCrowbotChat(TestCase):
         return json.loads(response)
 
 
-
-
+#tester for å sjekke forståelsen til api.ai
     def test_crowbot_understanding_course(self):
         query = 'How much credit do I get in tdt4105?'
         response = self.load_text_request_with_query(query)
@@ -58,8 +57,85 @@ class TestCrowbotChat(TestCase):
         action = response['result']['action']
         self.assertEqual(action, 'find_credit')
 
-    # def test_(self):
-    #     self.assertEqual(1,1)
 
+#tester for å hente informasjon ut fra databasen
+    def test_get_credit(self):
+        PU = Course.objects.get(code='TDT4140')
+        EXPHIL = Course.objects.get(code='EXPH0004')
+        MBE = Course.objects.get(code='FE8111')
+        self.assertEqual(PU.ects_credits,7.50)
+        self.assertEqual(EXPHIL.ects_credits, 7.50)
+        self.assertEqual(MBE.ects_credits, 7.50)
 
+    def test_get_exam_date(self):
+        PU = Course.objects.get(code='TDT4140')
+        EXPHIL = Course.objects.get(code='EXPH0004')
+        MBE = Course.objects.get(code='FE8111')
+        self.assertEqual(PU.exam_date, None)
+        self.assertEqual(EXPHIL.exam_date, datetime.date(2017, 5, 27))
+        self.assertEqual(MBE.exam_date, None)
+
+    def test_get_location(self):
+        PU = Course.objects.get(code='TDT4140')
+        EXPHIL = Course.objects.get(code='EXPH0004')
+        MBE = Course.objects.get(code='FE8111')
+        self.assertEqual(PU.location, 'Trondheim')
+        self.assertEqual(EXPHIL.location, 'Trondheim')
+        self.assertEqual(MBE.location, 'Trondheim')
+
+    def test_get_professor_name(self):
+        PU = Course.objects.get(code='TDT4140')
+        EXPHIL = Course.objects.get(code='EXPH0004')
+        MBE = Course.objects.get(code='FE8111')
+        self.assertEqual(PU.teacher_name, 'Pekka Kalevi Abrahamsson')
+        self.assertEqual(EXPHIL.teacher_name, 'Erling Skjei')
+        self.assertEqual(MBE.teacher_name, 'Bjørn-Ove Fimland')
+
+    def test_get_professor_email(self):
+        PU = Course.objects.get(code='TDT4140')
+        EXPHIL = Course.objects.get(code='EXPH0004')
+        MBE = Course.objects.get(code='FE8111')
+        self.assertEqual(PU.teacher_email, 'pekka.abrahamsson@ntnu.no')
+        self.assertEqual(EXPHIL.teacher_email, 'erling.skjei@ntnu.no')
+        self.assertEqual(MBE.teacher_email, 'bjorn.fimland@ntnu.no')
+
+    def test_get_semester(self):
+        PU = Course.objects.get(code='TDT4140')
+        EXPHIL = Course.objects.get(code='EXPH0004')
+        MBE = Course.objects.get(code='FE8111')
+        self.assertEqual(PU.semester, 'Spring')
+        self.assertEqual(EXPHIL.semester, 'Autumn and Spring')
+        self.assertEqual(MBE.semester, 'Autumn and Spring')
+
+    def test_get_exam_support_code(self):
+        PU = Course.objects.get(code='TDT4140')
+        EXPHIL = Course.objects.get(code='EXPH0004')
+        MBE = Course.objects.get(code='FE8111')
+        self.assertEqual(PU.exam_support_code, '')
+        self.assertEqual(EXPHIL.exam_support_code, 'D')
+        self.assertEqual(MBE.exam_support_code, 'D')
+
+    def test_get_exam_support_name(self):
+        PU = Course.objects.get(code='TDT4140')
+        EXPHIL = Course.objects.get(code='EXPH0004')
+        MBE = Course.objects.get(code='FE8111')
+        self.assertEqual(PU.exam_support_name, '')
+        self.assertEqual(EXPHIL.exam_support_name, 'No written or handwritten examination support material is permitted. Specified simple calculator is permitted.')
+        self.assertEqual(MBE.exam_support_name, 'No written or handwritten examination support material is permitted. Specified simple calculator is permitted.')
+
+    def test_get_recommended_previous_knowledge(self):
+        PU = Course.objects.get(code='TDT4140')
+        EXPHIL = Course.objects.get(code='EXPH0004')
+        MBE = Course.objects.get(code='FE8111')
+        self.assertEqual(PU.recommended_previous_knowledge, 'Subjects TDT4100 Object-Oriented Programming and TDT4120 Algorithms and Data Structures, or equivalent.')
+        self.assertEqual(EXPHIL.recommended_previous_knowledge,'')
+        self.assertEqual(MBE.recommended_previous_knowledge,'TFE4145 Semiconductor Physics and Electronic Devices, Introduction, and TFE4180 Semiconductor Manufactoring Technology, or equivalent knowledge, will give an advantage.')
+
+    def test_get_required_previous_knowledge(self):
+        PU = Course.objects.get(code='TDT4140')
+        EXPHIL = Course.objects.get(code='EXPH0004')
+        MBE = Course.objects.get(code='FE8111')
+        self.assertEqual(PU.required_previous_knowledge, '')
+        self.assertEqual(EXPHIL.required_previous_knowledge,'')
+        self.assertEqual(MBE.required_previous_knowledge,'')
 
