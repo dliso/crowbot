@@ -139,3 +139,80 @@ class TestCrowbotChat(TestCase):
         self.assertEqual(EXPHIL.required_previous_knowledge,'')
         self.assertEqual(MBE.required_previous_knowledge,'')
 
+
+
+#tester funksjoner i crowbot_chat
+
+    def test_user_request_credit(self):
+        query = 'How much credit do I get in tdt4140?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output,'Credits for TDT4140 Software Engineering is 7.50')
+
+    def test_user_request_exam_date(self):
+        query = 'When is the exam in exph0004?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output,'Exam date for EXPH0004 Examen philosophicum for Science and Technology is 27/05/2017')
+
+        #exam_date funksjonen i crowbot_chat vil returnere None (ingenting, den går i printen i except)
+        query = 'When is the exam in tdt4140?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output,None)
+
+    def test_user_request_location(self):
+        query = 'Where is FE8111 taught?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output,'FE8111 Molecular Beam Epitaxy is taught in Trondheim')
+
+    def test_user_request_professor_name(self):
+        query = 'Who is teaching FE8111?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output,'FE8111 Molecular Beam Epitaxy is taught by Bjørn-Ove Fimland')
+
+    def test_user_request_professor_mail(self):
+        query = 'How can I reach the professor in FE8111?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output, 'FE8111 Molecular Beam Epitaxy is taught by Bjørn-Ove Fimland. They can be reached at bjorn.fimland@ntnu.no')
+
+    def test_user_request_semester(self):
+        query = 'In what term is EXPH0004 taught?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output, 'EXPH0004 Examen philosophicum for Science and Technology is taught in the Autumn and Spring')
+
+    def test_user_request_exam_aids(self):
+        query = 'What examination support is permitted in EXPH0004?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output, 'Exam support materials for EXPH0004 Examen philosophicum for Science and Technology is code D: No written or handwritten examination support material is permitted. Specified simple calculator is permitted.')
+
+
+        #dette er muligens litt rart, ta med except om tom streng som en return statement?
+        query = 'What exam aids is permitted in TDT4140?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output, 'Exam support materials for TDT4140 Software Engineering is code : ')
+
+    #samme her når det er en tom streng, fikse på outputen
+    def test_user_request_needed_knowledge(self):
+        query = 'What required previous knowledge is there in FE8111?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output, 'Needed previous knowledge is: ')
+
+    def test_user_request_needed_knowledge(self):
+        query = 'What recommended previous knowledge is there in TDT4140?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output, 'Recommended previous knowledge for TDT4140 Software Engineering is Subjects TDT4100 Object-Oriented Programming and TDT4120 Algorithms and Data Structures, or equivalent.')
+
+        #except med tom streng her også
+        query = 'What recommended previous knowledge is there in EXPH0004?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output, 'Recommended previous knowledge for EXPH0004 Examen philosophicum for Science and Technology is ')
