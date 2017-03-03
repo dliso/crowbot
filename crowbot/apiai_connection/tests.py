@@ -205,7 +205,7 @@ class TestCrowbotChat(TestCase):
         output = user_request(response)
         self.assertEqual(output, 'Needed previous knowledge is: ')
 
-    def test_user_request_needed_knowledge(self):
+    def test_user_request_recommended_knowledge(self):
         query = 'What recommended previous knowledge is there in TDT4140?'
         response = self.load_text_request_with_query(query)
         output = user_request(response)
@@ -216,3 +216,7 @@ class TestCrowbotChat(TestCase):
         response = self.load_text_request_with_query(query)
         output = user_request(response)
         self.assertEqual(output, 'Recommended previous knowledge for EXPH0004 Examen philosophicum for Science and Technology is ')
+
+#skriv coverage run --source='.' manage.py test myapp
+#i fil directiory hvor manage.py ligger
+#skriv så coverage report for å få prosenter
