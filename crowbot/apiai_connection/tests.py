@@ -217,6 +217,12 @@ class TestCrowbotChat(TestCase):
         output = user_request(response)
         self.assertEqual(output, 'Recommended previous knowledge for EXPH0004 Examen philosophicum for Science and Technology is ')
 
-#skriv coverage run --source='.' manage.py test myapp
+    def test_user_request_not_valid_coursecode(self):
+        query = 'Who is the teacher in TYU7643?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output,'No course with code TYU7643')
+
+            #skriv coverage run --source='.' manage.py test myapp
 #i fil directiory hvor manage.py ligger
 #skriv så coverage report for å få prosenter
