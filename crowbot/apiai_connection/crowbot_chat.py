@@ -20,12 +20,12 @@ CLIENT_ACCESS_TOKEN = '1b0f421f4b1045c5a9b29c8372573383'
 ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
 
 def crowbot_answer(response):
-    print(response["result"]["fulfillment"]["speech"])
+    return(response["result"]["fulfillment"]["speech"])
 
 
 
 def user_request(response):
-
+    #response is a dict
     #what course are the user interested in
     code = response["result"]["parameters"]["course"].upper()
 
@@ -65,12 +65,12 @@ def user_request(response):
             return(recommended_previous_knowledge(course, response, code, name))
     except django.core.exceptions.ObjectDoesNotExist:
     #if no code matches
-        return("No course with code", code)
+        return("No course with code {:s}".format(code))
 
     #just test prints
-    print("Course:",code)
-    print("Recognized action:", response["result"]["action"])
-    print()
+    # print("Course:",code)
+    # print("Recognized action:", response["result"]["action"])
+    # print()
 
 
 #FUNCTIONS FOR DIFFERENT ACTIONS
@@ -78,116 +78,116 @@ def user_request(response):
 #function for credit
 #må muligens endre litt på denne for å få ut tallet i bra format, nei trenger ikke
 def credit(course, response, code, name):
-    try:
-
-        # Crowbot response
-        print(response["result"]["fulfillment"]["speech"])
-        # real response
-        credit = course.ects_credits
-        return("Credits for {:s} {:s} is {:s}".format(code, name, str(credit)))
-    except:
-        print('No information about credits in this course,', code, name)
+    # Crowbot response
+    # print(response["result"]["fulfillment"]["speech"])
+    # real response
+    credit = course.ects_credits
+    if credit == None:
+        return('No information about credits in this course, {:s} {:s}'.format(code, name))
+    return("Credits for {:s} {:s} is {:s}".format(code, name, str(credit)))
 
 
 #function for exam date
 #må muligens endre litt på denne for å få ut datoen i bra format, OK I think now
 def exam_date(course, response, code, name):
-    try:
-        exam_date = course.exam_date.strftime('%d/%m/%Y')
-        # Crowbot response
-        print(response["result"]["fulfillment"]["speech"])
-        #real response
-        return("Exam date for {:s} {:s} is {:s}".format(code, name, exam_date))
-    except:
-        print("No info about the exam in this course", code, name)
+    exam_date = course.exam_date
+    if exam_date == None:
+        return("No info about the exam in this course {:s} {:s}".format(code, name))
+    # Crowbot response
+    # print(response["result"]["fulfillment"]["speech"])
+    # real response
+    return("Exam date for {:s} {:s} is {:s}".format(code, name, exam_date.strftime('%d/%m/%Y')))
+
 
 #function for location
 def location(course, response, code, name):
-    try:
-        location = course.location
-        # Crowbot response
-        print(response["result"]["fulfillment"]["speech"])
-        # real response
-        return("{:s} {:s} is taught in {:s}".format(code, name, location))
-    except:
-        print("No location information for ", code, name)
+    location = course.location
+    # Crowbot response
+    # print(response["result"]["fulfillment"]["speech"])
+    # real response
+    if not location:
+        return("No location information for {:s} {:s}".format(code, name))
+    return("{:s} {:s} is taught in {:s}".format(code, name, location))
+
 
 
 #function for professor name
 def professor_name(course, response, code, name):
-    try:
-        teacher_name = course.teacher_name
-        #crowbot response
-        print(response["result"]["fulfillment"]["speech"])
-        # real response
-        return("{:s} {:s} is taught by {:s}".format(code, name, teacher_name))
-    except:
-        print('No information about the lecturer in this course,', code, name)
+    teacher_name = course.teacher_name
+    # crowbot response
+    # print(response["result"]["fulfillment"]["speech"])
+    # real response
+    if not teacher_name:
+        return('No information about the lecturer in {:s} {:s}'.format(code, name))
+    return("{:s} {:s} is taught by {:s}".format(code, name, teacher_name))
 
 
 #function for professor email
 def professor_mail(course, response, code, name):
-    try:
-        teacher_name = course.teacher_name
-        teacher_mail = course.teacher_email
-        # Crowbot response
-        print(response["result"]["fulfillment"]["speech"])
-        # real response
-        return("{:s} {:s} is taught by {:s}. They can be reached at {:s}"
-               .format(code, name, teacher_name, teacher_mail))
-    except:
-        print('No information about the professors email in this course,', code, name)
+    teacher_name = course.teacher_name
+    teacher_mail = course.teacher_email
+    # Crowbot response
+    # print(response["result"]["fulfillment"]["speech"])
+    # real response
+    if not teacher_name:
+        if not teacher_mail:
+            return('No information about the professors email in {:s} {:s}'.format(code, name))
+        return ('You can reach the professor in {:s} {:s} at {:s}'.format(code, name, teacher_mail))
+    if not teacher_mail:
+        return ('No information about {:s} email in {:s} {:s}'.format(teacher_name,code, name))
+    return("{:s} {:s} is taught by {:s}. They can be reached at {:s}"
+           .format(code, name, teacher_name, teacher_mail))
 
 
 #function for spring or autumn semester
 def semester_taught(course, response, code, name):
-    try:
-        semester = course.semester
-        # Crowbot response
-        print(response["result"]["fulfillment"]["speech"])
-        # real response
-        return("{:s} {:s} is taught in the {:s}".format(code, name, semester))
-    except:
-        print("No information about semesters in", code, name)
+    semester = course.semester
+    # Crowbot response
+    # print(response["result"]["fulfillment"]["speech"])
+    # real response
+    if not semester:
+        return("No information about semesters in".format(code, name))
+    return("{:s} {:s} is taught in the {:s}".format(code, name, semester))
+
 
 #function for exam aids, code and text
 def exam_aids(course, response, code, name):
-    try:
-        exam_support_code = course.exam_support_code
-        exam_support_name = course.exam_support_name
-        # Crowbot response
-        print(response["result"]["fulfillment"]["speech"])
-        # real response
-        return("Exam support materials for {:s} {:s} is code {:s}: {:s}"
-               .format(code, name, exam_support_code, exam_support_name))
-    except:
-        print("No information about examination support in ", code, name)
+    exam_support_code = course.exam_support_code
+    exam_support_name = course.exam_support_name
+    # Crowbot response
+    # print(response["result"]["fulfillment"]["speech"])
+    # real response
+    if not exam_support_code:
+        if not exam_support_name:
+            return("No information about examination support in {:s} {:s}".format(code, name))
+        return ('Examination support materials for {:s} {:s} is {:s}'.format(code, name, exam_support_name))
+    if not exam_support_name:
+        return ('Examination support materials for {:s} {:s} is code {:s}'.format(code, name, exam_support_code))
+    return("Exam support materials for {:s} {:s} is code {:s}: {:s}"
+           .format(code, name, exam_support_code, exam_support_name))
 
 
 #function to find needed previous knowledge
 def needed_previous_knowledge(course, response, code, name):
-    try:
-        required_previous_knowledge = course.required_previous_knowledge
-        # Crowbot response
-        print(response["result"]["fulfillment"]["speech"])
-        # real response
-        return("Needed previous knowledge is: {:s}".format(required_previous_knowledge))
-    except:
-        print('No information about required previous knowledge in this course (', code, name, ")")
+    required_previous_knowledge = course.required_previous_knowledge
+    # Crowbot response
+    # print(response["result"]["fulfillment"]["speech"])
+    # real response
+    if not required_previous_knowledge:
+        return('No information about required previous knowledge in {:s} {:s}'.format(code, name))
+    return("Required previous knowledge is: {:s}".format(required_previous_knowledge))
 
 
 # function to find recommended previous knowledge
 def recommended_previous_knowledge(course, response, code, name):
-    try:
-        recommended_previous_knowledge = course.recommended_previous_knowledge
-        # Crowbot response
-        print(response["result"]["fulfillment"]["speech"])
-        # real response
-        return("Recommended previous knowledge for {:s} {:s} is {:s}"
-               .format(code, name, recommended_previous_knowledge))
-        # return("Recommended previous knowledge in", code, name, " is :", recommended_previous_knowledge)
-    except:
-        print('No information about recommended previous knowledge in this course (', code, name, ")")
+    recommended_previous_knowledge = course.recommended_previous_knowledge
+    # Crowbot response
+    # print(response["result"]["fulfillment"]["speech"])
+    # real response
+    if not recommended_previous_knowledge:
+        return("No information about recommended previous knowledge for {:s} {:s}".format(code, name))
+    return("Recommended previous knowledge for {:s} {:s} is: {:s}"
+           .format(code, name, recommended_previous_knowledge))
 
 
 def ask_apiai(text):
