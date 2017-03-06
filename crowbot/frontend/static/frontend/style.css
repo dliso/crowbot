@@ -9,6 +9,7 @@ body, html {
 
 h1, h2, h3, h4, h5, h6 {
     margin: 0;
+    padding: 3px;
     font-family: 'Noto Serif', serif;
 }
 
@@ -32,7 +33,7 @@ header img {
 .content-column {
     background: white;
     width: 100%;
-    max-width: 40em;
+    max-width: 60em;
     height: 100%;
     justify-content: flex-end;
 }
@@ -91,6 +92,7 @@ header img {
 
 .question-item, #question-queue li {
     border-bottom: 1px solid #c00000;
+    padding: 3px;
 }
 
 .timestamp {
@@ -107,7 +109,7 @@ header img {
 }
 
 .message-form {
-    border-top: 2px solid #c00000;
+    border-top: 1px solid #c00000;
     width: 100%;
 }
 
@@ -136,4 +138,12 @@ header img {
     margin-left: 45px;
     border-color: blue;
     background: lightgrey;
+}
+
+.min-height-5em {
+    min-height: 5em;
+}
+
+.flex-backwards {
+    justify-content: flex-end;
 }
