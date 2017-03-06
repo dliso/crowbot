@@ -196,10 +196,16 @@ def ask_apiai(text):
     response = request.getresponse().read().decode()
     response = json.loads(response)
     print(response)
-    try:
+    if response["result"]["metadata"]["intentName"] == 'Default Welcome Intent':
+        return crowbot_answer(response)
+    elif response["result"]["metadata"]["intentName"] == 'Default Goodbye Intent':
+        return crowbot_answer(response)
+    elif response["result"]["metadata"]["intentName"] == "Default Fallback Intent":
+        return crowbot_answer(response)
+    elif response["result"]["metadata"]["intentName"] == "Default Help Intent":
+        return crowbot_answer(response)
+    else:
         return user_request(response)
-    except:
-        return "Sorry, I didn't get that."
 
 #main function
 if __name__ == '__main__':
