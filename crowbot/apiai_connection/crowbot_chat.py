@@ -201,6 +201,7 @@ def ask_apiai(text):
     elif response["result"]["metadata"]["intentName"] == 'Default Goodbye Intent':
         return crowbot_answer(response)
     elif response["result"]["metadata"]["intentName"] == "Default Fallback Intent":
+        #legge til spørsmål i Questions modell
         return crowbot_answer(response)
     elif response["result"]["metadata"]["intentName"] == "Default Help Intent":
         return crowbot_answer(response)
