@@ -59,6 +59,9 @@ class Question(models.Model):
     creation_datetime = models.DateTimeField(auto_now_add = True)
     text = models.TextField()
 
+    def __str__(self):
+        return string((self.creation_datetime, self.text))
+
 class Answer(models.Model):
     """
     Answers to questions.
