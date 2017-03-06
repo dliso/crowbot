@@ -299,7 +299,47 @@ class TestCrowbotChat(TestCase):
         self.assertEqual(output,'No course with code TYU7643')
 
 #tests for ask_apiai in crowbot_chat
+    #test hi from user
+    def test_ask_apiai_hi(self):
+        list_of_possible_responses = ['Hi!','Hello!','Good day!','Greetings!','Caw caw!']
+        response = ask_apiai('Hi!')
+        self.assertTrue(response in list_of_possible_responses)
 
-            #skriv coverage run --source='.' manage.py test myapp
-#i fil directiory hvor manage.py ligger
+    #test goodbye from user
+    def test_ask_apiai_goodbye(self):
+        list_of_possible_responses = ['Byebye! Have a nice day!','Goodbye!']
+        response = ask_apiai('Bye')
+        self.assertTrue(response in list_of_possible_responses)
+
+    #test a sentence that crowbot don't understand
+    def test_ask_apiai_fail(self):
+        list_of_possible_responses = ["I didn't get that. Can you say it again?",
+                                      "I missed what you said. Say it again?",
+                                      "Sorry, could you say that again?",
+                                      "Sorry, can you say that again?",
+                                      "Can you say that again?", "Sorry, I didn't get that.",
+                                      "Sorry, what was that?","One more time?","What was that?",
+                                      "Say that again?", "I didn't get that.", "I missed that."]
+        response = ask_apiai('Jibberish')
+        self.assertTrue(response in list_of_possible_responses)
+
+
+    # test help from user
+    def test_ask_apiai_help(self):
+        response = ask_apiai('Help')
+        self.assertEqual(response,'Crowbot is here for your service! Ask me course related questions, '
+                                  'like what semester a course is taught, exam dates, examination support, '
+                                  'coursecredit, professors name and email address and '
+                                  'recommended/required previous knowledge. '
+                                  'E.g. "When is the exam in *coursecode*?", '
+                                  '"What is the name of the professor in *coursecode*?" and '
+                                  '"What recommended previous knowledge is there in *coursecode*?"')
+
+    # test understandable input from user
+    def test_ask_apiai_correct(self):
+        response = ask_apiai('When is the exam date in EXPH0004?')
+        self.assertEqual(response,'Exam date for EXPH0004 Examen philosophicum for Science and Technology is 27/05/2017')
+
+
+            #skriv "coverage run --source='.' manage.py test myapp" i fil directiory hvor manage.py ligger
 #skriv så coverage report for å få prosenter
