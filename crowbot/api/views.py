@@ -2,7 +2,7 @@ import json
 
 from django.utils import timezone as tz
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 
@@ -51,10 +51,7 @@ def respond_to_message(request):
     return HttpResponse(json.dumps(res_data), content_type="application/json")
 
 def questions_for_course(request, course_code):
-    questions = [
-        {'text': 'må jeg ta eksamen hvis jeg ikke har lyst?',
-         'datetime': tz.now()},
-        {'text': 'er det lov å koke???',
-         'datetime': tz.now()},
-    ]
-    return HttpResponse(json.dumps(questions, cls=serializers.json.DjangoJSONEncoder), content_type='application/json')
+    questions = Question.objects.all().values('text', 'creation_datetime')
+    for q in questions:
+        q['datetime'] = str(q.pop('creation_datetime'))
+    return HttpResponse(json.dumps(list(questions), cls=serializers.json.DjangoJSONEncoder), content_type='application/json')
