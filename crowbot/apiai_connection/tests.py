@@ -30,12 +30,24 @@ class TestCrowbotChat(TestCase):
                               location='Trondheim',
                               semester='Autumn and Spring',teacher_name='Bjørn-Ove Fimland',teacher_email='bjorn.fimland@ntnu.no',ects_credits=7.50)
 
-#test course with nothing saved in database except required prev knowledge
+#test courses with different attributtes, almost nothing, saved in database except required prev knowledge
         Course.objects.create(code='YRT5678',name='Tulle Emne',
                               recommended_previous_knowledge='', required_previous_knowledge='YRT6789 Tulle Emne 0,5',
                               exam_date=None,exam_support_code='',exam_support_name='',
                               location='',semester='',teacher_name='',
                               teacher_email='',ects_credits=None)
+
+        Course.objects.create(code='YRT6789',name='Tulle Emne 0,5',
+                              recommended_previous_knowledge='', required_previous_knowledge='',
+                              exam_date=None,exam_support_code='D',exam_support_name='',
+                              location='',semester='',teacher_name='Tulla Fisher',
+                              teacher_email='',ects_credits=None)
+
+        Course.objects.create(code='YRT1234',name='Tulle Emne 2',
+                              recommended_previous_knowledge='', required_previous_knowledge='',
+                              exam_date=None,exam_support_code='',exam_support_name='Just yourself.',
+                              location='',semester='',teacher_name='',
+                              teacher_email='tullekopp@ntnu.no',ects_credits=None)
 
 
 
@@ -224,9 +236,20 @@ class TestCrowbotChat(TestCase):
         output = user_request(response)
         self.assertEqual(output, 'No information about the professors email in YRT5678 Tulle Emne')
 
-    #TODO: test for course with teacher name, but no teacher email
+    #test for course with teacher name, but no teacher email
+    def test_user_request_professor_mail_no_mail(self):
+        query = 'How can I reach the professor in YRT6789?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output, "No information about Tulla Fisher's email in YRT6789 Tulle Emne 0,5")
 
-    #TODO: test for course with no teacher name, but teacher email
+    #test for course with no teacher name, but teacher email
+    def test_user_request_professor_mail_no_name(self):
+        query = 'How can I reach the professor in YRT1234?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output, 'You can reach the professor in YRT1234 Tulle Emne 2 at tullekopp@ntnu.no')
+
 
 
     #test for course with semester info
@@ -258,9 +281,21 @@ class TestCrowbotChat(TestCase):
         output = user_request(response)
         self.assertEqual(output, 'No information about examination support in TDT4140 Software Engineering')
 
-    #TODO: test course with exam support code, but no exam support name
+    #test course with exam support code, but no exam support name
+    def test_user_request_exam_aids_no_name(self):
+        query = 'What exam aids is permitted in YRT6789?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output, 'Examination support materials for YRT6789 Tulle Emne 0,5 is code D')
 
-    #TODO: test course with exam support name, but no exam support code
+    #test course with exam support name, but no exam support code
+    def test_user_request_exam_aids_no_code(self):
+        query = 'What exam aids is permitted in YRT1234?'
+        response = self.load_text_request_with_query(query)
+        output = user_request(response)
+        self.assertEqual(output, 'Examination support materials for YRT1234 Tulle Emne 2 is: Just yourself.')
+
+
 
     #test course with needed prev knowledge stored
     def test_user_request_needed_knowledge(self):
