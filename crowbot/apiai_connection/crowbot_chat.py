@@ -146,7 +146,7 @@ def semester_taught(course, response, code, name):
     # print(response["result"]["fulfillment"]["speech"])
     # real response
     if not semester:
-        return("No information about semesters in".format(code, name))
+        return("No information about semesters in {:s} {:s}".format(code, name))
     return("{:s} {:s} is taught in the {:s}".format(code, name, semester))
 
 
