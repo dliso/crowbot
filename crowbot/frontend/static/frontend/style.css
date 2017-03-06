@@ -80,6 +80,23 @@ header img {
     flex 1 1 auto;
 }
 
+.question-list, #question-queue {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+
+    overflow-y: auto;
+}
+
+.question-item, #question-queue li {
+    border-bottom: 1px solid #c00000;
+}
+
+.timestamp {
+    font-size: 0.7em;
+}
+
 .message-box {
     list-style: none;
     margin: 0;
