@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 
-from backend.models import Course
+from backend.models import Course, Question
 
 from apiai_connection import crowbot_chat
 
@@ -25,6 +25,10 @@ def add_course(request):
     else:
         return HttpResponse('Send POST requests here to add courses to the database.')
 
+def add_question(question):
+    q = Question(text=question)
+    q.save()
+
 @csrf_exempt
 def respond_to_message(request):
     print(request)
@@ -37,8 +41,13 @@ def respond_to_message(request):
         res += str(crowbot_chat.ask_apiai(request.GET['q']))
     if request.method == 'POST':
         res += 'POST request received'
+        req_body = request.POST['body']
         res_data = {}
-        res_data['body'] = str(crowbot_chat.ask_apiai(request.POST['body']))
+        if req_body[0] == '!':
+            add_question(req_body[1:])
+            res_data['body'] = 'Your question was added to the manual review queue.'
+        else:
+            res_data['body'] = str(crowbot_chat.ask_apiai(req_body))
     return HttpResponse(json.dumps(res_data), content_type="application/json")
 
 def questions_for_course(request, course_code):
