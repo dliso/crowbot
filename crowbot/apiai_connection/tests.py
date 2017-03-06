@@ -65,7 +65,7 @@ class TestCrowbotChat(TestCase):
         query = 'How much credit do I get in tdt4105?'
         response = self.load_text_request_with_query(query)
         #result = response['result']
-        code = response['result']['parameters']['course'''].upper()
+        code = response['result']['parameters']['course'].upper()
         self.assertEqual(code, 'TDT4105')
         #self.assertEqual(course.ects_credits, 7.50)
 
