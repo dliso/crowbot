@@ -40,3 +40,12 @@ def respond_to_message(request):
         res_data = {}
         res_data['body'] = str(crowbot_chat.ask_apiai(request.POST['body']))
     return HttpResponse(json.dumps(res_data), content_type="application/json")
+
+def questions_for_course(request, course_code):
+    questions = [
+        {'text': 'må jeg ta eksamen hvis jeg ikke har lyst?',
+         'datetime': tz.now()},
+        {'text': 'er det lov å koke???',
+         'datetime': tz.now()},
+    ]
+    return HttpResponse(json.dumps(questions, cls=serializers.json.DjangoJSONEncoder), content_type='application/json')
