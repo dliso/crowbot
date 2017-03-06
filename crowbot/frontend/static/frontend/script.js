@@ -114,16 +114,7 @@ $( document).ready(function(){
         }
     });
 
-    // Add questions to a list
-    // Spørsmål-API-rute: /api/question_queue/fagkode
-    // Eks.: /api/question_queue/tma4100
 
-    //var course_code = ????;
-
-
-
-    //skirve funksjon som finner lista i html $, (message queue),
-    //ber om data fra servern, bruker forrige funksjon til å legge til i lista
 
 
     questionList = $("#question-queue");
@@ -136,7 +127,8 @@ $( document).ready(function(){
     function makeListItem(question, datetime) {
         return "<li>" + "Question: " + question  + " Time: " + datetime + "</li>"
     }
-  var q_list_root = '/api/question_queue';
+
+    var q_list_root = '/api/question_queue';
 
     function addQuestionsToList(course_code){
         $.ajax({
