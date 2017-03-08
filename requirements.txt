@@ -1,2 +1,10 @@
+apiai==1.2.3
+appdirs==1.4.0
 Django==1.10.5
+numpy==1.12.0
+packaging==16.8
+psycopg2==2.6.2
+pyparsing==2.1.10
 requests==2.11.1
+six==1.10.0
+virtualenv==15.0.3
