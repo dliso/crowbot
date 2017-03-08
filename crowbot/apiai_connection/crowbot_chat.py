@@ -134,7 +134,7 @@ def professor_mail(course, response, code, name):
             return('No information about the professors email in {:s} {:s}'.format(code, name))
         return ('You can reach the professor in {:s} {:s} at {:s}'.format(code, name, teacher_mail))
     if not teacher_mail:
-        return ('No information about {:s} email in {:s} {:s}'.format(teacher_name,code, name))
+        return ("No information about {:s}'s email in {:s} {:s}".format(teacher_name,code, name))
     return("{:s} {:s} is taught by {:s}. They can be reached at {:s}"
            .format(code, name, teacher_name, teacher_mail))
 
@@ -146,7 +146,7 @@ def semester_taught(course, response, code, name):
     # print(response["result"]["fulfillment"]["speech"])
     # real response
     if not semester:
-        return("No information about semesters in".format(code, name))
+        return("No information about semesters in {:s} {:s}".format(code, name))
     return("{:s} {:s} is taught in the {:s}".format(code, name, semester))
 
 
@@ -160,7 +160,7 @@ def exam_aids(course, response, code, name):
     if not exam_support_code:
         if not exam_support_name:
             return("No information about examination support in {:s} {:s}".format(code, name))
-        return ('Examination support materials for {:s} {:s} is {:s}'.format(code, name, exam_support_name))
+        return ('Examination support materials for {:s} {:s} is: {:s}'.format(code, name, exam_support_name))
     if not exam_support_name:
         return ('Examination support materials for {:s} {:s} is code {:s}'.format(code, name, exam_support_code))
     return("Exam support materials for {:s} {:s} is code {:s}: {:s}"
