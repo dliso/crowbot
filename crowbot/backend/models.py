@@ -60,7 +60,7 @@ class Question(models.Model):
     text = models.TextField()
 
     def __str__(self):
-        return string((self.creation_datetime, self.text))
+        return str((self.creation_datetime, self.text))
 
 class Answer(models.Model):
     """
