@@ -1,0 +1,149 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #c00000;
+    font-family: 'Noto Sans', sans;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 3px;
+    font-family: 'Noto Serif', serif;
+}
+
+header {
+    background: white;
+    border-bottom: 2px solid #c00000;
+    width: 100%;
+    box-shadow: 0 0 5px 5px rgba(0,0,0,0.2);
+    align-items: center;
+}
+
+header h1 {
+    display: inline-block;
+}
+
+header img {
+    height: 4em;
+    padding: 9px;
+}
+
+.content-column {
+    background: white;
+    width: 100%;
+    max-width: 60em;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.flex-container {
+    display: flex;
+    overflow: hidden;
+}
+
+.flex-column {
+    flex-direction: column;
+    align-items: center;
+}
+
+.flex-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.f-just-start {
+    justify-content: flex-start;
+}
+
+.bg-white {
+    background: white;
+}
+
+.border-left {
+    border-left: 1px solid #c00000;
+}
+
+.dont-flex {
+    flex: 0 0 auto;
+}
+
+.do-flex {
+    flex 1 1 auto;
+}
+
+.question-list, #question-queue {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+
+    overflow-y: auto;
+}
+
+.question-item, #question-queue li {
+    border-bottom: 1px solid #c00000;
+    padding: 3px;
+}
+
+.timestamp {
+    font-size: 0.7em;
+}
+
+.message-box {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+
+    overflow-y: auto;
+}
+
+.message-form {
+    border-top: 1px solid #c00000;
+    width: 100%;
+}
+
+.input-field {
+    width: 98%;
+    border: none;
+    font: inherit;
+    resize: none;
+    padding: 5px;
+    overflow-y: auto;
+}
+
+.message {
+    margin: 5px;
+    padding: 3px;
+    border-radius: 7px;
+}
+
+.bot-msg {
+    margin-right: 45px;
+    background: #c00000;
+    color: white;
+}
+
+.user-msg {
+    margin-left: 45px;
+    border-color: blue;
+    background: lightgrey;
+}
+
+.min-height-5em {
+    min-height: 5em;
+}
+
+.flex-backwards {
+    justify-content: flex-end;
+}

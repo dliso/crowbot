@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Crowbot</title>
+        <meta name="author" content="Crow Crew">
+        <meta name="description" content="description here">
+        <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Roboto|Noto+Serif|Noto+Sans' type='text/css'>
+        <link rel='stylesheet' href="{% static 'frontend/style.css' %}" type='text/css'>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="{% static 'frontend/script.js' %}"></script>
+    </head>
+
+    <body class="flex-container flex-column">
+
+        <header class="flex-container">
+            <img alt="" src="{% static 'frontend/crowbot.png' %}"/>
+            <h1>Crowbot</h1>
+        </header>
+
+        <div class="content-column flex-container flex-row full-height full-width">
+            <div class="flex-container flex-column full-width full-height flex-backwards">
+
+                <ul class="do-flex message-box" id="message-box">
+                    <li class="message bot-msg">Hi! Welcome to Crowbot!</li>
+                </ul>
+
+                <form id="message-form" action=""
+                      class="dont-flex message-form min-height-5em">
+                    <textarea id="user-input" name="input-field" type="textarea" value=""
+                              placeholder="Ask Crowbot something"
+                              class="input-field"></textarea>
+                </form>
+
+            </div>
+            <div class="f-just-start full-height full-width bg-white border-left">
+                <h3>Pending questions</h6>
+                <ul id="question-queue">
+                </ul>
+            </div>
+        </div>
+
+    </body>
+
+</html>

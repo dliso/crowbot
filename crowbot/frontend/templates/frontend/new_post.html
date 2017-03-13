@@ -1,0 +1,5 @@
+<h1>Ask Crowbot</h1>
+<form action="{% url 'frontend:submit' %}" method="post">
+    {% csrf_token %}
+    <input name="user_query" type="text" placeholder="Ask Crowbot"/>
+</form>

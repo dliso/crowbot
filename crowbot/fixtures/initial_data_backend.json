@@ -1,0 +1,1 @@
+[{"model": "backend.course", "pk": 1, "fields": {"code": "TDT4140", "name": "", "year": "2017-02-15", "exam_date": "2017-02-15", "exam_aids_code": "", "exam_aids_name": "", "location": "", "semester": ""}}]
