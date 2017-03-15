@@ -12,7 +12,11 @@ class ListManager {
     }
 
     addListItemWithTimeAndUser(text, datetime, usertype, username, cssClasses) {
-        var subtext = "Answer by " + usertype + " " + username + "  [" + datetime + "]";
+        if (username == "Crowbot"){
+            var subtext = "Answer by " + username;
+        }else{
+            var subtext = "Answer by " + usertype + " " + username + "  [" + datetime + "]";
+        }
         var listItem = $('<li/>')
             .append($('<div/>', {text: text}))
             .append($('<div/>', {text: subtext}).css('font-size', '10px'));
@@ -129,14 +133,13 @@ $( document).ready(function(){
         }).then(function(data){
             console.log(data);
             var output = data.body;
-            var usertype = data.usertype;
-            var username = data.username;
             console.log(output);
             message = randomBirdSound() + ' ' + output;
             if (message.slice(-1) != '.') {
                 message += '.';
             }
-            msgListManager.addListItemWithTimeAndUser(text,datetime,usertype,username, ['bot-msg', 'message']);
+            //msgListManager.addTextToList(message, ['bot-msg', 'message']);
+            msgListManager.addListItemWithTimeAndUser(message,data.datetime,data.usertype,data.username, ['bot-msg', 'message']);
             updateScroll(msgBox);
         });
         //preventDefault prevents the site from updating. I think.
