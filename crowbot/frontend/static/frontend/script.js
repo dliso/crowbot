@@ -94,7 +94,8 @@ $( document).ready(function(){
             var output = data.body;
             console.log(output);
             message = randomBirdSound() + ' ' + output;
-            if (message.slice(-1) != '.') {
+            var lastchar = message.slice(-1);
+            if (lastchar != "." || lastchar != "!" || lastchar != "?") {
                 message += '.';
             }
             addMessage(message, 'bot');
