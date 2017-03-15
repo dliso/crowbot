@@ -4,7 +4,7 @@ import json
 # Create your tests here.
 
 
-class ViewTests(TestCase):
+class BackendViewTests(TestCase):
     def test_index_view_status_code(self):
         response = self.client.get(reverse('backend:index'))
         self.assertEqual(response.status_code, 200)
