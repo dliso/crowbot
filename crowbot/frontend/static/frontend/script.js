@@ -11,11 +11,11 @@ class ListManager {
         this.list.append(li)
     }
 
-    addListItemWithTimeAndUser(text, datetime, usertype, username, cssClasses) {
+    addListItemWithTimeAndUser(text, usertype, username, timestamp, cssClasses) {
         if (username == "Crowbot"){
-            var subtext = "Answer by " + username;
+            var subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
         }else{
-            var subtext = "Answer by " + usertype + " " + username + "  [" + datetime + "]";
+            var subtext = "Answer by " + usertype + " " + username + " [" + timestamp.substring(0,10) + " " + timestamp.substring(11,16) + "]";
         }
         var listItem = $('<li/>')
             .append($('<div/>', {text: text}))
@@ -133,13 +133,13 @@ $( document).ready(function(){
         }).then(function(data){
             console.log(data);
             var output = data.body;
-            console.log(output);
+            console.log(data.datetime);
             message = randomBirdSound() + ' ' + output;
             if (message.slice(-1) != '.') {
                 message += '.';
             }
             //msgListManager.addTextToList(message, ['bot-msg', 'message']);
-            msgListManager.addListItemWithTimeAndUser(message,data.datetime,data.usertype,data.username, ['bot-msg', 'message']);
+            msgListManager.addListItemWithTimeAndUser(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
             updateScroll(msgBox);
         });
         //preventDefault prevents the site from updating. I think.
@@ -188,8 +188,5 @@ $( document).ready(function(){
 
     questionList2 = new ListManager($("#question-queue"));
     questionList2.addTextToList("hei",["bot-msg","test", "message"]);
-    questionList2.addListItemWithTimeAndUser("Exam date for TMA4100 Calculus 1 is 20/12/2016.", "15.03.17 10.34", "bot", "Crowbot", ["bot-msg","test", "message"]);
-    //questionList2.addListItemToList(item, ["bot-msg","test", "message"]);
-    questionList2.addListItemWithTimeAndUser("The textbook for this course is 'Introduction to qwertyuiop'.", "15.03.17 10.34", "instructor", "Ola Nordmann",["bot-msg","test", "message"]);
-    //questionList2.addListItemToList(item, ["bot-msg","test", "message"]);
+
 });
