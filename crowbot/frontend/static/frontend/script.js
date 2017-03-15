@@ -14,17 +14,29 @@ class ListManager {
     addListItemWithTimeAndUser(text, usertype, username, timestamp, cssClasses) {
         if (username == "Crowbot") {
             var subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
+            var task = "play";
         }else{
             var subtext = "Answer by " + usertype + " " + username + " [" + timestamp.substring(0,10) + " " + timestamp.substring(11,16) + "]";
+            var task = "stop";
         }
         var listItem = $('<li/>')
             .append($('<div/>', {text: text}))
             .append($('<div/>', {text: subtext}).css('font-size', '10px'));
         var li = listItem.addClass(cssClasses.join(" ")); // lager liste-element med klasser.
         $(".crowsound").trigger('load');
-        $(".crowsound").trigger('play');
+        this.play_audio(task);
         this.list.append(li);
    }
+
+    play_audio(task) {
+      if(task == 'play'){
+           $(".crowsound").trigger('play');
+      }
+      if(task == 'stop'){
+           $(".crowsound").trigger('pause');
+           $(".crowsound").prop("currentTime",0);
+      }
+ }
 
     addListItemToList(content, cssClasses){ //cssClasses er ei liste.
         var li = content.addClass(cssClasses.join(" ")); // lager liste-element med klasser.
@@ -135,9 +147,11 @@ $( document).ready(function(){
         }).then(function(data){
             console.log(data);
             var output = data.body;
-            console.log(data.datetime);
+            console.log(data.output);
             message = randomBirdSound() + ' ' + output;
-            if (message.slice(-1) != '.' || message.slice(-1) != '!') {
+            var lastchar = message.slice(-1);
+            console.log(lastchar);
+            if (lastchar != "." || lastchar != "!" || lastchar != "?") {
                 message += '.';
             }
             //msgListManager.addTextToList(message, ['bot-msg', 'message']);
