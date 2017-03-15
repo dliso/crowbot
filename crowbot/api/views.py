@@ -56,7 +56,7 @@ def respond_to_message(request):
             res_data['username'] = 'Crowbot'
             res_data['body'] = 'beep boop boop boop'
         elif req_body == 'test prof':
-            res_data['usertype'] = 'professor'
+            res_data['usertype'] = 'instructor'
             res_data['username'] = 'Dr. Crowbot'
             res_data['body'] = 'Slik ser et professor-svar ut.'
             res_data['timestamp'] = tz.now()
