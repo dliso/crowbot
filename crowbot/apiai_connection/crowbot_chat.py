@@ -1,16 +1,12 @@
-# API.AI Example
-# This example shows how API.AI can be used to process requests
-# The connected bot will recognize requests for news, and will output the requested action and topic
-# Feel free to insert your own client access token to connect your own bot
-# Author: Audun Liberg
 
 from django.conf import settings
 #settings.configure()
-import sys, json, codecs, apiai
+import sys, json, codecs, apiai, re
 import requests
 import django
 django.setup()
-from backend.models import Course
+from backend.models import Course, Question
+
 
 
 
@@ -202,6 +198,22 @@ def ask_apiai(text):
         return crowbot_answer(response)
     elif response["result"]["metadata"]["intentName"] == "Default Fallback Intent":
         #legge til spørsmål i Questions modell
+        question = response["result"]["resolvedQuery"]
+        words = re.compile('\w+').findall(question)
+        code = ''
+        for word in words:
+            # antagelse om at alle emnekoder begynner med bokstaver og slutter med tall
+            # og at bruker bare skriver inn en emnekode i hver "spørring"
+            if re.search('[ÆæØøÅåa-zA-Z]'+'[0-9]', word):
+                code = word.upper()
+                break
+        try:
+            course = Course.objects.get(code=code)
+            Question.objects.create(text=question, course=course)
+
+        except django.core.exceptions.ObjectDoesNotExist:
+            return crowbot_answer(response)
+
         return crowbot_answer(response)
     elif response["result"]["metadata"]["intentName"] == "Default Help Intent":
         return crowbot_answer(response)
