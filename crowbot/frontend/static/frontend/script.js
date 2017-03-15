@@ -21,6 +21,8 @@ class ListManager {
             .append($('<div/>', {text: text}))
             .append($('<div/>', {text: subtext}).css('font-size', '10px'));
         var li = listItem.addClass(cssClasses.join(" ")); // lager liste-element med klasser.
+        $(".crowsound").trigger('load');
+        $(".crowsound").trigger('play');
         this.list.append(li);
    }
 
@@ -135,7 +137,7 @@ $( document).ready(function(){
             var output = data.body;
             console.log(data.datetime);
             message = randomBirdSound() + ' ' + output;
-            if (message.slice(-1) != '.') {
+            if (message.slice(-1) != '.' || message.slice(-1) != '!') {
                 message += '.';
             }
             //msgListManager.addTextToList(message, ['bot-msg', 'message']);
