@@ -11,6 +11,8 @@ from backend.models import Course, Question
 from apiai_connection import crowbot_chat
 
 # Create your views here.
+json_dump = lambda data: json.dumps(data, cls=serializers.json.DjangoJSONEncoder)
+
 
 @csrf_exempt
 def add_course(request):
@@ -49,28 +51,31 @@ def respond_to_message(request):
         if req_body[0] == '!':
             add_question(req_body[1:])
             res_data['body'] = 'Your question was added to the manual review queue.'
-        elif req_body == 'test bot message':
+        elif req_body == 'test bot':
             res_data['usertype'] = 'bot'
             res_data['username'] = 'Crowbot'
             res_data['body'] = 'beep boop boop boop'
-        elif req_body == 'test prof message':
+        elif req_body == 'test prof':
             res_data['usertype'] = 'professor'
             res_data['username'] = 'Dr. Crowbot'
             res_data['body'] = 'Slik ser et professor-svar ut.'
-        elif req_body == 'test student message':
+            res_data['timestamp'] = tz.now()
+        elif req_body == 'test student':
             res_data['usertype'] = 'student'
             res_data['username'] = 'Testleif'
             res_data['body'] = 'bla bla bla'
-        elif req_body == 'test anon message':
+            res_data['timestamp'] = tz.now()
+        elif req_body == 'test anon':
             res_data['usertype'] = ''
             res_data['username'] = ''
             res_data['body'] = 'jeg tør ikke oppgi navnet mitt'
+            res_data['timestamp'] = tz.now()
         else:
             res_data['body'] = str(crowbot_chat.ask_apiai(req_body))
-    return HttpResponse(json.dumps(res_data), content_type="application/json")
+    return HttpResponse(json_dump(res_data), content_type="application/json")
 
 def questions_for_course(request, course_code):
     questions = Question.objects.all().values('text', 'creation_datetime')
     for q in questions:
         q['datetime'] = str(q.pop('creation_datetime'))
-    return HttpResponse(json.dumps(list(questions), cls=serializers.json.DjangoJSONEncoder), content_type='application/json')
+    return HttpResponse(json_dump(list(questions)), content_type='application/json')
