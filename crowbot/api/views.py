@@ -67,7 +67,7 @@ def respond_to_message(request):
             res_data['timestamp'] = tz.now()
         elif req_body == 'test anon':
             res_data['usertype'] = ''
-            res_data['username'] = ''
+            res_data['username'] = 'Unknown'
             res_data['body'] = 'jeg tør ikke oppgi navnet mitt'
             res_data['timestamp'] = tz.now()
         else:

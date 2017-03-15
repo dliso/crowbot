@@ -12,7 +12,7 @@ class ListManager {
     }
 
     addListItemWithTimeAndUser(text, usertype, username, timestamp, cssClasses) {
-        if (username == "Crowbot"){
+        if (username == "Crowbot") {
             var subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
         }else{
             var subtext = "Answer by " + usertype + " " + username + " [" + timestamp.substring(0,10) + " " + timestamp.substring(11,16) + "]";
