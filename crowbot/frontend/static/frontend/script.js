@@ -6,10 +6,25 @@ class ListManager {
         this.list = listID;
     }
 
-    addItem(content, cssClasses){ //cssClasses er ei liste.
+    addTextToList(content, cssClasses){ //cssClasses er ei liste.
         var li = $("<li/>").text(content).addClass(cssClasses.join(" ")); // lager liste-element med klasser.
         this.list.append(li)
     }
+
+    addListItemWithTimeAndUser(text, datetime, usertype, username, cssClasses) {
+        var subtext = "Answer by " + usertype + " " + username + "  [" + datetime + "]";
+        var listItem = $('<li/>')
+            .append($('<div/>', {text: text}))
+            .append($('<div/>', {text: subtext}).css('font-size', '10px'));
+        var li = listItem.addClass(cssClasses.join(" ")); // lager liste-element med klasser.
+        this.list.append(li);
+   }
+
+    addListItemToList(content, cssClasses){ //cssClasses er ei liste.
+        var li = content.addClass(cssClasses.join(" ")); // lager liste-element med klasser.
+        this.list.append(li);
+    }
+
 }
 
 let birdSounds = [
@@ -98,7 +113,7 @@ $( document).ready(function(){
         //Finds user input and appends it
         var input = $( "#user-input").val();
         //input_html = "<li class='message user-msg'>" + input + "</li>"; // Jeg kommenterte denne ut fordi det virker ikke som den brukes.
-        msgListManager.addItem(input, ['user-msg', 'message']);
+        msgListManager.addTextToList(input, ['user-msg', 'message']);
         updateScroll(msgBox);
 
         root = '/api/ask_question';
@@ -114,12 +129,14 @@ $( document).ready(function(){
         }).then(function(data){
             console.log(data);
             var output = data.body;
+            var usertype = data.usertype;
+            var username = data.username;
             console.log(output);
             message = randomBirdSound() + ' ' + output;
             if (message.slice(-1) != '.') {
                 message += '.';
             }
-            msgListManager.addItem(message, ['bot-msg', 'message']);
+            msgListManager.addListItemWithTimeAndUser(text,datetime,usertype,username, ['bot-msg', 'message']);
             updateScroll(msgBox);
         });
         //preventDefault prevents the site from updating. I think.
@@ -159,7 +176,7 @@ $( document).ready(function(){
         }).then(function(questions){
             for (q of questions){
                 var content = questionQueueString(q.datetime, q.text);
-                qListManager.addItem(content, []);
+                qListManager.addTextToList(content, []);
             }
         });
     }
@@ -167,6 +184,9 @@ $( document).ready(function(){
     addQuestionsToList("TDT4100");
 
     questionList2 = new ListManager($("#question-queue"));
-    questionList2.addItem("hei",["bot-msg","test", "message"]);
-
+    questionList2.addTextToList("hei",["bot-msg","test", "message"]);
+    questionList2.addListItemWithTimeAndUser("Exam date for TMA4100 Calculus 1 is 20/12/2016.", "15.03.17 10.34", "bot", "Crowbot", ["bot-msg","test", "message"]);
+    //questionList2.addListItemToList(item, ["bot-msg","test", "message"]);
+    questionList2.addListItemWithTimeAndUser("The textbook for this course is 'Introduction to qwertyuiop'.", "15.03.17 10.34", "instructor", "Ola Nordmann",["bot-msg","test", "message"]);
+    //questionList2.addListItemToList(item, ["bot-msg","test", "message"]);
 });
