@@ -1,5 +1,17 @@
 // This file is loaded and executed when the main Crowbot page is opened.
 
+class ListManager {
+
+    constructor(listID){  //f.eks question-queue
+        this.list = listID;
+    }
+
+    addItem(content, cssClasses){ //cssClasses er ei liste.
+        var li = $("<li/>").text(content).addClass(cssClasses.join(" ")); // lager liste-element med klasser.
+        this.list.append(li)
+    }
+}
+
 let birdSounds = [
     'Caw caw!',
     'Squawk!',
@@ -55,28 +67,39 @@ $( document).ready(function(){
         console.log(data)
     });
 
+    /* // Jeg erstattet denne funkjsonen med en som tar inn msgBox som parameter. Begge funker likt.
     msgBox = document.getElementById("message-box");
     function updateScroll() {
         msgBox.scrollTop = msgBox.scrollHeight;
     }
+    */
 
-    msgList = $("#message-box");
-    function addMessage(msg, botOrUser) {
+    msgBox = document.getElementById("message-box");
+
+    function updateScroll(element) {
+        element.scrollTop = element.scrollHeight;
+    }
+
+
+/*    msgList = $("#message-box");
+    function addMessage(msg, botOrUser) { // Jeg erstattet denne funkjsonen med den i klassen ListManager
         msgList.append(
             $(`<li>${msg}</li>`)
                 .addClass(botOrUser === 'bot' ? 'bot-msg' : 'user-msg')
                 .addClass('message')
         );
-    }
+    }*/
+
+    msgListManager = new ListManager($("#message-box"));
 
     //When a user writes in the box and clicks send, the user input is appended to the list
     $( "#message-form" ).submit(function( event ) {
 
         //Finds user input and appends it
         var input = $( "#user-input").val();
-        input_html = "<li class='message user-msg'>" + input + "</li>";
-        addMessage(input, 'user');
-        updateScroll();
+        //input_html = "<li class='message user-msg'>" + input + "</li>"; // Jeg kommenterte denne ut fordi det virker ikke som den brukes.
+        msgListManager.addItem(input, ['user-msg', 'message']);
+        updateScroll(msgBox);
 
         root = '/api/ask_question';
 
@@ -90,16 +113,14 @@ $( document).ready(function(){
         //Gets the input back and appends it to the list
         }).then(function(data){
             console.log(data);
-            //var data = JSON.parse(data);
             var output = data.body;
             console.log(output);
             message = randomBirdSound() + ' ' + output;
             if (message.slice(-1) != '.') {
                 message += '.';
             }
-            addMessage(message, 'bot');
-            // $( "#message-box").append("<li class='message bot-msg'>" + randomBirdSound() + ' ' + output + "</li>");
-            updateScroll();
+            msgListManager.addItem(message, ['bot-msg', 'message']);
+            updateScroll(msgBox);
         });
         //preventDefault prevents the site from updating. I think.
         event.preventDefault();
@@ -114,18 +135,18 @@ $( document).ready(function(){
         }
     });
 
+    qListManager = new ListManager($("#question-queue"));
 
-
-
-    questionList = $("#question-queue");
+    /*questionList = $("#question-queue");
     function addQuestion(question) {
         questionList.append(
             $(question)
         );
-    }
+    }*/
 
-    function makeListItem(question, datetime) {
-        return "<li>" + "Question: " + question  + " Time: " + datetime + "</li>"
+    function questionQueueString(datetime, question) {
+        //return "<li>" + "Question: " + question  + " Time: " + datetime + "</li>"
+        return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "] " + question;
     }
 
     var q_list_root = '/api/question_queue';
@@ -137,14 +158,15 @@ $( document).ready(function(){
             method: "GET"
         }).then(function(questions){
             for (q of questions){
-                addQuestion(
-                    makeListItem(q.text, q.datetime)
-                );
+                var content = questionQueueString(q.datetime, q.text);
+                qListManager.addItem(content, []);
             }
         });
     }
 
     addQuestionsToList("TDT4100");
 
+    questionList2 = new ListManager($("#question-queue"));
+    questionList2.addItem("hei",["bot-msg","test", "message"]);
 
 });
