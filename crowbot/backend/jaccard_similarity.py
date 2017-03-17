@@ -2,7 +2,7 @@ from nltk.corpus import wordnet
 import nltk
 import string
 
-def jaccard_similarity(statement, other_statement, threshold=0.7):
+def jaccard_similarity(lemmas1, lemmas2, threshold=0.7):
     """
     Calculates the similarity of two statements based on the Jaccard index.
 
@@ -27,39 +27,9 @@ def jaccard_similarity(statement, other_statement, threshold=0.7):
 
     .. _`Jaccard similarity index`: https://en.wikipedia.org/wiki/Jaccard_index
     """
-
-
-    a = statement.lower()
-    b = other_statement.lower()
-    # Get default English stopwords and extend with punctuation
-    stopwords = nltk.corpus.stopwords.words('english')
-    stopwords.extend(string.punctuation)
-    stopwords.append('')
-    lemmatizer = nltk.stem.wordnet.WordNetLemmatizer()
-
-    def get_wordnet_pos(pos_tag):
-        if pos_tag[1].startswith('J'):
-            return (pos_tag[0], wordnet.ADJ)
-        elif pos_tag[1].startswith('V'):
-            return (pos_tag[0], wordnet.VERB)
-        elif pos_tag[1].startswith('N'):
-            return (pos_tag[0], wordnet.NOUN)
-        elif pos_tag[1].startswith('R'):
-            return (pos_tag[0], wordnet.ADV)
-        else:
-            return (pos_tag[0], wordnet.NOUN)
-
-    ratio = 0
-    pos_a = map(get_wordnet_pos, nltk.pos_tag(nltk.tokenize.word_tokenize(a)))
-    pos_b = map(get_wordnet_pos, nltk.pos_tag(nltk.tokenize.word_tokenize(b)))
-    lemma_a = [lemmatizer.lemmatize(token.strip(string.punctuation), pos) for token, pos in pos_a
-               if pos == wordnet.NOUN and token.strip(string.punctuation) not in stopwords]
-    lemma_b = [lemmatizer.lemmatize(token.strip(string.punctuation), pos) for token, pos in pos_b
-               if pos == wordnet.NOUN and token.strip(string.punctuation) not in stopwords]
-
     # Calculate Jaccard similarity
     try:
-        ratio = len(set(lemma_a).intersection(lemma_b)) / float(len(set(lemma_a).union(lemma_b)))
+        ratio = len(set(lemmas1).intersection(lemmas2)) / float(len(set(lemmas1).union(lemmas2)))
     except Exception as e:
         print('Error', e)
     return [ratio >= threshold, ratio]
