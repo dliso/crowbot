@@ -94,9 +94,6 @@ $( document).ready(function(){
             var output = data.body;
             console.log(output);
             message = randomBirdSound() + ' ' + output;
-            if (message.slice(-1) != '.') {
-                message += '.';
-            }
             addMessage(message, 'bot');
             // $( "#message-box").append("<li class='message bot-msg'>" + randomBirdSound() + ' ' + output + "</li>");
             updateScroll();
