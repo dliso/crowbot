@@ -156,10 +156,10 @@ def exam_aids(course, response, code, name):
     if not exam_support_code:
         if not exam_support_name:
             return("No information about examination support in {:s} {:s}.".format(code, name))
-        return ('Examination support materials for {:s} {:s} is: {:s}.'.format(code, name, exam_support_name))
+        return ('Examination support materials for {:s} {:s} is: {:s}'.format(code, name, exam_support_name))
     if not exam_support_name:
         return ('Examination support materials for {:s} {:s} is code {:s}.'.format(code, name, exam_support_code))
-    return("Exam support materials for {:s} {:s} is code {:s}: {:s}."
+    return("Exam support materials for {:s} {:s} is code {:s}: {:s}"
            .format(code, name, exam_support_code, exam_support_name))
 
 
@@ -171,7 +171,7 @@ def needed_previous_knowledge(course, response, code, name):
     # real response
     if not required_previous_knowledge:
         return('No information about required previous knowledge in {:s} {:s}.'.format(code, name))
-    return("Required previous knowledge is: {:s}.".format(required_previous_knowledge))
+    return("Required previous knowledge is: {:s}".format(required_previous_knowledge))
 
 
 # function to find recommended previous knowledge
@@ -182,7 +182,7 @@ def recommended_previous_knowledge(course, response, code, name):
     # real response
     if not recommended_previous_knowledge:
         return("No information about recommended previous knowledge for {:s} {:s}.".format(code, name))
-    return("Recommended previous knowledge for {:s} {:s} is: {:s}."
+    return("Recommended previous knowledge for {:s} {:s} is: {:s}"
            .format(code, name, recommended_previous_knowledge))
 
 
