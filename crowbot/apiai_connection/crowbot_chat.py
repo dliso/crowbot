@@ -224,7 +224,7 @@ def ask_apiai(text):
                 return crowbot_answer(response)
             else:
                 print(Question.objects.all())
-                return ("Similar question detected:",q)
+                return ("Similar question detected:",similar_question)
                 #noe med at svaret til similar question presenteres for bruker
 
         except django.core.exceptions.ObjectDoesNotExist:
