@@ -61,7 +61,7 @@ def user_request(response):
             return(recommended_previous_knowledge(course, response, code, name))
     except django.core.exceptions.ObjectDoesNotExist:
     #if no code matches
-        return("No course with code {:s}".format(code))
+        return("No course with code {:s}.".format(code))
 
     #just test prints
     # print("Course:",code)
@@ -79,8 +79,8 @@ def credit(course, response, code, name):
     # real response
     credit = course.ects_credits
     if credit == None:
-        return('No information about credits in this course, {:s} {:s}'.format(code, name))
-    return("Credits for {:s} {:s} is {:s}".format(code, name, str(credit)))
+        return('No information about credits in this course, {:s} {:s}.'.format(code, name))
+    return("Credits for {:s} {:s} is {:s}.".format(code, name, str(credit)))
 
 
 #function for exam date
@@ -88,11 +88,11 @@ def credit(course, response, code, name):
 def exam_date(course, response, code, name):
     exam_date = course.exam_date
     if exam_date == None:
-        return("No info about the exam in this course {:s} {:s}".format(code, name))
+        return("No info about the exam in this course {:s} {:s}.".format(code, name))
     # Crowbot response
     # print(response["result"]["fulfillment"]["speech"])
     # real response
-    return("Exam date for {:s} {:s} is {:s}".format(code, name, exam_date.strftime('%d/%m/%Y')))
+    return("Exam date for {:s} {:s} is {:s}.".format(code, name, exam_date.strftime('%d/%m/%Y')))
 
 
 #function for location
@@ -102,8 +102,8 @@ def location(course, response, code, name):
     # print(response["result"]["fulfillment"]["speech"])
     # real response
     if not location:
-        return("No location information for {:s} {:s}".format(code, name))
-    return("{:s} {:s} is taught in {:s}".format(code, name, location))
+        return("No location information for {:s} {:s}.".format(code, name))
+    return("{:s} {:s} is taught in {:s}.".format(code, name, location))
 
 
 
@@ -114,8 +114,8 @@ def professor_name(course, response, code, name):
     # print(response["result"]["fulfillment"]["speech"])
     # real response
     if not teacher_name:
-        return('No information about the lecturer in {:s} {:s}'.format(code, name))
-    return("{:s} {:s} is taught by {:s}".format(code, name, teacher_name))
+        return('No information about the lecturer in {:s} {:s}.'.format(code, name))
+    return("{:s} {:s} is taught by {:s}.".format(code, name, teacher_name))
 
 
 #function for professor email
@@ -127,11 +127,11 @@ def professor_mail(course, response, code, name):
     # real response
     if not teacher_name:
         if not teacher_mail:
-            return('No information about the professors email in {:s} {:s}'.format(code, name))
-        return ('You can reach the professor in {:s} {:s} at {:s}'.format(code, name, teacher_mail))
+            return('No information about the professors email in {:s} {:s}.'.format(code, name))
+        return ('You can reach the professor in {:s} {:s} at {:s}.'.format(code, name, teacher_mail))
     if not teacher_mail:
-        return ("No information about {:s}'s email in {:s} {:s}".format(teacher_name,code, name))
-    return("{:s} {:s} is taught by {:s}. They can be reached at {:s}"
+        return ("No information about {:s}'s email in {:s} {:s}.".format(teacher_name,code, name))
+    return("{:s} {:s} is taught by {:s}. They can be reached at {:s}."
            .format(code, name, teacher_name, teacher_mail))
 
 
@@ -142,8 +142,8 @@ def semester_taught(course, response, code, name):
     # print(response["result"]["fulfillment"]["speech"])
     # real response
     if not semester:
-        return("No information about semesters in {:s} {:s}".format(code, name))
-    return("{:s} {:s} is taught in the {:s}".format(code, name, semester))
+        return("No information about semesters in {:s} {:s}.".format(code, name))
+    return("{:s} {:s} is taught in the {:s}.".format(code, name, semester))
 
 
 #function for exam aids, code and text
@@ -155,11 +155,11 @@ def exam_aids(course, response, code, name):
     # real response
     if not exam_support_code:
         if not exam_support_name:
-            return("No information about examination support in {:s} {:s}".format(code, name))
-        return ('Examination support materials for {:s} {:s} is: {:s}'.format(code, name, exam_support_name))
+            return("No information about examination support in {:s} {:s}.".format(code, name))
+        return ('Examination support materials for {:s} {:s} is: {:s}.'.format(code, name, exam_support_name))
     if not exam_support_name:
-        return ('Examination support materials for {:s} {:s} is code {:s}'.format(code, name, exam_support_code))
-    return("Exam support materials for {:s} {:s} is code {:s}: {:s}"
+        return ('Examination support materials for {:s} {:s} is code {:s}.'.format(code, name, exam_support_code))
+    return("Exam support materials for {:s} {:s} is code {:s}: {:s}."
            .format(code, name, exam_support_code, exam_support_name))
 
 
@@ -170,8 +170,8 @@ def needed_previous_knowledge(course, response, code, name):
     # print(response["result"]["fulfillment"]["speech"])
     # real response
     if not required_previous_knowledge:
-        return('No information about required previous knowledge in {:s} {:s}'.format(code, name))
-    return("Required previous knowledge is: {:s}".format(required_previous_knowledge))
+        return('No information about required previous knowledge in {:s} {:s}.'.format(code, name))
+    return("Required previous knowledge is: {:s}.".format(required_previous_knowledge))
 
 
 # function to find recommended previous knowledge
@@ -181,8 +181,8 @@ def recommended_previous_knowledge(course, response, code, name):
     # print(response["result"]["fulfillment"]["speech"])
     # real response
     if not recommended_previous_knowledge:
-        return("No information about recommended previous knowledge for {:s} {:s}".format(code, name))
-    return("Recommended previous knowledge for {:s} {:s} is: {:s}"
+        return("No information about recommended previous knowledge for {:s} {:s}.".format(code, name))
+    return("Recommended previous knowledge for {:s} {:s} is: {:s}."
            .format(code, name, recommended_previous_knowledge))
 
 
