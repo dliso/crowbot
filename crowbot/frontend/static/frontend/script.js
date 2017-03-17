@@ -149,11 +149,11 @@ $( document).ready(function(){
             var output = data.body;
             console.log(data.output);
             message = randomBirdSound() + ' ' + output;
-            var lastchar = message.slice(-1);
+            /*var lastchar = message.slice(-1);
             console.log(lastchar);
             if (lastchar != "." || lastchar != "!" || lastchar != "?") {
                 message += '.';
-            }
+            }*/
             //msgListManager.addTextToList(message, ['bot-msg', 'message']);
             msgListManager.addListItemWithTimeAndUser(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
             updateScroll(msgBox);
