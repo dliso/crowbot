@@ -11,9 +11,9 @@ class ListManager {
         this.list.append(li)
     }
 
-/*    prettyDatetime(datetime) {
+    prettyDatetime(datetime) {
         return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
-    }*/
+    }
 
     addToListWithTimeAndUser(text, usertype, username, timestamp, cssClasses) {
         var subtext = "";
