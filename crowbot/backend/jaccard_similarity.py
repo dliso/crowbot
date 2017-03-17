@@ -60,18 +60,17 @@ def jaccard_similarity(statement, other_statement, threshold=0.7):
     # Calculate Jaccard similarity
     try:
         ratio = len(set(lemma_a).intersection(lemma_b)) / float(len(set(lemma_a).union(lemma_b)))
-        print(ratio)
     except Exception as e:
         print('Error', e)
-    return ratio >= threshold
+    return [ratio >= threshold, ratio]
 
-
+"""
 print(jaccard_similarity('When is the exam in TDT4140?',
                          'What is the exam date for TDT4140?'))
 #Likehet 66,6666%
 
 print(jaccard_similarity('How many exercises is needed in TMA4100?',
-                         'How many exercises is mandatory in TMA4100?'))
+                         'How many exercises is mandatory in TMA4100?')[0])
 #Likhet 100%
 
 print(jaccard_similarity('If I completed the exercises last year, are they valid this year?',
@@ -90,4 +89,4 @@ print(jaccard_similarity('If I completed the exercises last year, are they valid
                          'How old can previously completed exercises be, to be valid?'))
 #Likhet 50%
 
-
+"""

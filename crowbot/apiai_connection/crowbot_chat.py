@@ -6,6 +6,7 @@ import requests
 import django
 django.setup()
 from backend.models import Course, Question
+from backend.jaccard_similarity import *
 
 
 
@@ -209,7 +210,22 @@ def ask_apiai(text):
                 break
         try:
             course = Course.objects.get(code=code)
-            Question.objects.create(text=question, course=course)
+            highest_ratio = 0
+            similar_question = ''
+            for q in Question.objects.all():
+                result = jaccard_similarity(question,q.text)
+                if result[0]:
+                    if result[1]>highest_ratio:
+                        highest_ratio = result[1]
+                        similar_question = q.text
+            if similar_question == '':
+                Question.objects.create(text=question, course=course)
+                print(Question.objects.all())
+                return crowbot_answer(response)
+            else:
+                print(Question.objects.all())
+                return ("Similar question detected:",q)
+                #noe med at svaret til similar question presenteres for bruker
 
         except django.core.exceptions.ObjectDoesNotExist:
             return crowbot_answer(response)
