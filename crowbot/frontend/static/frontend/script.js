@@ -11,11 +11,16 @@ class ListManager {
         this.list.append(li)
     }
 
+    prettyDatetime(datetime) {
+        return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
+    }
+
     addListItemWithTimeAndUser(text, usertype, username, timestamp, cssClasses) {
+        var subtext = "";
         if (username == "Crowbot") {
-            var subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
+            subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
         }else{
-            var subtext = "Answer by " + usertype + " " + username + " [" + timestamp.substring(0,10) + " " + timestamp.substring(11,16) + "]";
+            subtext = "Answer by " + usertype + " " + username + " " + prettyDatetime(timestamp);
         }
         var listItem = $('<li/>')
             .append($('<div/>', {text: text}))
@@ -86,28 +91,12 @@ $( document).ready(function(){
         console.log(data)
     });
 
-    /* // Jeg erstattet denne funkjsonen med en som tar inn msgBox som parameter. Begge funker likt.
-    msgBox = document.getElementById("message-box");
-    function updateScroll() {
-        msgBox.scrollTop = msgBox.scrollHeight;
-    }
-    */
-
     msgBox = document.getElementById("message-box");
 
     function updateScroll(element) {
         element.scrollTop = element.scrollHeight;
     }
 
-
-/*    msgList = $("#message-box");
-    function addMessage(msg, botOrUser) { // Jeg erstattet denne funkjsonen med den i klassen ListManager
-        msgList.append(
-            $(`<li>${msg}</li>`)
-                .addClass(botOrUser === 'bot' ? 'bot-msg' : 'user-msg')
-                .addClass('message')
-        );
-    }*/
 
     msgListManager = new ListManager($("#message-box"));
 
@@ -135,9 +124,6 @@ $( document).ready(function(){
             var output = data.body;
             console.log(data.datetime);
             message = randomBirdSound() + ' ' + output;
-            if (message.slice(-1) != '.') {
-                message += '.';
-            }
             //msgListManager.addTextToList(message, ['bot-msg', 'message']);
             msgListManager.addListItemWithTimeAndUser(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
             updateScroll(msgBox);
@@ -155,14 +141,6 @@ $( document).ready(function(){
         }
     });
 
-    qListManager = new ListManager($("#question-queue"));
-
-    /*questionList = $("#question-queue");
-    function addQuestion(question) {
-        questionList.append(
-            $(question)
-        );
-    }*/
 
     function questionQueueString(datetime, question) {
         //return "<li>" + "Question: " + question  + " Time: " + datetime + "</li>"
@@ -171,22 +149,22 @@ $( document).ready(function(){
 
     var q_list_root = '/api/question_queue';
 
-    function addQuestionsToList(course_code){
+    function addPendingQuestions(course_code, listmanager){
         $.ajax({
         //Get the question
             url: q_list_root + "/" + course_code,
             method: "GET"
         }).then(function(questions){
             for (q of questions){
-                var content = questionQueueString(q.datetime, q.text);
-                qListManager.addTextToList(content, []);
+                var content = listmanager.prettyDatetime(q.datetime) + " " + q.text;
+                listmanager.addTextToList(content, []);
             }
         });
     }
+    pendingQuestionList = new ListManager($("#question-queue"));
 
-    addQuestionsToList("TDT4100");
+    addPendingQuestions("TDT4100", pendingQuestionList);
 
-    questionList2 = new ListManager($("#question-queue"));
-    questionList2.addTextToList("hei",["bot-msg","test", "message"]);
+    pendingQuestionList.addTextToList("hei",["bot-msg","test", "message"]);
 
 });
