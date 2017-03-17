@@ -52,10 +52,8 @@ function randomBirdSound() {
 }
 
 $( document).ready(function(){
-
     // jQuery example:
     var root = 'https://jsonplaceholder.typicode.com';
-
     $.ajax({
         url: root + '/posts/1',
         method: 'GET'
@@ -140,12 +138,6 @@ $( document).ready(function(){
             return false;
         }
     });
-
-
-    function questionQueueString(datetime, question) {
-        //return "<li>" + "Question: " + question  + " Time: " + datetime + "</li>"
-        return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "] " + question;
-    }
 
     var q_list_root = '/api/question_queue';
 
