@@ -11,16 +11,20 @@ class ListManager {
         this.list.append(li)
     }
 
-    prettyDatetime(datetime) {
+/*    prettyDatetime(datetime) {
         return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
-    }
+    }*/
 
-    addListItemWithTimeAndUser(text, usertype, username, timestamp, cssClasses) {
+    addToListWithTimeAndUser(text, usertype, username, timestamp, cssClasses) {
         var subtext = "";
         if (username == "Crowbot") {
             subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
-        }else{
-            subtext = "Answer by " + usertype + " " + username + " " + prettyDatetime(timestamp);
+        }
+        else if (username == undefined || username == "" || username == "Unknown"){
+            subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16);
+        }
+        else{
+            subtext = "Answer by " + usertype + " " + username + " " + "[" + timestamp.substring(0,10) + " " + timestamp.substring(11,16) + "]";
         }
         var listItem = $('<li/>')
             .append($('<div/>', {text: text}))
@@ -29,10 +33,11 @@ class ListManager {
         this.list.append(li);
    }
 
+/*   //content is a list item.
     addListItemToList(content, cssClasses){ //cssClasses er ei liste.
         var li = content.addClass(cssClasses.join(" ")); // lager liste-element med klasser.
         this.list.append(li);
-    }
+    }*/
 
 }
 
@@ -123,7 +128,7 @@ $( document).ready(function(){
             console.log(data.datetime);
             message = randomBirdSound() + ' ' + output;
             //msgListManager.addTextToList(message, ['bot-msg', 'message']);
-            msgListManager.addListItemWithTimeAndUser(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
+            msgListManager.addToListWithTimeAndUser(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
             updateScroll(msgBox);
         });
         //preventDefault prevents the site from updating. I think.
@@ -148,15 +153,13 @@ $( document).ready(function(){
             method: "GET"
         }).then(function(questions){
             for (q of questions){
-                var content = listmanager.prettyDatetime(q.datetime) + " " + q.text;
-                listmanager.addTextToList(content, []);
+                //var content = listmanager.prettyDatetime(q.datetime) + " " + q.text;
+                listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, []);
             }
         });
     }
     pendingQuestionList = new ListManager($("#question-queue"));
 
     addPendingQuestions("TDT4100", pendingQuestionList);
-
-    pendingQuestionList.addTextToList("hei",["bot-msg","test", "message"]);
 
 });
