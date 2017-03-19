@@ -193,7 +193,7 @@ def ask_apiai(text):
     request.query = text
     response = request.getresponse().read().decode()
     response = json.loads(response)
-    print(response)
+    # print(response)
     if response["result"]["metadata"]["intentName"] == 'Default Welcome Intent':
         return crowbot_answer(response)
     elif response["result"]["metadata"]["intentName"] == 'Default Goodbye Intent':
@@ -225,17 +225,16 @@ def ask_apiai(text):
                         similar_question = q.text
             if similar_question == '':
                 Question.objects.create(text=question, course=course, lemma=lemmas_pickled)
-                print(Question.objects.all())
+                #print(Question.objects.all())
                 return crowbot_answer(response)
             else:
-                print(Question.objects.all())
+                #print(Question.objects.all())
                 return ("Similar question detected: {:s} with ratio {:.3}.".format(similar_question, highest_ratio))
                 #noe med at svaret til similar question presenteres for bruker
 
         except django.core.exceptions.ObjectDoesNotExist:
             return crowbot_answer(response)
 
-        return crowbot_answer(response)
     elif response["result"]["metadata"]["intentName"] == "Default Help Intent":
         return crowbot_answer(response)
     else:
