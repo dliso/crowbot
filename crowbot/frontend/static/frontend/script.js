@@ -15,7 +15,7 @@ class ListManager {
         return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
     }
 
-    addToListWithTimeAndUser(text, usertype, username, timestamp, cssClasses) {
+    addToListWithTimeAndUser(text, usertype, username, timestamp, cssClasses, number) {
         var subtext = "";
         if (username == "Crowbot") {
             subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
@@ -24,14 +24,17 @@ class ListManager {
             subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16);
         }
         else{
-            subtext = "Answer by " + usertype + " " + username + " " + "[" + timestamp.substring(0,10) + " " + timestamp.substring(11,16) + "]";
+            subtext = "Answer by " + usertype + " " + username + " " + "[" + timestamp.substring(0,10)
+                + " " + timestamp.substring(11,16) + "]";
         }
         var listItem = $('<li/>')
             .append($('<div/>', {text: text}))
-            .append($('<div/>', {text: subtext}).css('font-size', '10px'));
+            .append($('<div/>', {text: subtext + " id = " + number}).css('font-size', '10px'));
         var li = listItem.addClass(cssClasses.join(" ")); // lager liste-element med klasser.
         this.list.append(li);
    }
+
+
 
 /*   //content is a list item.
     addListItemToList(content, cssClasses){ //cssClasses er ei liste.
@@ -128,7 +131,7 @@ $( document).ready(function(){
             console.log(data.datetime);
             message = randomBirdSound() + ' ' + output;
             //msgListManager.addTextToList(message, ['bot-msg', 'message']);
-            msgListManager.addToListWithTimeAndUser(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
+            msgListManager.addToListWithTimeAndUser(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message'], null);
             updateScroll(msgBox);
         });
         //preventDefault prevents the site from updating. I think.
@@ -154,7 +157,8 @@ $( document).ready(function(){
         }).then(function(questions){
             for (q of questions){
                 //var content = listmanager.prettyDatetime(q.datetime) + " " + q.text;
-                listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, []);
+                var id = 1;
+                listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, [], id);
             }
         });
     }
