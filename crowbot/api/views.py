@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 
-from backend.models import Course, Question
+from backend.models import Course, Question, Answer
 
 from apiai_connection import crowbot_chat
 
@@ -34,6 +34,7 @@ def add_question(question):
 @csrf_exempt
 def respond_to_message(request):
     print(request)
+    print(request.body)
     res = ''
     if request.method == 'GET':
         res += 'GET'
@@ -79,3 +80,16 @@ def questions_for_course(request, course_code):
     for q in questions:
         q['datetime'] = str(q.pop('creation_datetime'))
     return HttpResponse(json_dump(list(questions)), content_type='application/json')
+
+@csrf_exempt
+def submit_answer(request):
+    print(request.POST)
+    req_body = request.POST['body']
+    Answer(
+        question = Question.objects.get(pk=req_body['q_pk']),
+        text = req_body['body'],
+    )
+    response = {
+        'body': 'thanks'
+    }
+    return HttpResponse(json_dump(response), content_type='application/json')
