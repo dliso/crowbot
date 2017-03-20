@@ -389,6 +389,20 @@ class TestCrowbotChat(TestCase):
         self.assertEqual(2, Question.objects.all().count())
 
 
+    def test_nltk_q_not_existing(self):
+        list_of_possible_responses = ["I didn't get that. Can you say it again?",
+                                      "I missed what you said. Say it again?",
+                                      "Sorry, could you say that again?",
+                                      "Sorry, can you say that again?",
+                                      "Can you say that again?", "Sorry, I didn't get that.",
+                                      "Sorry, what was that?", "One more time?", "What was that?",
+                                      "Say that again?", "I didn't get that.", "I missed that."]
+        response = ask_apiai('If I did the exercises in EXPH0004 last year, are they valid this year?')
+        self.assertTrue(response in list_of_possible_responses)
+        self.assertEqual(3, Question.objects.all().count())
+
+
+
 
 
 
