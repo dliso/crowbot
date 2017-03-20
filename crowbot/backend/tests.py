@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 import json
+from backend.jaccard_similarity import *
 # Create your tests here.
 
 
@@ -27,3 +28,7 @@ class BackendViewTests(TestCase):
         self.assertEqual(response.status_code, 404)
 
 
+#test for jaccard_similarity som testene fra crowbot ikke klarer dekke
+class JaccardSimilarityTest(TestCase):
+    def test_nltk_q_error(self):
+        self.assertRaises(Exception, jaccard_similarity,['hi', 'school'], 6544)
