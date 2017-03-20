@@ -22,6 +22,9 @@ class ListManager {
         }
         else if (username == undefined || username == "" || username == "Unknown"){
             subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16);
+            if (number != null){
+                subtext += " id = " + number;
+            }
         }
         else{
             subtext = "Answer by " + usertype + " " + username + " " + "[" + timestamp.substring(0,10)
@@ -29,8 +32,9 @@ class ListManager {
         }
         var listItem = $('<li/>')
             .append($('<div/>', {text: text}))
-            .append($('<div/>', {text: subtext + " id = " + number}).css('font-size', '10px'));
+            .append($('<div/>', {text: subtext}).css('font-size', '10px'));
         var li = listItem.addClass(cssClasses.join(" ")); // lager liste-element med klasser.
+
         this.list.append(li);
    }
 
@@ -115,6 +119,11 @@ $( document).ready(function(){
         msgListManager.addTextToList(input, ['user-msg', 'message']);
         updateScroll(msgBox);
 
+        if (input.startsWith("#")){
+            var q_pk = input.substring(1,2);
+
+        }
+
         root = '/api/ask_question';
 
         //Sends input to URL
@@ -157,8 +166,8 @@ $( document).ready(function(){
         }).then(function(questions){
             for (q of questions){
                 //var content = listmanager.prettyDatetime(q.datetime) + " " + q.text;
-                var id = 1;
-                listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, [], id);
+                listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, [], 1);
+                //listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, [], q.question_pk);
             }
         });
     }
