@@ -121,25 +121,41 @@ $( document).ready(function(){
 
         if (input.startsWith("#")){
             var q_pk = input.substring(1,2);
+            root = "/api/submit_answer/";
+            $.ajax({
+                url: root,
+                method: "POST",
+                data: {
+                body: input,
+                q_pk: q_pk
+            }
+            }).then(function(conf){ //conf = confirmation that the bot received the instructors answer
+                var output = conf.body;
+                msgListManager.addToListWithTimeAndUser(conf.output, conf.usertype, conf.username, conf.timestamp,['bot-msg', 'message'], null);
+                updateScroll(msgBox);
+        });
 
         }
+        else {
 
-        root = '/api/ask_question';
 
-        //Sends input to URL
-        $.ajax({
-            url: root,
-            method: "POST",
-            data: {
-                body: input
-            }
-        //Gets the input back and appends it to the list
-        }).then(function(data){
-            message = randomBirdSound() + ' ' + data.body;
-            //msgListManager.addTextToList(message, ['bot-msg', 'message']);
-            msgListManager.addToListWithTimeAndUser(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message'], null);
-            updateScroll(msgBox);
-        });
+            root = '/api/ask_question';
+
+            //Sends input to URL
+            $.ajax({
+                url: root,
+                method: "POST",
+                data: {
+                    body: input
+                }
+                //Gets the input back and appends it to the list
+            }).then(function (data) {
+                message = randomBirdSound() + ' ' + data.body;
+                //msgListManager.addTextToList(message, ['bot-msg', 'message']);
+                msgListManager.addToListWithTimeAndUser(message, data.usertype, data.username, data.timestamp, ['bot-msg', 'message'], null);
+                updateScroll(msgBox);
+            });
+        }
         //preventDefault prevents the site from updating.
         event.preventDefault();
     });
