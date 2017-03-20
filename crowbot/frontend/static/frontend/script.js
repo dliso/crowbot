@@ -135,15 +135,12 @@ $( document).ready(function(){
             }
         //Gets the input back and appends it to the list
         }).then(function(data){
-            console.log(data);
-            var output = data.body;
-            console.log(data.datetime);
-            message = randomBirdSound() + ' ' + output;
+            message = randomBirdSound() + ' ' + data.body;
             //msgListManager.addTextToList(message, ['bot-msg', 'message']);
             msgListManager.addToListWithTimeAndUser(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message'], null);
             updateScroll(msgBox);
         });
-        //preventDefault prevents the site from updating. I think.
+        //preventDefault prevents the site from updating.
         event.preventDefault();
     });
 
@@ -165,7 +162,6 @@ $( document).ready(function(){
             method: "GET"
         }).then(function(questions){
             for (q of questions){
-                //var content = listmanager.prettyDatetime(q.datetime) + " " + q.text;
                 listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, [], 1);
                 //listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, [], q.question_pk);
             }
