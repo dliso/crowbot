@@ -1,11 +1,13 @@
 
 from django.conf import settings
 #settings.configure()
-import sys, json, codecs, apiai, re
+import sys, json, codecs, apiai, re, pickle
 import requests
 import django
 django.setup()
 from backend.models import Course, Question
+from backend.jaccard_similarity import *
+from backend.lemmalize import *
 
 
 
@@ -191,7 +193,7 @@ def ask_apiai(text):
     request.query = text
     response = request.getresponse().read().decode()
     response = json.loads(response)
-    print(response)
+    # print(response)
     if response["result"]["metadata"]["intentName"] == 'Default Welcome Intent':
         return crowbot_answer(response)
     elif response["result"]["metadata"]["intentName"] == 'Default Goodbye Intent':
@@ -209,12 +211,30 @@ def ask_apiai(text):
                 break
         try:
             course = Course.objects.get(code=code)
-            Question.objects.create(text=question, course=course)
+            highest_ratio = 0
+            similar_question = ''
+            lemmas1 = lemmalize(question)
+            lemmas_pickled = pickle.dumps(lemmas1)
+            for q in Question.objects.all():
+                #ta inn lemma fra question
+                lemmas2 = pickle.loads(q.lemma)
+                result = jaccard_similarity(lemmas1,lemmas2)
+                if result[0]:
+                    if result[1]>highest_ratio:
+                        highest_ratio = result[1]
+                        similar_question = q.text
+            if similar_question == '':
+                Question.objects.create(text=question, course=course, lemma=lemmas_pickled)
+                #print(Question.objects.all())
+                return crowbot_answer(response)
+            else:
+                #print(Question.objects.all())
+                return ("Similar question detected: {:s} with ratio {:.3}.".format(similar_question, highest_ratio))
+                #noe med at svaret til similar question presenteres for bruker
 
         except django.core.exceptions.ObjectDoesNotExist:
             return crowbot_answer(response)
 
-        return crowbot_answer(response)
     elif response["result"]["metadata"]["intentName"] == "Default Help Intent":
         return crowbot_answer(response)
     else:
