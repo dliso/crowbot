@@ -19,8 +19,9 @@ class ListManager {
         this.list.append(listItem);
     }
 
-    prettyDatetime(datetime) {
-        return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
+    addPendingQuestion(text, timestamp, number){
+        var subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16) + " #" + number;
+        this.appendWithSubtext(text, subtext, []);
     }
 
     chatReply(text, usertype, username, timestamp, cssClasses){
@@ -44,12 +45,12 @@ class ListManager {
         this.appendWithSubtext(text, subtext, cssClasses);
     }
 
-    addPendingQuestion(text, timestamp, number){
-        var subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16) + " #" + number;
-        this.appendWithSubtext(text, subtext, []);
+    prettyDatetime(datetime) {
+        return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
     }
 
-    addToListWithTimeAndUser(text, usertype, username, timestamp, cssClasses, number){
+
+/*    addToListWithTimeAndUser(text, usertype, username, timestamp, cssClasses, number){
         var subtext = "";
         if (username == "Crowbot") {
             subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
@@ -70,7 +71,7 @@ class ListManager {
         var li = listItem.addClass(cssClasses.join(" ")); // lager liste-element med klasser.
 
         this.list.append(li);
-   }
+   }*/
 
 
 
@@ -122,18 +123,18 @@ $( document).ready(function(){
     // xhttp.open("POST", "http://scooterlabs.com/echo", true);
 
     //Another jQuery example:
-    $.ajax({
-        url: root + '/posts', //URL
-        method: "POST", //POST or GET etc...
-        data: {
-            title: "foo",
-            body: "bar",
-            userId: 1
-        }
-        //dataType: "jsonp"
-    }).then(function(data){ //"then" waits for the response and executes the function when it arrives.
-        console.log(data)
-    });
+    // $.ajax({
+    //     url: root + '/posts', //URL
+    //     method: "POST", //POST or GET etc...
+    //     data: {
+    //         title: "foo",
+    //         body: "bar",
+    //         userId: 1
+    //     }
+    //     //dataType: "jsonp"
+    // }).then(function(data){ //"then" waits for the response and executes the function when it arrives.
+    //     console.log(data)
+    // });
 
     msgBox = document.getElementById("message-box");
 
@@ -218,6 +219,7 @@ $( document).ready(function(){
             for (q of questions){
                 //listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, [], 1);
                 listmanager.addPendingQuestion(q.text,q.datetime,1);
+                //listmanager.addPendingQuestion(q.text,q.datetime, q.question_pk);
                 //listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, [], q.question_pk);
             }
         });
