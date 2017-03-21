@@ -45,11 +45,6 @@ class ListManager {
         this.appendWithSubtext(text, subtext, cssClasses);
     }
 
-    prettyDatetime(datetime) {
-        return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
-    }
-
-
 /*    addToListWithTimeAndUser(text, usertype, username, timestamp, cssClasses, number){
         var subtext = "";
         if (username == "Crowbot") {
@@ -83,6 +78,10 @@ class ListManager {
 
 }
 
+function prettyDatetime(datetime) { //brukes ikke
+    return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
+}
+
 let birdSounds = [
     'Caw caw!',
     'Squawk!',
@@ -107,7 +106,6 @@ $( document).ready(function(){
     }).then(function(data) {
         console.log(data);
     });
-
 
     //Changes color of the list:
     //$( '#message-box').css("color","blue");
@@ -142,7 +140,7 @@ $( document).ready(function(){
         element.scrollTop = element.scrollHeight;
     }
 
-    //RegEx pattern for "question primary key", q_pk
+    //RegEx pattern for q_pk (question primary key)
     var re = /\#[0-9]+/g;
 
     msgListManager = new ListManager($("#message-box"));
@@ -171,12 +169,9 @@ $( document).ready(function(){
             }).then(function(conf){ //conf = confirmation that the bot received the instructors answer
                 msgListManager.appendText(conf.body,['bot-msg', 'message']);
                 updateScroll(msgBox);
-        });
+            });
 
-        }
-        else {
-
-
+        } else {
             root = '/api/ask_question';
 
             //Sends input to URL
@@ -189,8 +184,6 @@ $( document).ready(function(){
                 //Gets the input back and appends it to the list
             }).then(function (data) {
                 message = randomBirdSound() + ' ' + data.body;
-                //msgListManager.appendText(message, ['bot-msg', 'message']);
-                //msgListManager.addToListWithTimeAndUser(message, data.usertype, data.username, data.timestamp, ['bot-msg', 'message'], null);
                 msgListManager.chatReply(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
                 updateScroll(msgBox);
             });
@@ -217,10 +210,8 @@ $( document).ready(function(){
             method: "GET"
         }).then(function(questions){
             for (q of questions){
-                //listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, [], 1);
                 listmanager.addPendingQuestion(q.text,q.datetime,1);
                 //listmanager.addPendingQuestion(q.text,q.datetime, q.question_pk);
-                //listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, [], q.question_pk);
             }
         });
     }
