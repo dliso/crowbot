@@ -107,6 +107,8 @@ $( document).ready(function(){
         element.scrollTop = element.scrollHeight;
     }
 
+    //RegEx pattern for "question primary key", q_pk
+    var re = /\#[0-9]+/g;
 
     msgListManager = new ListManager($("#message-box"));
 
@@ -120,7 +122,9 @@ $( document).ready(function(){
         updateScroll(msgBox);
 
         if (input.startsWith("#")){
-            var q_pk = input.substring(1,2);
+            var regexArray = input.match(re);
+            var q_pk = regexArray[0].substring(1); //Removes the '#'
+            //console.log(q_pk);
             root = "/api/submit_answer/";
             $.ajax({
                 url: root,
