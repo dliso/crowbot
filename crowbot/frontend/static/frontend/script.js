@@ -23,8 +23,7 @@ class ListManager {
         return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
     }
 
-    chatReply(json_object, cssClasses){
-        var username = json_object.username;
+    chatReply(text, usertype, username, timestamp, cssClasses){
         var subtext = "";
 
         //Når Crowbot svarer (dvs. svaret kommer automatisk fra API.AI-boten:
@@ -42,7 +41,7 @@ class ListManager {
             subtext = "Answer by " + usertype + " " + username + " " + "[" + timestamp.substring(0,10)
                 + " " + timestamp.substring(11,16) + "]";
         }
-        this.appendWithSubtext(json_object.body, subtext, cssClasses);
+        this.appendWithSubtext(text, subtext, cssClasses);
     }
 
     addPendingQuestion(text, timestamp, number){
@@ -169,8 +168,7 @@ $( document).ready(function(){
                 q_pk: q_pk
             }
             }).then(function(conf){ //conf = confirmation that the bot received the instructors answer
-                var output = conf.body;
-                msgListManager.addToListWithTimeAndUser(conf.output, conf.usertype, conf.username, conf.timestamp,['bot-msg', 'message'], null);
+                msgListManager.appendText(conf.body,['bot-msg', 'message']);
                 updateScroll(msgBox);
         });
 
@@ -191,7 +189,8 @@ $( document).ready(function(){
             }).then(function (data) {
                 message = randomBirdSound() + ' ' + data.body;
                 //msgListManager.appendText(message, ['bot-msg', 'message']);
-                msgListManager.addToListWithTimeAndUser(message, data.usertype, data.username, data.timestamp, ['bot-msg', 'message'], null);
+                //msgListManager.addToListWithTimeAndUser(message, data.usertype, data.username, data.timestamp, ['bot-msg', 'message'], null);
+                msgListManager.chatReply(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
                 updateScroll(msgBox);
             });
         }
@@ -217,7 +216,8 @@ $( document).ready(function(){
             method: "GET"
         }).then(function(questions){
             for (q of questions){
-                listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, [], 1);
+                //listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, [], 1);
+                listmanager.addPendingQuestion(q.text,q.datetime,1);
                 //listmanager.addToListWithTimeAndUser(q.text, "", "", q.datetime, [], q.question_pk);
             }
         });
