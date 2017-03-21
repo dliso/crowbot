@@ -6,16 +6,51 @@ class ListManager {
         this.list = listID;
     }
 
-    addTextToList(content, cssClasses){ //cssClasses er ei liste.
+    appendText(content, cssClasses){ //cssClasses er ei liste.
         var li = $("<li/>").text(content).addClass(cssClasses.join(" ")); // lager liste-element med klasser.
         this.list.append(li)
+    }
+
+    appendWithSubtext(maintext, subtext, cssClasses){
+        var listItem = $('<li/>')
+            .append($('<div/>', {text: maintext}))
+            .append($('<div/>', {text: subtext}).css('font-size', '10px'))
+            .addClass(cssClasses.join(" ")); // lager liste-element med klasser.
+        this.list.append(listItem);
     }
 
     prettyDatetime(datetime) {
         return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
     }
 
-    addToListWithTimeAndUser(text, usertype, username, timestamp, cssClasses, number) {
+    chatReply(json_object, cssClasses){
+        var username = json_object.username;
+        var subtext = "";
+
+        //Når Crowbot svarer (dvs. svaret kommer automatisk fra API.AI-boten:
+        if (username == "Crowbot"){
+            subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
+        }
+
+        //Hvis svaret er lagt inn av anon:
+        else if (username == undefined || username == "" || username == "Unknown"){
+            subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16);
+        }
+
+        //Hvis svaret er lagt inn av usertype 'instructor' eller 'student':
+        else{
+            subtext = "Answer by " + usertype + " " + username + " " + "[" + timestamp.substring(0,10)
+                + " " + timestamp.substring(11,16) + "]";
+        }
+        this.appendWithSubtext(json_object.body, subtext, cssClasses);
+    }
+
+    addPendingQuestion(text, timestamp, number){
+        var subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16) + " #" + number;
+        this.appendWithSubtext(text, subtext, []);
+    }
+
+    addToListWithTimeAndUser(text, usertype, username, timestamp, cssClasses, number){
         var subtext = "";
         if (username == "Crowbot") {
             subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
@@ -118,7 +153,7 @@ $( document).ready(function(){
         //Finds user input and appends it
         var input = $( "#user-input").val();
         //input_html = "<li class='message user-msg'>" + input + "</li>"; // Jeg kommenterte denne ut fordi det virker ikke som den brukes.
-        msgListManager.addTextToList(input, ['user-msg', 'message']);
+        msgListManager.appendText(input, ['user-msg', 'message']);
         updateScroll(msgBox);
 
         if (input.startsWith("#")){
@@ -155,7 +190,7 @@ $( document).ready(function(){
                 //Gets the input back and appends it to the list
             }).then(function (data) {
                 message = randomBirdSound() + ' ' + data.body;
-                //msgListManager.addTextToList(message, ['bot-msg', 'message']);
+                //msgListManager.appendText(message, ['bot-msg', 'message']);
                 msgListManager.addToListWithTimeAndUser(message, data.usertype, data.username, data.timestamp, ['bot-msg', 'message'], null);
                 updateScroll(msgBox);
             });
