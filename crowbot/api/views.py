@@ -48,6 +48,7 @@ def respond_to_message(request):
             'usertype': 'bot',
             'username': 'Crowbot',
         }
+        # Handle special commands:
         if req_body[0] == '!':
             add_question(req_body[1:])
             res_data['body'] = 'Your question was added to the manual review queue.'
@@ -70,6 +71,11 @@ def respond_to_message(request):
             res_data['username'] = 'Unknown'
             res_data['body'] = 'jeg tør ikke oppgi navnet mitt'
             res_data['timestamp'] = tz.now()
+        elif req_body == 'test multi':
+            res = {'body': 'hei'}
+            res_data['body'] = 'multibeskjed'
+            res_data['timestamp'] = tz.now()
+            res_data = [res_data] * 3
         else:
             res_data['body'] = str(crowbot_chat.ask_apiai(req_body))
     return HttpResponse(json_dump(res_data), content_type="application/json")
