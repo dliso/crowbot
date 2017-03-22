@@ -1,7 +1,7 @@
 from django.test import TestCase
-import json, apiai, datetime
+import json, apiai, datetime, pickle
 from apiai_connection.crowbot_chat import *
-from backend.models import Course
+from backend.models import Course, Question
 
 CLIENT_ACCESS_TOKEN = '1b0f421f4b1045c5a9b29c8372573383'
 
@@ -49,10 +49,15 @@ class TestCrowbotChat(TestCase):
                               location='',semester='',teacher_name='',
                               teacher_email='tullekopp@ntnu.no',ects_credits=None)
 
+        Question.objects.create(text='How many exercises is mandatory in TDT4140?',
+                                course=Course.objects.get(code='TDT4140'),
+                                lemma=pickle.dumps(['exercise', 'tdt4140']))
+        Question.objects.create(text='How many exercises is there in total in EXPH0004?',
+                                course=Course.objects.get(code='EXPH0004'),
+                                lemma=pickle.dumps(['exercise', 'exph0004']))
 
 
     def load_text_request_with_query(self, query):
-
         request = self.ai.text_request()
         request.query = query
         request.query = request.query.upper()
@@ -374,6 +379,32 @@ class TestCrowbotChat(TestCase):
     def test_ask_apiai_correct(self):
         response = ask_apiai('When is the exam date in EXPH0004?')
         self.assertEqual(response,'Exam date for EXPH0004 Examen philosophicum for Science and Technology is 27/05/2017.')
+
+
+    # test nltk
+    def test_nltk_existing_q(self):
+        response = ask_apiai('How many exercises is needed in TDT4140?')
+        self.assertEqual(response,
+                         'Similar question detected: How many exercises is mandatory in TDT4140? with ratio 1.0.')
+        self.assertEqual(2, Question.objects.all().count())
+
+
+    def test_nltk_q_not_existing(self):
+        list_of_possible_responses = ["I didn't get that. Can you say it again?",
+                                      "I missed what you said. Say it again?",
+                                      "Sorry, could you say that again?",
+                                      "Sorry, can you say that again?",
+                                      "Can you say that again?", "Sorry, I didn't get that.",
+                                      "Sorry, what was that?", "One more time?", "What was that?",
+                                      "Say that again?", "I didn't get that.", "I missed that."]
+        response = ask_apiai('If I did the exercises in EXPH0004 last year, are they valid this year?')
+        self.assertTrue(response in list_of_possible_responses)
+        self.assertEqual(3, Question.objects.all().count())
+
+
+
+
+
 
 
             #skriv "coverage run --source='.' manage.py test myapp" i fil directiory hvor manage.py ligger

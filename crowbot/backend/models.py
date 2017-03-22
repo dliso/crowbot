@@ -58,6 +58,8 @@ class Question(models.Model):
     )
     creation_datetime = models.DateTimeField(auto_now_add = True)
     text = models.TextField()
+    lemma = models.BinaryField()
+
 
     def __str__(self):
         return str((self.creation_datetime, self.text))
