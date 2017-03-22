@@ -9,6 +9,7 @@ app_name = 'backend'
 urlpatterns = [
     url(r'^all_courses/?$', views.all_courses, name='all_courses'),
     url(r'^all_questions/?$', views.all_questions, name='all_questions'),
+    url(r'^all_answers/?$', views.all_answers, name='all_answers'),
     url(r'^add_course/?$', api_views.add_course, name='add_course'),
     url(r'^ask_question/?$', api_views.respond_to_message, name='ask_question'),
     url(r'^submit_answer/?$', api_views.submit_answer, name='submit_answer'),
