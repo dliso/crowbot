@@ -85,12 +85,20 @@ def questions_for_course(request, course_code):
 def submit_answer(request):
     print(request.POST)
     req_body = request.POST
+    text = req_body['body'].split(' ', maxsplit=1)[1]
     ans = Answer(
         question = Question.objects.get(pk=req_body['q_pk']),
-        text = req_body['body'],
+        text = text
     )
     ans.save()
     response = {
-        'body': 'thanks'
+        'body': 'Answer received.'
     }
     return HttpResponse(json_dump(response), content_type='application/json')
+
+@csrf_exempt
+def answers_for_question(request, pk):
+    response = Answer.objects.filter(question__exact=pk)
+    return HttpResponse(
+        serializers.serialize('json', response)
+    )
