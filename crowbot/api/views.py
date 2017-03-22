@@ -48,6 +48,7 @@ def respond_to_message(request):
             'usertype': 'bot',
             'username': 'Crowbot',
         }
+        # Handle special commands:
         if req_body[0] == '!':
             add_question(req_body[1:])
             res_data['body'] = 'Your question was added to the manual review queue.'
