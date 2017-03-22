@@ -79,3 +79,7 @@ def questions_for_course(request, course_code):
     for q in questions:
         q['datetime'] = str(q.pop('creation_datetime'))
     return HttpResponse(json_dump(list(questions)), content_type='application/json')
+
+def my_courses(request):
+    courses = ['tdt4145', 'tdt4140', 'tma4100', 'tdt4195', 'tma4110']
+    return HttpResponse(json_dump(list(courses)), content_type='application/json')
