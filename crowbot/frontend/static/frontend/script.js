@@ -237,8 +237,12 @@ $( document).ready(function(){
     createCheckboxes(fakeCourseList);
 
     function displaySelectedPQs(){
-
+            $('#select-pendingQs-courses').click(function() {
+                $("#PendingQs-course").toggle(this.checked);
+            });
     }
+
+    displaySelectedPQs();
 
 
 
