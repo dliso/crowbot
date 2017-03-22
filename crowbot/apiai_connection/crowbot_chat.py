@@ -5,14 +5,15 @@ import sys, json, codecs, apiai, re, pickle
 import requests
 import django
 django.setup()
-from backend.models import Course, Question
+from backend.models import Course, Question, Answer
 from backend.jaccard_similarity import *
 from backend.lemmalize import *
+from django.core import serializers
 
 
 
 
-
+json_dump = lambda data: json.dumps(data, cls=serializers.json.DjangoJSONEncoder)
 
 CLIENT_ACCESS_TOKEN = '1b0f421f4b1045c5a9b29c8372573383'
 ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
@@ -213,6 +214,7 @@ def ask_apiai(text):
             course = Course.objects.get(code=code)
             highest_ratio = 0
             similar_question = ''
+            similar_question_object = None
             lemmas1 = lemmalize(question)
             lemmas_pickled = pickle.dumps(lemmas1)
             for q in Question.objects.all():
@@ -222,15 +224,47 @@ def ask_apiai(text):
                 if result[0]:
                     if result[1]>highest_ratio:
                         highest_ratio = result[1]
+                        similar_question_object = q
                         similar_question = q.text
             if similar_question == '':
                 Question.objects.create(text=question, course=course, lemma=lemmas_pickled)
                 #print(Question.objects.all())
-                return crowbot_answer(response)
+                text_response = 'No similar question detected, your question has been saved for the instructor to answer.'
+                return text_response
             else:
-                #print(Question.objects.all())
-                return ("Similar question detected: {:s} with ratio {:.3}.".format(similar_question, highest_ratio))
-                #noe med at svaret til similar question presenteres for bruker
+                info_list = []
+                if similar_question_object.user_id == None:
+                    usertype = None
+                    username = None
+                else:
+                    usertype = similar_question_object.user_id.role
+                    username = similar_question_object.user_id.user.username
+                body = similar_question
+                timestamp = similar_question_object.creation_datetime
+                similar_question_dict = {'usertype': usertype,
+                                         'username': username,
+                                         'body': body,
+                                         'timestamp': timestamp}
+                info_list.append(json_dump(similar_question_dict))
+                pk = similar_question_object.pk
+                #user id null
+                for answer in Answer.objects.filter(question__exact=pk):
+                    if answer.user_id == None:
+                        usertype = None
+                        username = None
+                    else:
+                        usertype = answer.user_id.role
+                        username = answer.user_id.user.username
+                    body = answer.text
+                    timestamp = answer.creation_datetime
+                    answer_dict = {'usertype': usertype,
+                                   'username': username,
+                                   'body': body,
+                                   'timestamp': timestamp}
+                    info_list.append(json_dump(answer_dict))
+                return info_list
+
+
 
         except django.core.exceptions.ObjectDoesNotExist:
             return crowbot_answer(response)
