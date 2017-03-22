@@ -76,7 +76,7 @@ def respond_to_message(request):
     return HttpResponse(json_dump(res_data), content_type="application/json")
 
 def questions_for_course(request, course_code):
-    questions = Question.objects.all().values('text', 'creation_datetime')
+    questions = Question.objects.all().values('text', 'creation_datetime', 'pk')
     for q in questions:
         q['datetime'] = str(q.pop('creation_datetime'))
     return HttpResponse(json_dump(list(questions)), content_type='application/json')
@@ -84,11 +84,12 @@ def questions_for_course(request, course_code):
 @csrf_exempt
 def submit_answer(request):
     print(request.POST)
-    req_body = request.POST['body']
-    Answer(
+    req_body = request.POST
+    ans = Answer(
         question = Question.objects.get(pk=req_body['q_pk']),
         text = req_body['body'],
     )
+    ans.save()
     response = {
         'body': 'thanks'
     }
