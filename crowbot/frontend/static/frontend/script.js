@@ -240,6 +240,10 @@ $( document).ready(function(){
             $('#select-pendingQs-courses').click(function() {
                 $("#PendingQs-course").toggle(this.checked);
             });
+/*            if($('#select-pendingQs-courses').is(':checked'))
+                $("#PendingQs-course").show();  // checked
+            else
+                $("#PendingQs-course").hide();  // unchecked*/
     }
 
     displaySelectedPQs();
