@@ -219,4 +219,11 @@ $( document).ready(function(){
 
     addPendingQuestions("TDT4100", pendingQuestionList);
 
+
+
+$("#hideshow").click(function(){
+    $("#PendingQs").toggle();
+});
+
+
 });
