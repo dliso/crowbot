@@ -245,7 +245,7 @@ def ask_apiai(text):
                                          'username': username,
                                          'body': body,
                                          'timestamp': timestamp}
-                info_list.append(json_dump(similar_question_dict))
+                info_list.append(similar_question_dict)
                 pk = similar_question_object.pk
                 #user id null
                 for answer in Answer.objects.filter(question__exact=pk):
@@ -261,8 +261,8 @@ def ask_apiai(text):
                                    'username': username,
                                    'body': body,
                                    'timestamp': timestamp}
-                    info_list.append(json_dump(answer_dict))
-                return info_list
+                    info_list.append(answer_dict)
+                return json_dump(info_list)
 
 
 
