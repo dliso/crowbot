@@ -210,7 +210,7 @@ $( document).ready(function(){
             method: "GET"
         }).then(function(questions){
             for (q of questions){
-                listmanager.addPendingQuestion(q.text,q.datetime,1);
+                listmanager.addPendingQuestion(q.text,q.datetime,q.pk);
                 //listmanager.addPendingQuestion(q.text,q.datetime, q.question_pk);
             }
         });
