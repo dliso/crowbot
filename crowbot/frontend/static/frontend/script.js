@@ -219,35 +219,9 @@ $( document).ready(function(){
 
     addPendingQuestions("TDT4100", pendingQuestionList);
 
-
-
     $("#showPQs").click(function(){
         $("#PendingQs").toggle();
     });
-
-
-
-/*    $('#chbx').click(function(){
-
-        if( $(this).is(':checked')) {
-            $("#testefag").hide();
-            console.log(" t show");
-        } else {
-            $("#testefag").show();
-            console.log("t hide");
-        }
-        });
-
-    $('#chbx2').click(function(){
-
-        if( $(this).is(':checked')) {
-            $("#testefag2").hide();
-            console.log(" t show");
-        } else {
-            $("#testefag2").show();
-            console.log("t hide");
-        }
-        });*/
 
     function displaySelectedPQs(course) {
         $('#'+course+"checkbox").click(function() {
@@ -267,21 +241,17 @@ $( document).ready(function(){
     var fakeCourseList = ["TDT4100", "TTM4100", "TDT4140", "TDT4145"];
 
     function createCheckboxes(subscribed_courses) {
-        $("#info").append("Select the courses you want to see the pending questions for.").css('font-size', '10px');
+        $("#info").append("Select the courses you want to see the pending questions for.").css('font-size', '12px');
 
         for (course of subscribed_courses) {
-
 
             $("#checkboxes").append($('<input/>', {id: course + "checkbox", type: "checkbox", name: "course", value: "Courses"})).append(" " + course.toUpperCase()).append($('<br>'));
 
             $("#PendingQs-courselists").append($('<ul/>', {id: course + "list"}).addClass("question-list"));
 
-
-
             lm = new ListManager($("#" + course + "list"));
             addPendingQuestions(course, lm);
             displaySelectedPQs(course);
-
         }
     }
 
@@ -291,22 +261,7 @@ $( document).ready(function(){
     }).then(function(data){ //"then" waits for the response and executes the function when it arrives.
         var my_courses = data;
         createCheckboxes(my_courses);
-
-       /* for (course of my_courses){
-            displaySelectedPQs(course);
-        }
-        */
-
-
     });
-
-    //createCheckboxes(my_courses);
-
-
-
-    //displaySelectedPQs("TDT4145");
-
-
 
 
 });
