@@ -227,12 +227,12 @@ $( document).ready(function(){
         $('#'+course+"checkbox").click(function() {
         if($(this).is(":checked")) {
             $('#PendingQs-courselists').show();
-            $('#'+course+"div").show();
-            console.log("show");
+            $('#'+course+"list").show();
+            //console.log("show");
         } else {
-             $('#PendingQs-courselists').hide();
-            $('#'+course+"div").hide();
-            console.log("hide");
+             //$('#PendingQs-courselists').hide();
+            $('#'+course+"list").hide();
+            //console.log("hide");
         }
         });
     }
@@ -247,9 +247,11 @@ $( document).ready(function(){
 
             $("#checkboxes").append($('<input/>', {id: course + "checkbox", type: "checkbox", name: "course", value: "Courses"})).append(" " + course.toUpperCase()).append($('<br>'));
 
-            $("#PendingQs-courselists").append($('<ul/>', {id: course + "list"}).addClass("question-list"));
+            $("#PendingQs-courselists").append($('<ul/>', {id: course + "list", style: "display:none;"}).addClass("question-list"));
+
 
             lm = new ListManager($("#" + course + "list"));
+            lm.appendText("dette er "+course.toUpperCase(), ["question-item"]);
             addPendingQuestions(course, lm);
             displaySelectedPQs(course);
         }
