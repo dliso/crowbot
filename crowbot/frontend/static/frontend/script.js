@@ -21,7 +21,7 @@ class ListManager {
 
     addPendingQuestion(text, timestamp, number){
         var subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16) + " #" + number;
-        this.appendWithSubtext(text, subtext, []);
+        this.appendWithSubtext(text, subtext, ["question-item"]);
     }
 
     chatReply(text, usertype, username, timestamp, cssClasses){
@@ -221,13 +221,13 @@ $( document).ready(function(){
 
 
 
-    $("#hideshow").click(function(){
+    $("#showPQs").click(function(){
         $("#PendingQs").toggle();
     });
 
 
 
-    $('#chbx').click(function(){
+/*    $('#chbx').click(function(){
 
         if( $(this).is(':checked')) {
             $("#testefag").hide();
@@ -247,73 +247,58 @@ $( document).ready(function(){
             $("#testefag2").show();
             console.log("t hide");
         }
+        });*/
+
+    function displaySelectedPQs(course) {
+        $('#'+course+"checkbox").click(function() {
+        if($(this).is(":checked")) {
+            $('#PendingQs-courselists').show();
+            $('#'+course+"div").show();
+            console.log("show");
+        } else {
+             $('#PendingQs-courselists').hide();
+            $('#'+course+"div").hide();
+            console.log("hide");
+        }
         });
-    //
-    // function displaySelectedPQs(course) {
-    //     $('#'+course+"checkbox").click(function() {
-    //     if($(this).is(":checked")) {
-    //         $('#PendingQs-course').show();
-    //         $('#'+course+"div").show();
-    //         console.log("show");
-    //     } else {
-    //          $('#PendingQs-course').hide();
-    //         $('#'+course+"div").hide();
-    //         console.log("hide");
-    //     }
-    //     });
-    // }
-    //
-    // function showMe(course) {
-    //
-    //     var chboxs = document.getElementsByName(course+"checkbox");
-    //     var vis = "none";
-    //     for(var i=0;i<chboxs.length;i++) {
-    //         if(chboxs[i].checked){
-    //          vis = "block";
-    //             break;
-    //         }
-    //     }
-    //     document.getElementById("PendingQs-course").style.display = vis;
-    //
-    //
-    // }
-    //
-    // var fakeCourseList = ["TDT4100", "TTM4100", "TDT4140", "TDT4145"];
-    //
-    // function createCheckboxes(subscribed_courses) {
-    //     $("#info").append("Select the courses you want to see the pending questions for.").css('font-size', '10px');
-    //     var questionQueues = [];
-    //     for (course of subscribed_courses) {
-    //
-    //         $("#checkboxes").append($('<form/>', {id: course + "checkbox"}));
-    //         $("#" + course + "checkbox").append('<input type="checkbox" name="course" value="Courses">').append(" " + course.toUpperCase()).append($('<br>'));
-    //
-    //         $("#PendingQs-course").append($('<div/>', {id: course + "div"}));
-    //         var li = $("#" + course + "div").append($('<ul/>', {id: course + "list"}));
-    //
-    //         questionQueues.push(li);
-    //
-    //         lm = new ListManager($("#" + course + "list"));
-    //         addPendingQuestions(course, lm);
-    //         displaySelectedPQs(course);
-    //
-    //     }
-    // }
-    //
-    // $.ajax({
-    //     url: '/api/my_courses/', //URL
-    //     method: "GET"
-    // }).then(function(data){ //"then" waits for the response and executes the function when it arrives.
-    //     var my_courses = data;
-    //     createCheckboxes(my_courses);
-    //
-    //    /* for (course of my_courses){
-    //         displaySelectedPQs(course);
-    //     }
-    //     */
-    //
-    //
-    // });
+    }
+
+
+    var fakeCourseList = ["TDT4100", "TTM4100", "TDT4140", "TDT4145"];
+
+    function createCheckboxes(subscribed_courses) {
+        $("#info").append("Select the courses you want to see the pending questions for.").css('font-size', '10px');
+
+        for (course of subscribed_courses) {
+
+
+            $("#checkboxes").append($('<input/>', {id: course + "checkbox", type: "checkbox", name: "course", value: "Courses"})).append(" " + course.toUpperCase()).append($('<br>'));
+
+            $("#PendingQs-courselists").append($('<ul/>', {id: course + "list"}).addClass("question-list"));
+
+
+
+            lm = new ListManager($("#" + course + "list"));
+            addPendingQuestions(course, lm);
+            displaySelectedPQs(course);
+
+        }
+    }
+
+    $.ajax({
+        url: '/api/my_courses/', //URL
+        method: "GET"
+    }).then(function(data){ //"then" waits for the response and executes the function when it arrives.
+        var my_courses = data;
+        createCheckboxes(my_courses);
+
+       /* for (course of my_courses){
+            displaySelectedPQs(course);
+        }
+        */
+
+
+    });
 
     //createCheckboxes(my_courses);
 
