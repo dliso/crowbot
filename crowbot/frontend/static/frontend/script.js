@@ -211,7 +211,6 @@ $( document).ready(function(){
         }).then(function(questions){
             for (q of questions){
                 listmanager.addPendingQuestion(q.text,q.datetime,q.pk);
-                //listmanager.addPendingQuestion(q.text,q.datetime, q.question_pk);
             }
         });
     }
@@ -228,17 +227,15 @@ $( document).ready(function(){
         if($(this).is(":checked")) {
             $('#PendingQs-courselists').show();
             $('#'+course+"list").show();
-            //console.log("show");
         } else {
              //$('#PendingQs-courselists').hide();
             $('#'+course+"list").hide();
-            //console.log("hide");
         }
         });
     }
 
 
-    var fakeCourseList = ["TDT4100", "TTM4100", "TDT4140", "TDT4145"];
+    //var fakeCourseList = ["TDT4100", "TTM4100", "TDT4140", "TDT4145"];
 
     function createCheckboxes(subscribed_courses) {
         $("#info").append("Select the courses you want to see the pending questions for.").css('font-size', '12px');
@@ -251,7 +248,7 @@ $( document).ready(function(){
 
 
             lm = new ListManager($("#" + course + "list"));
-            lm.appendText("dette er "+course.toUpperCase(), ["question-item"]);
+            lm.appendText("Pending Qs for "+course.toUpperCase(), ["question-item"]);
             addPendingQuestions(course, lm);
             displaySelectedPQs(course);
         }
