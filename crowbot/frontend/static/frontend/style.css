@@ -147,3 +147,12 @@ header img {
 .flex-backwards {
     justify-content: flex-end;
 }
+
+.dropdown {
+	position:absolute;
+	right:120px;
+	z-index:1;
+}
+
+
+
