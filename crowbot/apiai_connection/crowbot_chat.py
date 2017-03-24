@@ -261,7 +261,7 @@ def ask_apiai(text):
                                    'body': body,
                                    'timestamp': timestamp}
                     info_list.append(answer_dict)
-                return json_dump(info_list)
+                return info_list
 
 
 
