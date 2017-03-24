@@ -30,19 +30,34 @@ class ListManager {
         //Når Crowbot svarer (dvs. svaret kommer automatisk fra API.AI-boten:
         if (username == "Crowbot"){
             subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
+            var task = "play";
         }
 
         //Hvis svaret er lagt inn av anon:
         else if (username == undefined || username == "" || username == "Unknown"){
             subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16);
+            var task = "stop";
         }
 
         //Hvis svaret er lagt inn av usertype 'instructor' eller 'student':
         else{
             subtext = "Answer by " + usertype + " " + username + " " + "[" + timestamp.substring(0,10)
                 + " " + timestamp.substring(11,16) + "]";
+            var task = "stop";
         }
+        $(".crowsound").trigger('play');
+        this.play_audio(task);
         this.appendWithSubtext(text, subtext, cssClasses);
+    }
+
+    play_audio(task) {
+        if (task == 'play') {
+            $(".crowsound").trigger('play');
+        }
+        if (task == 'stop') {
+            $(".crowsound").trigger('pause');
+            $(".crowsound").prop("currentTime", 0);
+        }
     }
 
 /*    addToListWithTimeAndUser(text, usertype, username, timestamp, cssClasses, number){
