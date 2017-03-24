@@ -21,7 +21,7 @@ class ListManager {
 
     addPendingQuestion(text, timestamp, number){
         var subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16) + " #" + number;
-        this.appendWithSubtext(text, subtext, []);
+        this.appendWithSubtext(text, subtext, ["question-item"]);
     }
 
     chatReply(text, usertype, username, timestamp, cssClasses){
@@ -211,12 +211,64 @@ $( document).ready(function(){
         }).then(function(questions){
             for (q of questions){
                 listmanager.addPendingQuestion(q.text,q.datetime,q.pk);
-                //listmanager.addPendingQuestion(q.text,q.datetime, q.question_pk);
             }
         });
     }
-    pendingQuestionList = new ListManager($("#question-queue"));
+    //pendingQuestionList = new ListManager($("#question-queue"));
 
-    addPendingQuestions("TDT4100", pendingQuestionList);
+    //addPendingQuestions("TDT4100", pendingQuestionList);
+
+
+    // The following code controls the button that you can click to show/hide Pending Questions
+    $("#showPQs").click(function(){
+        $("#PendingQs").toggle();
+    });
+
+    // The following code will show/hide the pending quetion according to which checkbox is checked.
+    // Every course has its own checkbox with its unique checkbox id.
+    function displaySelectedPQs(course) {
+        $('#'+course+"checkbox").click(function() {
+        if($(this).is(":checked")) {
+            $('#PendingQs-courselists').show(); // This is to show the div where the Pending Question lists are hidden
+            $('#'+course+"list").show();
+        } else {
+             //$('#PendingQs-courselists').hide(); // Must be commented out, or else the lists will disappear
+            $('#'+course+"list").hide();
+        }
+        });
+    }
+
+    // The following code takes in a list of courses that the user has subscribed to (given to us by ajax further down this file).
+    function createCheckboxes(subscribed_courses) {
+        $("#info").append("Select the courses you want to see the pending questions for.").css('font-size', '12px');
+
+        for (course of subscribed_courses) {
+            // For every subscribed course, make a checkbox.
+            $("#checkboxes").append($('<input/>', {id: course + "checkbox", type: "checkbox", name: "course", value: "Courses"})).append(" " + course.toUpperCase()).append($('<br>'));
+
+            // For every subscribed course, make a list.
+            $("#PendingQs-courselists").append($('<ul/>', {id: course + "list", style: "display:none;"}).addClass("question-list"));
+
+
+            lm = new ListManager($("#" + course + "list"));
+
+            // Append the pending questions for the current course to the newly made list
+            addPendingQuestions(course, lm);
+
+            // Run the code that hide/show the pending questions when you check the boxes
+            displaySelectedPQs(course);
+        }
+    }
+
+    // Get the subscribed courses
+    $.ajax({
+        url: '/api/my_courses/', //URL
+        method: "GET"
+    }).then(function(data){ //"then" waits for the response and executes the function when it arrives.
+
+        // Run the code that creates checkboxes, appends the questions to the lists, and hide/show the lists.
+        createCheckboxes(data);
+    });
+
 
 });
