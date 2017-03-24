@@ -183,10 +183,20 @@ $( document).ready(function(){
                         body: input
                     }
                     //Gets the input back and appends it to the list
-                }).then(function (data) {
-                    message = randomBirdSound() + ' ' + data.body;
-                    msgListManager.chatReply(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
-                    updateScroll(msgBox);
+                }).then(function (data_raw) {
+                    // We expect to receive either a single message or a list of messages.
+                    // If it's a single message, we wrap it in a list so we can treat both
+                    // cases the same way.
+                    if(Array.isArray(data_raw)) {
+                        data = data_raw;
+                    } else {
+                        data = [data_raw];
+                    }
+                    for(data of data) {
+                        message = randomBirdSound() + ' ' + data.body;
+                        msgListManager.chatReply(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
+                        updateScroll(msgBox);
+                    }
                 });
             }
         }
