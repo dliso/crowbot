@@ -148,11 +148,11 @@ header img {
     justify-content: flex-end;
 }
 
+.liten-marg {
+    padding-left: 0.1cm;
+}
 .dropdown {
 	position:absolute;
 	right:120px;
 	z-index:1;
 }
-
-
-
