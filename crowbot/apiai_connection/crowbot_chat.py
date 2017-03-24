@@ -234,8 +234,8 @@ def ask_apiai(text):
             else:
                 info_list = []
                 if similar_question_object.user_id == None:
-                    usertype = None
-                    username = None
+                    usertype = ''
+                    username = ''
                 else:
                     usertype = similar_question_object.user_id.role
                     username = similar_question_object.user_id.user.username
@@ -250,8 +250,8 @@ def ask_apiai(text):
                 #user id null
                 for answer in Answer.objects.filter(question__exact=pk):
                     if answer.user_id == None:
-                        usertype = None
-                        username = None
+                        usertype = ''
+                        username = ''
                     else:
                         usertype = answer.user_id.role
                         username = answer.user_id.user.username
