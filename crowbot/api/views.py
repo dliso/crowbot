@@ -77,7 +77,7 @@ def respond_to_message(request):
 def questions_for_course(request, course_code):
     questions = Question.objects.filter(
         course__code=course_code.upper()
-    ).values('text', 'creation_datetime')
+    ).values('text', 'creation_datetime', 'pk')
     for q in questions:
         q['datetime'] = str(q.pop('creation_datetime'))
     return HttpResponse(json_dump(list(questions)), content_type='application/json')
