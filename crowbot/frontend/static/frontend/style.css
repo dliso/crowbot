@@ -147,3 +147,7 @@ header img {
 .flex-backwards {
     justify-content: flex-end;
 }
+
+.liten-marg {
+    padding-left: 0.1cm;
+}
