@@ -1,0 +1,20 @@
+
+body{
+	margin-top:100px;
+	margin-left:450px;
+	margin-right:450px;
+	font-family: 'Noto Sans', sans;
+	
+}
+
+.listeTing{
+	font-weight:bold;
+}
+
+#profilbilde{
+	position:absolute;
+	height:400px;
+	top:165px;
+	right:460px;
+}
+

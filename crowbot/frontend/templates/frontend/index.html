@@ -7,9 +7,11 @@
         <title>Crowbot</title>
         <meta name="author" content="Crow Crew">
         <meta name="description" content="description here">
-        <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Roboto|Noto+Serif|Noto+Sans' type='text/css'>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel='stylesheet' href='//fonts.googleapis.com/css?family=Roboto|Noto+Serif|Noto+Sans' type='text/css'>
         <link rel='stylesheet' href="{% static 'frontend/style.css' %}" type='text/css'>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="{% static 'frontend/script.js' %}"></script>
     </head>
 
@@ -17,7 +19,68 @@
 
         <header class="flex-container">
             <img alt="" src="{% static 'frontend/crowbot.png' %}"/>
-            <h1>Crowbot</h1>
+            <h1>Crowbot</h1>                                   
+			<div class="dropdown">
+			{% if user.is_authenticated %}
+				<a id="profilLink" href="profilside" >{{ user.username }}</a>
+			{% else %}
+				<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Login <!-- start på dropdown -->
+				<span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<!--{% if form.errors %}
+						<p style="color: red">Your username and password didn't match. Please try again.</p>
+					{% endif %}
+					<form method="post">
+						{% csrf_token %}
+						<input type="hidden" name="next" value="{{ next }}" />
+						{% for field in form %}
+							<p>
+							{{ field.label_tag }}<br>	
+							{{ field }}<br>
+							{% for error in field.errors %}
+								<p style="color: red">{{ error }}</p>
+							{% endfor %}
+								{% if field.help_text %}
+									<p><small style="color: grey">{{ field.help_text }}</small></p>
+								{% endif %}
+							</p>
+					{% endfor %}
+					<button type="submit">Log in</button>
+					</form> -->
+						<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Sign up</button>
+				</ul>		
+						 <!-- Modal -->
+							<div class="modal" id="myModal" role="dialog" data-backdrop="false">
+								<div class="modal-dialog">
+    
+							<!-- Modal content-->
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">&times;</button> <!-- fin liten x i høyre hjørnet --> 
+									<h4 class="modal-title">Registration form</h4>
+									</div>
+										<div class="modal-body"> <!-- her legges formen inn, derav sær syntax -->
+											<form method="post">
+												{% csrf_token %}
+												{% for field in form %}
+													<p>
+														{{ field.label_tag }}<br>		
+														{{ field }}
+														{% if field.help_text %}
+															<small style="color: grey">{{ field.help_text }}</small>
+														{% endif %}
+														{% for error in field.errors %}
+															<p style="color: red">{{ error }}</p>
+														{% endfor %}
+													</p>
+												{% endfor %}	
+												<button type="submit">Sign up</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>	
+			{% endif %}	
         </header>
 
         <div class="content-column flex-container flex-row full-height full-width">
@@ -36,9 +99,27 @@
 
             </div>
             <div class="f-just-start full-height full-width bg-white border-left">
-                <h3>Pending questions</h6>
-                <ul id="question-queue">
-                </ul>
+                <h2>Activity Feed</h2>
+                <button id="showPQs">Show Pending Questions</button>
+
+
+                <div id="PendingQs" class="" style="display:none;">
+
+                    <p id="info"></p>
+
+                    <form id="checkboxes">
+                    </form>
+
+                    <br>
+
+                    <div id="PendingQs-courselists" style="display:none;">
+                        <h3 id="PQ-heading">Pending questions</h3>
+
+                        <ul id="question-queue" style="display:none;"></ul>
+                    </div>
+
+
+                </div>
             </div>
         </div>
 

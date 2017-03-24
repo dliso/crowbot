@@ -6,7 +6,7 @@ from .forms import SignUpForm
 
 @login_required
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'index.html')
 
 
 def signup(request):
@@ -25,4 +25,4 @@ def signup(request):
             return redirect('home')
     else:
         form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
+    return None
