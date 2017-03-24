@@ -22,5 +22,6 @@ def submit(request):
     uq.save()
     return HttpResponseRedirect(reverse('frontend:new_post'))
 
-
+def profilside(request):
+    return render(request, 'frontend/profilside.html')
 
