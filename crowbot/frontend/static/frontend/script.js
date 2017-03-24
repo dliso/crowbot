@@ -214,41 +214,43 @@ $( document).ready(function(){
             }
         });
     }
-    pendingQuestionList = new ListManager($("#question-queue"));
+    //pendingQuestionList = new ListManager($("#question-queue"));
 
-    addPendingQuestions("TDT4100", pendingQuestionList);
+    //addPendingQuestions("TDT4100", pendingQuestionList);
 
+
+    // The following code controls the button that you can click to show/hide Pending Questions
     $("#showPQs").click(function(){
         $("#PendingQs").toggle();
     });
 
+    // The following code will show/hide the pending quetion according to which checkbox is checked.
+    // Every course has its own checkbox with its unique checkbox id.
     function displaySelectedPQs(course) {
         $('#'+course+"checkbox").click(function() {
         if($(this).is(":checked")) {
-            $('#PendingQs-courselists').show();
+            $('#PendingQs-courselists').show(); // This is to show the div where the Pending Question lists are hidden
             $('#'+course+"list").show();
         } else {
-             //$('#PendingQs-courselists').hide();
+             //$('#PendingQs-courselists').hide(); // Must be commented out, or else the lists will disappear
             $('#'+course+"list").hide();
         }
         });
     }
 
-
-    //var fakeCourseList = ["TDT4100", "TTM4100", "TDT4140", "TDT4145"];
-
+    // The following code takes in a list of courses that the user has subscribed to (given to us by ajax further down this file).
     function createCheckboxes(subscribed_courses) {
         $("#info").append("Select the courses you want to see the pending questions for.").css('font-size', '12px');
 
         for (course of subscribed_courses) {
-
+            // For every subscribed course, make a checkbox.
             $("#checkboxes").append($('<input/>', {id: course + "checkbox", type: "checkbox", name: "course", value: "Courses"})).append(" " + course.toUpperCase()).append($('<br>'));
 
+            // For every subscribed course, make a list.
             $("#PendingQs-courselists").append($('<ul/>', {id: course + "list", style: "display:none;"}).addClass("question-list"));
 
-
+            // Append the pending questions for the current course to the newly made list
             lm = new ListManager($("#" + course + "list"));
-            //lm.appendText("Pending Qs for "+course.toUpperCase(), ["question-item"]);
             addPendingQuestions(course, lm);
             displaySelectedPQs(course);
         }
