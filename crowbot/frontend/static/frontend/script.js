@@ -30,6 +30,7 @@ class ListManager {
         //Når Crowbot svarer (dvs. svaret kommer automatisk fra API.AI-boten:
         if (username == "Crowbot"){
             subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
+            var text = this.randomBirdSound() + ' ' + text;
         }
 
         //Hvis svaret er lagt inn av anon:
@@ -43,6 +44,15 @@ class ListManager {
                 + " " + timestamp.substring(11,16) + "]";
         }
         this.appendWithSubtext(text, subtext, cssClasses);
+    }
+
+    randomBirdSound() {
+        var birdSounds = ['Caw caw!', 'Squawk!', 'Chirp chirp!', ''];
+        var sound = '';
+        if (Math.random(0,10) < 2) {
+            sound = birdSounds[Math.floor(Math.random() * birdSounds.length)];
+        }
+        return sound;
     }
 
 /*    addToListWithTimeAndUser(text, usertype, username, timestamp, cssClasses, number){
@@ -82,20 +92,7 @@ function prettyDatetime(datetime) { //brukes ikke
     return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
 }
 
-let birdSounds = [
-    'Caw caw!',
-    'Squawk!',
-    'Chirp chirp!',
-    ''
-];
 
-function randomBirdSound() {
-    let sound = '';
-    if (Math.random(0,10) < 2) {
-        sound = birdSounds[Math.floor(Math.random() * birdSounds.length)];
-    }
-    return sound;
-}
 
 $( document).ready(function(){
     // jQuery example:
@@ -193,8 +190,7 @@ $( document).ready(function(){
                         data = [data_raw];
                     }
                     for(data of data) {
-                        message = randomBirdSound() + ' ' + data.body;
-                        msgListManager.chatReply(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
+                        msgListManager.chatReply(data.body, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
                         updateScroll(msgBox);
                     }
                 });
