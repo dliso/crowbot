@@ -247,7 +247,6 @@ def ask_apiai(text):
                                          'timestamp': timestamp}
                 info_list.append(similar_question_dict)
                 pk = similar_question_object.pk
-                #user id null
                 for answer in Answer.objects.filter(question__exact=pk):
                     if answer.user_id == None:
                         usertype = ''
@@ -273,31 +272,3 @@ def ask_apiai(text):
         return crowbot_answer(response)
     else:
         return user_request(response)
-
-#main function
-if __name__ == '__main__':
-
-    while True:
-        # Create a request
-        request = ai.text_request()
-        request.query = input("Ask Crowbot something: ")
-
-        # make input uppercase to match the for loop of all course codes
-        request.query = request.query.upper()
-
-        # Get respons, convert to json
-        response = request.getresponse().read().decode('utf-8')
-        response = json.loads(response)
-
-        #what do the user want: geeting/goodbye/dont know/request
-        if response["result"]["metadata"]["intentName"] == 'Default Welcome Intent':
-            crowbot_answer(response)
-        elif response["result"]["metadata"]["intentName"] == 'Default Goodbye Intent':
-            crowbot_answer(response)
-        elif response["result"]["metadata"]["intentName"] == "Default Fallback Intent":
-            crowbot_answer(response)
-        elif response["result"]["metadata"]["intentName"] == "Default Help Intent":
-            crowbot_answer(response)
-        else:
-            user_request(response)
-        print()
