@@ -1,4 +1,5 @@
 from django.db import models
+from account_system.models import Profile
 
 # Create your models here.
 
@@ -42,7 +43,7 @@ class Question(models.Model):
     shown to a human who can answer it.
     """
     user_id = models.ForeignKey(
-        User,
+        Profile,
         on_delete = models.SET_NULL,
         null = True,
     )
@@ -74,7 +75,7 @@ class Answer(models.Model):
         null = True,
     )
     user_id = models.ForeignKey(
-        User,
+        Profile,
         on_delete = models.SET_NULL,
         null = True,
     )

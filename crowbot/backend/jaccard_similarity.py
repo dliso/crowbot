@@ -32,6 +32,7 @@ def jaccard_similarity(lemmas1, lemmas2, threshold=0.7):
         ratio = len(set(lemmas1).intersection(lemmas2)) / float(len(set(lemmas1).union(lemmas2)))
     except Exception as e:
         print('Error', e)
+        ratio = 0
     return [ratio >= threshold, ratio]
 
 """
