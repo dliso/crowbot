@@ -248,7 +248,7 @@ $( document).ready(function(){
 
 
             lm = new ListManager($("#" + course + "list"));
-            lm.appendText("Pending Qs for "+course.toUpperCase(), ["question-item"]);
+            //lm.appendText("Pending Qs for "+course.toUpperCase(), ["question-item"]);
             addPendingQuestions(course, lm);
             displaySelectedPQs(course);
         }
