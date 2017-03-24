@@ -249,19 +249,25 @@ $( document).ready(function(){
             // For every subscribed course, make a list.
             $("#PendingQs-courselists").append($('<ul/>', {id: course + "list", style: "display:none;"}).addClass("question-list"));
 
-            // Append the pending questions for the current course to the newly made list
+
             lm = new ListManager($("#" + course + "list"));
+
+            // Append the pending questions for the current course to the newly made list
             addPendingQuestions(course, lm);
+
+            // Run the code that hide/show the pending questions when you check the boxes
             displaySelectedPQs(course);
         }
     }
 
+    // Get the subscribed courses
     $.ajax({
         url: '/api/my_courses/', //URL
         method: "GET"
     }).then(function(data){ //"then" waits for the response and executes the function when it arrives.
-        var my_courses = data;
-        createCheckboxes(my_courses);
+
+        // Run the code that creates checkboxes, appends the questions to the lists, and hide/show the lists.
+        createCheckboxes(data);
     });
 
 
