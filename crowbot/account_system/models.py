@@ -8,6 +8,7 @@ from django.db import models
 
 # Create your models here.
 @python_2_unicode_compatible
+
 class Profile(models.Model):
     STUDENT = 1
     PROFESSOR = 2
@@ -29,4 +30,4 @@ def __str__(self):
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
-    instance.profile.save()
+    instance.profile.save()#lagrer dataen som profilen får inn

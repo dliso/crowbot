@@ -1,14 +1,18 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, authenticate
+from django.shortcuts import render, redirect
 from .models import UserQuery as UQ
-
+from account_system.forms import SignUpForm
+from account_system.views import signup
 # Create your views here.
 
 def index(request):
     queries = UQ.objects.all()
-    return render(request, 'frontend/index.html', {'queries': queries})
+    signup(request)
+    return render(request, 'frontend/index.html', {'queries': queries,'form':SignUpForm})
 
 def new_post(request):
     return render(request, 'frontend/new_post.html', {})
@@ -17,3 +21,7 @@ def submit(request):
     uq = UQ(query_text=request.POST['user_query'])
     uq.save()
     return HttpResponseRedirect(reverse('frontend:new_post'))
+
+def profilside(request):
+    return render(request, 'frontend/profilside.html')
+

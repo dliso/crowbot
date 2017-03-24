@@ -150,43 +150,55 @@ $( document).ready(function(){
 
         //Finds user input and appends it
         var input = $( "#user-input").val();
-        //input_html = "<li class='message user-msg'>" + input + "</li>"; // Jeg kommenterte denne ut fordi det virker ikke som den brukes.
-        msgListManager.appendText(input, ['user-msg', 'message']);
-        updateScroll(msgBox);
+        if (input !== "") {
+            //input_html = "<li class='message user-msg'>" + input + "</li>"; // Jeg kommenterte denne ut fordi det virker ikke som den brukes.
+            msgListManager.appendText(input, ['user-msg', 'message']);
+            updateScroll(msgBox);
 
-        if (input.startsWith("#")){
-            var regexArray = input.match(re);
-            var q_pk = regexArray[0].substring(1); //Removes the '#'
-            //console.log(q_pk);
-            root = "/api/submit_answer/";
-            $.ajax({
-                url: root,
-                method: "POST",
-                data: {
-                body: input,
-                q_pk: q_pk
+            if (input.startsWith("#")){
+                var regexArray = input.match(re);
+                var q_pk = regexArray[0].substring(1); //Removes the '#'
+                //console.log(q_pk);
+                root = "/api/submit_answer/";
+                $.ajax({
+                    url: root,
+                    method: "POST",
+                    data: {
+                        body: input,
+                        q_pk: q_pk
+                    }
+                }).then(function(conf){ //conf = confirmation that the bot received the instructors answer
+                    msgListManager.appendText(conf.body,['bot-msg', 'message']);
+                    updateScroll(msgBox);
+                });
+
+            } else {
+                root = '/api/ask_question';
+
+                //Sends input to URL
+                $.ajax({
+                    url: root,
+                    method: "POST",
+                    data: {
+                        body: input
+                    }
+                    //Gets the input back and appends it to the list
+                }).then(function (data_raw) {
+                    // We expect to receive either a single message or a list of messages.
+                    // If it's a single message, we wrap it in a list so we can treat both
+                    // cases the same way.
+                    if(Array.isArray(data_raw)) {
+                        data = data_raw;
+                    } else {
+                        data = [data_raw];
+                    }
+                    for(data of data) {
+                        message = randomBirdSound() + ' ' + data.body;
+                        msgListManager.chatReply(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
+                        updateScroll(msgBox);
+                    }
+                });
             }
-            }).then(function(conf){ //conf = confirmation that the bot received the instructors answer
-                msgListManager.appendText(conf.body,['bot-msg', 'message']);
-                updateScroll(msgBox);
-            });
-
-        } else {
-            root = '/api/ask_question';
-
-            //Sends input to URL
-            $.ajax({
-                url: root,
-                method: "POST",
-                data: {
-                    body: input
-                }
-                //Gets the input back and appends it to the list
-            }).then(function (data) {
-                message = randomBirdSound() + ' ' + data.body;
-                msgListManager.chatReply(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
-                updateScroll(msgBox);
-            });
         }
         //preventDefault prevents the site from updating.
         event.preventDefault();

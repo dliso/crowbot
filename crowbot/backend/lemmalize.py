@@ -27,4 +27,3 @@ def lemmalize(statement):
     lemma_a = [lemmatizer.lemmatize(token.strip(string.punctuation), pos) for token, pos in pos_a
                if pos == wordnet.NOUN and token.strip(string.punctuation) not in stopwords]
     return lemma_a
-
