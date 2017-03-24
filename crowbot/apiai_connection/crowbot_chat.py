@@ -216,6 +216,8 @@ def ask_apiai(text):
             similar_question = ''
             similar_question_object = None
             lemmas1 = lemmalize(question)
+            if code.lower() not in lemmas1:
+                lemmas1.append(code.lower())
             lemmas_pickled = pickle.dumps(lemmas1)
             for q in Question.objects.all():
                 #ta inn lemma fra question
