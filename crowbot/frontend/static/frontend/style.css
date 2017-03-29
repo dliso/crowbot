@@ -148,10 +148,17 @@ header img {
     justify-content: flex-end;
 }
 
-.dropdown {
+.linker {
 	position:absolute;
-	right:120px;
+	right:130px;
 	z-index:1;
+}
+
+#sign-block{
+	background: white;
+	max-width:60em;
+	height:90%;
+	margin:auto;
 }
 
 

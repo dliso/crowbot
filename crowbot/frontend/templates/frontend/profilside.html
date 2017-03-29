@@ -17,31 +17,24 @@
         <h1>Crowbot</h1>    
 		<a href="{% url 'logout' %}">Logout</a>
 	</header>
-	<div id="tabs">
-		<ul class="nav nav-tabs">
-  			<li class="active"><a href="#">Profil</a></li>
-			<li><a href="#">TDT4100</a></li> <!-- her kjører vi emnekodene til det student har valgt å følge" -->
-			<li><a href="#">TDT4105</a></li>
-			<li><a href="#">MFEL1100</a></li>
-		</ul>
-	</div>
-	<br>
 	<div id="profil-block">
+	<br>
+	
 	<span class="listeTing"><p>Brukernavn:</p></span>
 		<div class="info"><p>{{ user.username }}</p>
 	</div>	
-	<div class="listeTing" ><p>Navn:</p></div><div class="info"><p> {{ user.get_full_name }} </p></div>
-	<div class="listeTing"><p>Institutt:</p></div>
-	<div class="info"><p>{{ user.profile.institute }}</p> </div>
-	<div class="listeTing"><p>Birthdate</p></div> 
-	<div class="info"><p>{{user.profile.birthdate}}</p></div>
-	<div class="listeTing"><p>Role:</p></div>
-	<div class="info"<p>{{user.profile.role}}</p></div>
-	<div class="listeTing">Email Adresse</div>
-	<div class="info" </div><p>{{ user.email }}</p></div>
+	<div class="listeTing" ><p>  Navn:</p></div><div class="info"><p> {{ user.get_full_name }} </p></div>
+	<div class="listeTing"><p>  Institutt:</p></div>
+	<div class="info"><p>  {{ user.profile.institute }}</p> </div>
+	<div class="listeTing"><p>  Birthdate</p></div> 
+	<div class="info"><p> {{user.profile.birthdate}}</p></div>
+	<div class="listeTing"><p> Role:</p></div>
+	<div class="info"<p>  {{user.profile.role}}</p></div>
+	<div class="listeTing"> Email Adresse</div>
+	<div class="info" </div><p>  {{ user.email }}</p></div>
 	
 	<div id="profilbilde">
-		<img src="profil.png" alt="Bilde">
+		<!--<img src="profil.png" alt="Bilde">-->
 	</div>
 	</div>
 	

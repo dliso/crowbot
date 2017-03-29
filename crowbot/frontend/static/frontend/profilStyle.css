@@ -1,10 +1,39 @@
 
 body{
-	margin-top:100px;
+	padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #c00000;
+	font-family: 'Noto Sans', sans;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 3px;
+    font-family: 'Noto Serif', serif;
+}
+
+#profil-block{
+	height:100%;
+	border-style:Solid;
+	border-width:5px;
+	border-color:#FFFFFF;
 	margin-left:450px;
 	margin-right:450px;
-	font-family: 'Noto Sans', sans;
-	
+	background: #FFFFFF;
+}
+
+header {
+    background: white;
+    border-bottom: 2px solid #c00000;
+    width: 100%;
+    box-shadow: 0 0 5px 5px rgba(0,0,0,0.2);
+    align-items: center;
+}
+
+header img {
+    height: 4em;
+    padding: 9px;
 }
 
 .listeTing{
