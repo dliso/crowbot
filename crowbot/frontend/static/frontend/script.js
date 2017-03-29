@@ -26,27 +26,28 @@ class ListManager {
 
     chatReply(text, usertype, username, timestamp, cssClasses){
         var subtext = "";
+        var task = "stop";
 
         //Når Crowbot svarer (dvs. svaret kommer automatisk fra API.AI-boten:
         if (username == "Crowbot"){
             subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
             var text = this.randomBirdSound() + ' ' + text;
-            var task = "play";
+            if($('#toggleaudio').is(":checked")) {
+                task = "play";
+            }
         }
 
         //Hvis svaret er lagt inn av anon:
         else if (username == undefined || username == "" || username == "Unknown"){
             subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16);
-            var task = "stop";
         }
 
         //Hvis svaret er lagt inn av usertype 'instructor' eller 'student':
         else{
             subtext = "Answer by " + usertype + " " + username + " " + "[" + timestamp.substring(0,10)
                 + " " + timestamp.substring(11,16) + "]";
-               var task = "stop";
         }
-        $(".crowsound").trigger('play');
+
         this.play_audio(task);
         this.appendWithSubtext(text, subtext, cssClasses);
     }
@@ -118,6 +119,9 @@ $( document).ready(function(){
     }).then(function(data) {
         console.log(data);
     });
+
+
+
 
     //Changes color of the list:
     //$( '#message-box').css("color","blue");
@@ -292,6 +296,10 @@ $( document).ready(function(){
         // Run the code that creates checkboxes, appends the questions to the lists, and hide/show the lists.
         createCheckboxes(data);
     });
+
+
+
+
 
 
 });
