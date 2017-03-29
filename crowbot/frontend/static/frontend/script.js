@@ -26,15 +26,12 @@ class ListManager {
 
     chatReply(text, usertype, username, timestamp, cssClasses){
         var subtext = "";
-        var task = "stop";
 
         //Når Crowbot svarer (dvs. svaret kommer automatisk fra API.AI-boten:
         if (username == "Crowbot"){
             subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
             var text = this.randomBirdSound() + ' ' + text;
-            if($('#toggleaudio').is(":checked")) {
-                task = "play";
-            }
+            this.play_audio();
         }
 
         //Hvis svaret er lagt inn av anon:
@@ -48,15 +45,15 @@ class ListManager {
                 + " " + timestamp.substring(11,16) + "]";
         }
 
-        this.play_audio(task);
+
         this.appendWithSubtext(text, subtext, cssClasses);
     }
 
-    play_audio(task) {
-        if (task == 'play') {
+    play_audio() {
+        if ($('#toggleaudio').is(":checked")) {
             $(".crowsound").trigger('play');
         }
-        if (task == 'stop') {
+        else {
             $(".crowsound").trigger('pause');
             $(".crowsound").prop("currentTime", 0);
         }
