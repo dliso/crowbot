@@ -367,13 +367,13 @@ class TestCrowbotChat(TestCase):
     # test help from user
     def test_ask_apiai_help(self):
         response = ask_apiai('Help')
-        self.assertEqual(response,'Crowbot is here for your service! Ask me course related questions, '
-                                  'like what semester a course is taught, exam dates, examination support, '
-                                  'coursecredit, professors name and email address and '
-                                  'recommended/required previous knowledge. '
-                                  'E.g. "When is the exam in *coursecode*?", '
-                                  '"What is the name of the professor in *coursecode*?" and '
-                                  '"What recommended previous knowledge is there in *coursecode*?"')
+        self.assertEqual(response,'Crowbot is here for your service! '
+                                  'Ask me any course related questions, and I will answer. '
+                                  'If I do not know the answer myself, your question will be saved '
+                                  'for your instructor to answer. Always include the course code in your questions. '
+                                  'E.g. "When is the exam in *course code*?", '
+                                  '"What is the name of the professor in *course code*?" and '
+                                  '"What recommended previous knowledge is there in *course code*?"')
 
     # test understandable input from user
     def test_ask_apiai_correct(self):
