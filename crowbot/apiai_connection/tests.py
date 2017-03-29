@@ -390,7 +390,7 @@ class TestCrowbotChat(TestCase):
 
 
     def test_nltk_q_not_existing(self):
-        response = ask_apiai('If I did the exercises in EXPH0004 last year, are they valid this year?')
+        response = ask_apiai('EXPH0004 what textbook is used?')
         self.assertEqual(response, 'No similar question detected, your question has been saved for the instructor to answer.')
         self.assertEqual(3, Question.objects.all().count())
 
