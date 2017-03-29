@@ -1,7 +1,9 @@
 from django.test import TestCase
 import json, apiai, datetime, pickle
 from apiai_connection.crowbot_chat import *
-from backend.models import Course, Question
+from backend.models import Course, Question, Answer
+from django.contrib.auth.models import User
+from account_system.models import Profile
 
 CLIENT_ACCESS_TOKEN = '1b0f421f4b1045c5a9b29c8372573383'
 
@@ -48,6 +50,11 @@ class TestCrowbotChat(TestCase):
                               exam_date=None,exam_support_code='',exam_support_name='Just yourself.',
                               location='',semester='',teacher_name='',
                               teacher_email='tullekopp@ntnu.no',ects_credits=None)
+        # user1 = User.objects.create(username='crowcrow', password='crowcrow123')
+        # user2 = User.objects.create(username='crowcrow2', password='crowcrow12321')
+        #
+        # profile1 = Profile.objects.create(user=user1, role=1)
+        # profile2 = Profile.objects.create(user=user2, role=2)
 
         Question.objects.create(text='How many exercises is mandatory in TDT4140?',
                                 course=Course.objects.get(code='TDT4140'),
@@ -55,6 +62,11 @@ class TestCrowbotChat(TestCase):
         Question.objects.create(text='How many exercises is there in total in EXPH0004?',
                                 course=Course.objects.get(code='EXPH0004'),
                                 lemma=pickle.dumps(['exercise', 'exph0004']))
+
+        Answer.objects.create(question = Question.objects.get(text = 'How many exercises is mandatory in TDT4140?'),
+                              text = 'No exercises in TDT4140, just a mandatory project.')
+
+
 
 
     def load_text_request_with_query(self, query):
