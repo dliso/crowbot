@@ -199,14 +199,14 @@ class TestCrowbotChat(TestCase):
 
     #test for course with location stored
     def test_user_request_location(self):
-        query = 'Where is FE8111 taught?'
+        query = 'Where is FE8111 located?'
         response = self.load_text_request_with_query(query)
         output = user_request(response)
         self.assertEqual(output,'FE8111 Molecular Beam Epitaxy is taught in Trondheim.')
 
     #test for course with no location stored
     def test_user_request_location_none(self):
-        query = 'Where is YRT5678 taught?'
+        query = 'Where is YRT5678 located?'
         response = self.load_text_request_with_query(query)
         output = user_request(response)
         self.assertEqual(output,'No location information for YRT5678 Tulle Emne.')
