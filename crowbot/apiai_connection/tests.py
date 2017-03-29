@@ -393,11 +393,10 @@ class TestCrowbotChat(TestCase):
         self.assertEqual(response,'Exam date for EXPH0004 Examen philosophicum for Science and Technology is 27/05/2017.')
 
 
-    # test nltk
+    # test nltk, respnse list of 2 objects and not adding new question object
     def test_nltk_existing_q(self):
         response = ask_apiai('How many exercises is needed in TDT4140?')
-        self.assertEqual(response,
-                         'Similar question detected: How many exercises is mandatory in TDT4140? with ratio 1.0.')
+        self.assertEqual(len(response), 2)
         self.assertEqual(2, Question.objects.all().count())
 
 
