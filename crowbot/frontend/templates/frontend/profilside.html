@@ -14,8 +14,10 @@
 
 	<header class="flex-container">
 		<img alt="" src="{% static 'frontend/crowbot.png' %}"/>
-        <h1>Crowbot</h1>    
-		<a href="{% url 'logout' %}">Logout</a>
+        <h1>Crowbot</h1>
+		<div class="linker">
+		<a href="{% url 'logout' %}">Logout</a>/<a href="..">Home</a>
+		</div>
 	</header>
 	<div id="profil-block">
 	<br>
