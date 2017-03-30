@@ -21,26 +21,30 @@
 	</header>
   <body class="flex-container flex-column">
   <h2>Log in</h2>
-  {% if form.errors %}
-    <p style="color: red">Your username and password didn't match. Please try again.</p>
-  {% endif %}
-  <form method="post">
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{ next }}" />
-    {% for field in form %}
-      <p>
-        {{ field.label_tag }}<br>
-        {{ field }}<br>
-        {% for error in field.errors %}
-          <p style="color: red">{{ error }}</p>
-        {% endfor %}
-        {% if field.help_text %}
-          <p><small style="color: grey">{{ field.help_text }}</small></p>
-        {% endif %}
-      </p>
-    {% endfor %}
-    <button type="submit">Log in</button>
-	<br>
-    No user?<a href="{% url 'signup' %}">Sign up</a>
+  {% if user.is_authenticated %}
+  <h3>You're already logged in</h3>
+  {% else %}
+	{% if form.errors %}
+		<p style="color: red">Your username and password didn't match. Please try again.</p>
+	{% endif %}
+	<form method="post">
+		{% csrf_token %}
+			<input type="hidden" name="next" value="{{ next }}" />
+			{% for field in form %}
+		<p>
+			{{ field.label_tag }}<br>
+			{{ field }}<br>
+			{% for error in field.errors %}
+			<p style="color: red">{{ error }}</p>
+			{% endfor %}
+			{% if field.help_text %}
+			<p><small style="color: grey">{{ field.help_text }}</small></p>
+			{% endif %}
+			</p>
+			{% endfor %}
+		<button type="submit">Log in</button>
+		<br>
+		No user?<a href="{% url 'signup' %}">Sign up</a>
   </form>
+  {% endif %}
 {% endblock %}

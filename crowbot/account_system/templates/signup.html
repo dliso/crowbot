@@ -19,23 +19,27 @@
             <h1>Crowbot</h1>
 			<a id="profilLink" href="{% url 'login' %}">login</a> / <a id="profilLink "href="{% url 'logout' %}">Home</a>
 	</header>
-  <h2>Sign up</h2>
-  <form method="post">
-    {% csrf_token %}
-    {% for field in form %}
-      <p>
-        {{ field.label_tag }}<br>
-        {{ field }}
-        {% if field.help_text %}
-          <small style="color: red">{{ field.help_text }}</small>
-        {% endif %}
-        {% for error in field.errors %}
-          <p style="color: red">{{ error }}</p>
-        {% endfor %}
-      </p>
-    {% endfor %}
-    <button type="submit">Sign up</button>
-  </form>
+	{% if user.is_authenticated %}
+	<h3> You're already logged in</h3>
+	{% else %}
+		<h2>Sign up</h2>
+		<form method="post">
+			{% csrf_token %}
+			{% for field in form %}
+		<p>
+				{{ field.label_tag }}<br>
+				{{ field }}
+			{% if field.help_text %}
+			<small style="color: red">{{ field.help_text }}</small>
+			{% endif %}
+			{% for error in field.errors %}
+			<p style="color: red">{{ error }}</p>
+			{% endfor %}
+		</p>
+		{% endfor %}
+		<button type="submit">Sign up</button>
+	</form>
+	{% endif %}
 {% endblock %}
 
 </html>
