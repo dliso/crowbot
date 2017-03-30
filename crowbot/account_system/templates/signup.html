@@ -17,8 +17,11 @@
 	<header class="flex-container">
             <img alt="" src="{% static 'frontend/crowbot.png' %}"/>
             <h1>Crowbot</h1>
-			<a id="profilLink" href="{% url 'login' %}">login</a> / <a id="profilLink "href="{% url 'logout' %}">Home</a>
+			<div class=linker>
+			<a id="profilLink" href="{% url 'login' %}">Log in</a> / <a id="profilLink"href="{% url 'logout' %}">Home</a>
+			</div>
 	</header>
+	<div id="sign-block">
 	{% if user.is_authenticated %}
 	<h3> You're already logged in</h3>
 	{% else %}
@@ -39,7 +42,9 @@
 		{% endfor %}
 		<button type="submit">Sign up</button>
 	</form>
+	
 	{% endif %}
+	</div>
 {% endblock %}
 
 </html>

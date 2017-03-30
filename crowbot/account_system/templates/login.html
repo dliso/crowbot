@@ -16,10 +16,13 @@
 {% block content %}
 	<header class="flex-container">
             <img alt="" src="{% static 'frontend/crowbot.png' %}"/>
-            <h1>Crowbot</h1>   
+            <h1>Crowbot</h1>  
+			<div class="linker">
 			<a id="profilLink" href="{% url 'logout' %}">Home</a> / <a id="profilLink" href="{% url 'signup' %}">Sign up</a>
+			</div>
 	</header>
   <body class="flex-container flex-column">
+  <div id= "logg-block">
   <h2>Log in</h2>
   {% if user.is_authenticated %}
   <h3>You're already logged in</h3>
@@ -47,4 +50,5 @@
 		No user?<a href="{% url 'signup' %}">Sign up</a>
   </form>
   {% endif %}
+  </div>
 {% endblock %}
