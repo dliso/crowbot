@@ -18,7 +18,7 @@ class Command(BaseCommand):
         def send():
             send_list = []
 
-            for profile in Profile.objects.filter(role__exact = Profile.STUDENT):
+            for profile in Profile.objects.filter(role__exact = Profile.PROFESSOR):
                 send_list.append(profile.user.email)
 
             TO = send_list
