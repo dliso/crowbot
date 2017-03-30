@@ -14,6 +14,11 @@
         <script src="{% static 'frontend/script.js' %}"></script>
     </head>
 {% block content %}
+	<header class="flex-container">
+            <img alt="" src="{% static 'frontend/crowbot.png' %}"/>
+            <h1>Crowbot</h1>
+			<a id="profilLink" href="{% url 'login' %}">login</a> / <a id="profilLink "href="{% url 'logout' %}">Home</a>
+	</header>
   <h2>Sign up</h2>
   <form method="post">
     {% csrf_token %}
