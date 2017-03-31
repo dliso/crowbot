@@ -33,16 +33,10 @@ def add_question(question):
 
 @csrf_exempt
 def respond_to_message(request):
+    if request.method != 'POST':
+        return HttpResponse('only POST accepted', status=405)
     print(request)
-    res = ''
-    if request.method == 'GET':
-        res += 'GET'
-        for i in request.GET.items():
-            res += str(i)
-        res += '\n'
-        res += str(crowbot_chat.ask_apiai(request.GET['q']))
     if request.method == 'POST':
-        res += 'POST request received'
         req_body = request.POST['body']
         res_data = {
             'usertype': 'bot',
@@ -72,7 +66,6 @@ def respond_to_message(request):
             res_data['body'] = 'jeg tør ikke oppgi navnet mitt'
             res_data['timestamp'] = tz.now()
         elif req_body == 'test multi':
-            res = {'body': 'hei'}
             res_data['body'] = 'multibeskjed'
             res_data['timestamp'] = tz.now()
             res_data = [res_data] * 3
