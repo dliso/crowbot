@@ -1,9 +1,29 @@
 // This file is loaded and executed when the main Crowbot page is opened.
 
+class Message {
+    constructor(message) {
+        this.msgBody = message.body;
+        if (message.msgBody) {
+            this.msgBody = message.msgBody;
+        }
+        this.ownMessage = message.ownMessage;
+    }
+
+    makeLi() {
+        let li = $('<li/>')
+                .append(this.msgBody);
+        return li;
+    }
+}
+
 class ListManager {
 
     constructor(listID){  //f.eks question-queue
         this.list = listID;
+    }
+
+    addItem(item) {
+        this.list.append(item);
     }
 
     appendText(content, cssClasses){ //cssClasses er ei liste.
