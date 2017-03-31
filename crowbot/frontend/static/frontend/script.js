@@ -117,16 +117,21 @@ $( document).ready(function(){
         //Finds user input and appends it
         var input = $( "#user-input").val();
         if (input !== "") {
-            msgListManager.appendText(input, ['user-msg', 'message']);
+            userMessage = new Message({msgBody: input, ownMessage: true});
+            msgListManager.addItem(
+                userMessage.makeLi()
+                    .addClass('message user-msg')
+            );
             updateScroll(msgBox);
 
             if (input.startsWith("#")){
                 var regexArray = input.match(primaryKeyRegex);
                 var q_pk = regexArray[0].substring(1); //Removes the '#'
                 let submit_answer_route = "/api/submit_answer/";
-                $.post(submit_answer_route, {q_pk: q_pk, body: inpu})
+                $.post(submit_answer_route, {q_pk: q_pk, body: input})
                     .then(function(conf){ //conf = confirmation that the bot received the instructors answer
-                        msgListManager.appendText(conf.body,['bot-msg', 'message']);
+                        let message = new Message(conf);
+                        msgListManager.addItem(message.makeLi().addClass('message bot-msg'));
                         updateScroll(msgBox);
                     });
             } else {
@@ -142,7 +147,11 @@ $( document).ready(function(){
                         data = [data_raw];
                     }
                     for(data of data) {
-                        msgListManager.chatReply(data.body, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
+                        data.ownMessage = false;
+                        message = new Message(data);
+                        msgListManager.addItem(
+                            message.makeLi().addClass('message bot-msg')
+                        );
                         updateScroll(msgBox);
                     }
                 });
