@@ -81,6 +81,8 @@ def respond_to_message(request):
             res_data['body'] = response
             if isinstance(response, list):
                 res_data = response
+    if not isinstance(res_data, list):
+        res_data = [res_data]
     return HttpResponse(json_dump(res_data), content_type="application/json")
 
 def questions_for_course(request, course_code):
