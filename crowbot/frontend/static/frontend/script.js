@@ -87,7 +87,7 @@ $( document).ready(function(){
     }
 
     //RegEx pattern for q_pk (question primary key)
-    var re = /\#[0-9]+/g;
+    let primaryKeyRegex = /\#[0-9]+/g;
 
     msgListManager = new ListManager($("#message-box"));
 
@@ -101,7 +101,7 @@ $( document).ready(function(){
             updateScroll(msgBox);
 
             if (input.startsWith("#")){
-                var regexArray = input.match(re);
+                var regexArray = input.match(primaryKeyRegex);
                 var q_pk = regexArray[0].substring(1); //Removes the '#'
                 //console.log(q_pk);
                 root = "/api/submit_answer/";
@@ -155,25 +155,17 @@ $( document).ready(function(){
             $("#user-input").val('');
             return false;
         }
+        return true;
     });
 
-    var q_list_root = '/api/question_queue';
-
     function addPendingQuestions(course_code, listmanager){
-        $.ajax({
-        //Get the question
-            url: q_list_root + "/" + course_code,
-            method: "GET"
-        }).then(function(questions){
+        $.getJSON('/api/question_queue/' + course_code)
+            .then(function(questions){
             for (q of questions){
                 listmanager.addPendingQuestion(q.text,q.datetime,q.pk);
             }
         });
     }
-    //pendingQuestionList = new ListManager($("#question-queue"));
-
-    //addPendingQuestions("TDT4100", pendingQuestionList);
-
 
     // The following code controls the button that you can click to show/hide Pending Questions
     $("#showPQs").click(function(){
@@ -200,10 +192,13 @@ $( document).ready(function(){
 
         for (course of subscribed_courses) {
             // For every subscribed course, make a checkbox.
-            $("#checkboxes").append($('<input/>', {id: course + "checkbox", type: "checkbox", name: "course", value: "Courses"})).append(" " + course.toUpperCase()).append($('<br>'));
+            $("#checkboxes")
+                .append($('<input/>', {id: course + "checkbox", type: "checkbox", name: "course", value: "Courses"}))
+                .append(" " + course.toUpperCase()).append($('<br>'));
 
             // For every subscribed course, make a list.
-            $("#PendingQs-courselists").append($('<ul/>', {id: course + "list", style: "display:none;"}).addClass("question-list"));
+            $("#PendingQs-courselists")
+                .append($('<ul/>', {id: course + "list", style: "display:none;"}).addClass("question-list"));
 
 
             lm = new ListManager($("#" + course + "list"));
@@ -216,12 +211,8 @@ $( document).ready(function(){
         }
     }
 
-    // Get the subscribed courses
-    $.ajax({
-        url: '/api/my_courses/', //URL
-        method: "GET"
-    }).then(function(data){ //"then" waits for the response and executes the function when it arrives.
-
+    $.getJSON('/api/my_courses/')
+        .then(function(data){ //"then" waits for the response and executes the function when it arrives.
         // Run the code that creates checkboxes, appends the questions to the lists, and hide/show the lists.
         createCheckboxes(data);
     });
