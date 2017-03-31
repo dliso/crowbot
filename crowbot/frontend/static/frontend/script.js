@@ -70,37 +70,6 @@ class ListManager {
         return sound;
     }
 
-/*    addToListWithTimeAndUser(text, usertype, username, timestamp, cssClasses, number){
-        var subtext = "";
-        if (username == "Crowbot") {
-            subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
-        }
-        else if (username == undefined || username == "" || username == "Unknown"){
-            subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16);
-            if (number != null){
-                subtext += " id = " + number;
-            }
-        }
-        else{
-            subtext = "Answer by " + usertype + " " + username + " " + "[" + timestamp.substring(0,10)
-                + " " + timestamp.substring(11,16) + "]";
-        }
-        var listItem = $('<li/>')
-            .append($('<div/>', {text: text}))
-            .append($('<div/>', {text: subtext}).css('font-size', '10px'));
-        var li = listItem.addClass(cssClasses.join(" ")); // lager liste-element med klasser.
-
-        this.list.append(li);
-   }*/
-
-
-
-/*   //content is a list item.
-    addListItemToList(content, cssClasses){ //cssClasses er ei liste.
-        var li = content.addClass(cssClasses.join(" ")); // lager liste-element med klasser.
-        this.list.append(li);
-    }*/
-
 }
 
 function prettyDatetime(datetime) { //brukes ikke
@@ -110,41 +79,6 @@ function prettyDatetime(datetime) { //brukes ikke
 
 
 $( document).ready(function(){
-    // jQuery example:
-    var root = 'https://jsonplaceholder.typicode.com';
-    $.ajax({
-        url: root + '/posts/1',
-        method: 'GET'
-    }).then(function(data) {
-        console.log(data);
-    });
-
-    //Changes color of the list:
-    //$( '#message-box').css("color","blue");
-
-    //Adds the word "Hei" to the lists:
-    //$( "#message-box").append("<li>Hei</li>");
-
-    //Creates a new XMLHttpRequest-object but we're not using it. Yet.
-    //var xhttp = new XMLHttpRequest();
-
-    // http://scooterlabs.com/echo is the url of an "echoing site",
-    // but we're not using it and I don't even know if the code works.
-    // xhttp.open("POST", "http://scooterlabs.com/echo", true);
-
-    //Another jQuery example:
-    // $.ajax({
-    //     url: root + '/posts', //URL
-    //     method: "POST", //POST or GET etc...
-    //     data: {
-    //         title: "foo",
-    //         body: "bar",
-    //         userId: 1
-    //     }
-    //     //dataType: "jsonp"
-    // }).then(function(data){ //"then" waits for the response and executes the function when it arrives.
-    //     console.log(data)
-    // });
 
     msgBox = document.getElementById("message-box");
 
@@ -163,7 +97,6 @@ $( document).ready(function(){
         //Finds user input and appends it
         var input = $( "#user-input").val();
         if (input !== "") {
-            //input_html = "<li class='message user-msg'>" + input + "</li>"; // Jeg kommenterte denne ut fordi det virker ikke som den brukes.
             msgListManager.appendText(input, ['user-msg', 'message']);
             updateScroll(msgBox);
 
