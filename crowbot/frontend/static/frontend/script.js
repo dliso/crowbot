@@ -1,5 +1,33 @@
 // This file is loaded and executed when the main Crowbot page is opened.
 
+let FEEDITEMTYPE = {
+    question            : 'Question',
+    questionWithAnswers : 'QuestionWithAnswers',
+    faq                 : 'FAQ',
+    info                : 'Info',
+    highlyRated         : 'HighlyRated'
+};
+
+let USERTYPE = {
+    bot        : 'Bot',
+    instructor : 'Instructor',
+    student    : 'Student',
+    anonymous  : 'Anonymous'
+};
+
+
+let ANSWERVOTE = {
+    none : 'none',
+    up   : 'up',
+    down : 'down'
+};
+
+let MESSAGETYPE = {
+    botResponse    : 'BotResponse',
+    storedQuestion : 'StoredQuestion',
+    storedAnswer   : 'StoredAnswer'
+};
+
 class Message {
     constructor(message) {
         this.msgBody = message.body;

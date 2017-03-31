@@ -127,8 +127,13 @@ class FEEDITEMTYPE:
 
 class ANSWERVOTE:
     none = 'none'
-    up = 'up'
+    up   = 'up'
     down = 'down'
+
+class MESSAGETYPE:
+    bot_response    = 'BotResponse'
+    stored_question = 'StoredQuestion'
+    stored_answer   = 'StoredAnswer'
 
 def make_feed_item(item_type, content):
     return {'itemType': item_type, 'itemContent': content}
