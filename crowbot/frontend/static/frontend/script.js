@@ -137,18 +137,10 @@ $( document).ready(function(){
             } else {
                 let ask_question_route = '/api/ask_question';
                 $.post(ask_question_route, {body: input})
-                    .then(function (data_raw) {
-                    // We expect to receive either a single message or a list of messages.
-                    // If it's a single message, we wrap it in a list so we can treat both
-                    // cases the same way.
-                    if(Array.isArray(data_raw)) {
-                        data = data_raw;
-                    } else {
-                        data = [data_raw];
-                    }
-                    for(data of data) {
-                        data.ownMessage = false;
-                        message = new Message(data);
+                    .then(function (messages) {
+                    for(message of messages) {
+                        message.ownMessage = false;
+                        message = new Message(message);
                         msgListManager.addItem(
                             message.makeLi().addClass('message bot-msg')
                         );
