@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^answers_for/(.*)/?$', api_views.answers_for_question, name='ask_question'),
     url(r'^submit_answer/?$', api_views.submit_answer, name='submit_answer'),
     url(r'^my_courses/?$', api_views.my_courses, name='my_courses'),
+    url(r'^my_feed/?$', api_views.user_feed, name='my_feed'),
     url(r'^question_queue/(.*)/?$', api_views.questions_for_course, name='question_queue'),
     url(r'^$', views.index, name='index'),
 ]

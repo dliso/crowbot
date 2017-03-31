@@ -111,3 +111,67 @@ def answers_for_question(request, pk):
     return HttpResponse(
         serializers.serialize('json', response)
     )
+
+class USERTYPE:
+    bot        = 'Bot'
+    instructor = 'Instructor'
+    student    = 'Student'
+    anonymous  = 'Anonymous'
+
+class FEEDITEMTYPE:
+    question              = 'Question'
+    question_with_answers = 'QuestionWithAnswers'
+    faq                   = 'FAQ'
+    info                  = 'Info'
+    highly_rated          = 'HighlyRated'
+
+class ANSWERVOTE:
+    none = 'none'
+    up = 'up'
+    down = 'down'
+
+def make_feed_item(item_type, content):
+    return {'itemType': item_type, 'itemContent': content}
+
+def user_feed(request):
+    u1 = {
+        'pk': 1,
+        'name': 'Student Smith',
+        'usertype': USERTYPE.student,
+        'avatarUrl': '',
+    }
+    u2 = {
+        'pk': 2,
+        'name': 'Dr. Teacher',
+        'usertype': USERTYPE.instructor,
+        'avatarUrl': '',
+    }
+    feed = []
+    question = make_feed_item(FEEDITEMTYPE.question,
+                              {
+                                  'user': u1,
+                                  'ownMessage': False,
+                                  'timestamp': tz.now(),
+                                  'msgBody': 'hjølp',
+                                  'courseId': 'tdt4145',
+                                  'pk': 1,
+                                  'thisUserAsked': False,
+                                  'askedCount': 10,
+                              })
+    feed.append(question)
+    answer = {
+        'user': u2,
+        'ownMessage': False,
+        'timestamp': tz.now(),
+        'msgBody': 'hjølp',
+        'courseId': 'tdt4145',
+        'pk': 1,
+        'score': 5,
+        'thisUserVoted': ANSWERVOTE.none,
+    }
+    q_with_as = make_feed_item(FEEDITEMTYPE.question_with_answers,
+                               [question,
+                               [answer]]
+    )
+    feed.append(q_with_as)
+    return HttpResponse(json_dump(feed))
