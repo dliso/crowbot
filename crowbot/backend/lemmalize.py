@@ -1,6 +1,5 @@
 from nltk.corpus import wordnet
-import nltk
-import string
+import nltk, string
 
 def lemmalize(statement):
 
