@@ -120,6 +120,30 @@ class ListManager {
 
 }
 
+class FeedManager {
+    constructor() {
+        // this.container = feedContainer;
+        this.header = $('#feed-toggles');
+        this.items = $('#feed-items');
+        this.manager = new ListManager($('#feed-items'));
+        this.itemsByCourse = new Object();
+    }
+
+    addItem(item) {
+        let li = $('<li/>');
+        li.append(item.itemContent.msgBody);
+
+        let courseId = item.itemContent.courseId;
+        if(this.itemsByCourse[courseId] === undefined) {
+            this.itemsByCourse[courseId] = [];
+        }
+        this.itemsByCourse[courseId].push(courseId);
+
+        this.manager.addItem(li);
+        console.log(this.itemsByCourse);
+    }
+}
+
 function prettyDatetime(datetime) { //brukes ikke
     return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
 }
