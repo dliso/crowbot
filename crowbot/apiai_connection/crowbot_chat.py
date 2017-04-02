@@ -219,7 +219,11 @@ def ask_apiai(text):
             if code.lower() not in lemmas1:
                 lemmas1.append(code.lower())
             lemmas_pickled = pickle.dumps(lemmas1)
-            for q in Question.objects.all():
+            # for å finne spm i databasen bruker 5,70 s, 6,66 s (intet likt spm), 5.55 s
+            # for q in Question.objects.all():
+
+            # bruker 4,30 s, 4,13 s, 5,30 s (intet likt spm), 4,23 s
+            for q in Question.objects.filter(course = course):
                 #ta inn lemma fra question
                 lemmas2 = pickle.loads(q.lemma)
                 result = jaccard_similarity(lemmas1,lemmas2)
