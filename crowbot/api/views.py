@@ -135,8 +135,10 @@ class MESSAGETYPE:
     stored_question = 'StoredQuestion'
     stored_answer   = 'StoredAnswer'
 
-def make_feed_item(item_type, content):
-    return {'itemType': item_type, 'itemContent': content}
+def make_feed_item(item_type, first_message, replies=[]):
+    return {'itemType': item_type,
+            'firstMessage': first_message,
+            'replies': replies}
 
 def user_feed(request):
     u1 = {
@@ -175,8 +177,8 @@ def user_feed(request):
         'thisUserVoted': ANSWERVOTE.none,
     }
     q_with_as = make_feed_item(FEEDITEMTYPE.question_with_answers,
-                               [question,
-                               [answer]]
+                               question,
+                               [answer]
     )
     feed.append(q_with_as)
     return HttpResponse(json_dump(feed))
