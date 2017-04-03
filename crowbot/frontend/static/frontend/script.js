@@ -81,6 +81,10 @@ class Message {
         let contentSpan = $('<span/>').append(this.msgBody);
         let symbolSpan = $('<span/>').append('?');
         let buttonSpan = $('<span/>').append('+1');
+        buttonSpan.click(event => {
+            $.post('/api/toggle_interest/', {pk: this.pk})
+                .then(console.log);
+        });
         let content = $('<div/>')
                 .append(symbolSpan)
                 .append(contentSpan)

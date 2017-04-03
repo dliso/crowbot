@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^my_courses/?$', api_views.my_courses, name='my_courses'),
     url(r'^subscribe_to/(.*)/?$', api_views.subscribe_to_course, name='subscribe_to_course'),
     url(r'^unsubscribe_from/(.*)/?$', api_views.unsubscribe_from_course, name='unsubscribe_from_course'),
+    url(r'^toggle_interest/?$', api_views.plus_one_question, name='toggle_interest'),
     url(r'^my_feed/?$', api_views.user_feed, name='my_feed'),
     url(r'^question_queue/(.*)/?$', api_views.questions_for_course, name='question_queue'),
     url(r'^$', views.index, name='index'),

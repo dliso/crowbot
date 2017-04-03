@@ -218,3 +218,17 @@ def unsubscribe_from_course(request, course_id):
     else:
         return HttpResponse('must be logged in to unsubscribe from courses', status=403)
 
+@csrf_exempt
+def plus_one_question(request):
+    if request.user.is_authenticated:
+        profile = request.user.profile
+        pk = request.POST['pk']
+        try:
+            q = Question.objects.get(id=pk)
+        except exceptions.ObjectDoesNotExist as e:
+            return HttpResponse("question doesn't exist")
+        print(request.POST)
+        return HttpResponse('thanks')
+    else:
+        return HttpResponse('must be logged in to +1 question')
+
