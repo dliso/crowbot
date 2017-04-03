@@ -164,6 +164,7 @@ def user_feed(request):
                                   'pk': 1,
                                   'thisUserAsked': False,
                                   'askedCount': 10,
+                                  'msgType': MESSAGETYPE.stored_question,
                               })
     feed.append(question)
     answer = {
@@ -175,6 +176,7 @@ def user_feed(request):
         'pk': 1,
         'score': 5,
         'thisUserVoted': ANSWERVOTE.none,
+        'msgType': MESSAGETYPE.stored_answer,
     }
     q_with_as = make_feed_item(FEEDITEMTYPE.question_with_answers,
                                question['firstMessage'],
