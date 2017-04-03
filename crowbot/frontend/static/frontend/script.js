@@ -35,11 +35,62 @@ class Message {
             this.msgBody = message.msgBody;
         }
         this.ownMessage = message.ownMessage;
+        this.courseId = message.courseId;
+        this.msgType = message.msgType;
+        this.user = message.user;
+        this.pk = message.pk;
+        this.askedCount = message.askedCount;
+        this.score = message.score;
     }
 
     makeLi() {
-        let li = $('<li/>')
-                .append(this.msgBody);
+        let li;
+        switch (this.msgType) {
+        case MESSAGETYPE.storedAnswer:
+            li = this.makeAnswerLi();
+            break;
+        case MESSAGETYPE.storedQuestion:
+            li = this.makeQuestionLi();
+            break;
+        }
+        return li;
+    }
+
+    makeAnswerLi() {
+        let li = $('<li/>');
+        let contentSpan = $('<span/>').append(this.msgBody);
+        let symbolSpan = $('<span/>').append('!');
+        let buttonSpan = $('<span/>').append('👍' + this.score + '👎');
+        let content = $('<div/>')
+                .append(symbolSpan)
+                .append(contentSpan)
+                .append(buttonSpan);
+        let infoLine = $('<div/>')
+                .append(this.user.name)
+                .css('font-size', '0.7em');
+        li.append(content);
+        li.append(infoLine);
+        li.addClass('message');
+        li.addClass('user-msg');
+        return li;
+    }
+
+    makeQuestionLi() {
+        let li = $('<li/>');
+        let contentSpan = $('<span/>').append(this.msgBody);
+        let symbolSpan = $('<span/>').append('?');
+        let buttonSpan = $('<span/>').append('+1');
+        let content = $('<div/>')
+                .append(symbolSpan)
+                .append(contentSpan)
+                .append(buttonSpan);
+        let infoLine = $('<div/>')
+                .append(this.user.name + '. Asked ' + this.askedCount + ' times.')
+                .css('font-size', '0.7em');
+        li.append(content);
+        li.append(infoLine);
+        li.addClass('message');
+        li.addClass('bot-msg');
         return li;
     }
 }
@@ -214,7 +265,7 @@ $( document).ready(function(){
         }
     });
 
-    function populateFeed(courseList) {
+    function populateFeedCourseList(courseList) {
         let feedContainer = $('#feed-container');
         let feedToggles = $('#feed-toggles');
         for (courseId of courseList) {
@@ -228,14 +279,37 @@ $( document).ready(function(){
         }
     }
 
-    $.getJSON('/api/my_courses/').then(populateFeed);
-    $.getJSON('/api/my_feed/').then(function(data) {
-        for(d of data) {
-            let itemType, itemContent;
-            ({itemType, itemContent} = d);
-            console.log(itemType);
-            console.log(itemContent);
+    function decorate(container, type) {
+        return container;
+    }
+
+    function populateFeed(feedResponse) {
+        let feed = $('#feed-items');
+        for (item of feedResponse) {
+            let itemType = item.itemType;
+            let firstMessageRaw = item.firstMessage;
+            let repliesRaw = item.replies;
+            let container = $('<div/>');
+            container = decorate(container, itemType);
+            parent = new Message(firstMessageRaw);
+            console.log(parent);
+            let li = parent.makeLi();
+            container.append(li);
+            // li.addClass('message bot-msg');
+            li.attr('data-courseId', parent.courseId);
+            li.attr('data-msgType', parent.msgType);
+            li.attr('data-pk', parent.pk);
+            replies = [];
+            for (r of repliesRaw) {
+                let rObj = new Message(r);
+                replies.push(r);
+                container.append(rObj.makeLi());
+            }
+            feed.append(container);
         }
-    });
+    }
+
+    $.getJSON('/api/my_courses/').then(populateFeedCourseList);
+    $.getJSON('/api/my_feed/').then(populateFeed);
 
 });
