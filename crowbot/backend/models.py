@@ -73,6 +73,7 @@ class Answer(models.Model):
         Question,
         on_delete = models.SET_NULL,
         null = True,
+        related_name = 'answers'
     )
     user_id = models.ForeignKey(
         User,
