@@ -67,6 +67,7 @@ class Message {
                 .append(buttonSpan);
         let infoLine = $('<div/>')
                 .append(this.user.name)
+                .append(this.courseId)
                 .css('font-size', '0.7em');
         li.append(content);
         li.append(infoLine);
@@ -86,6 +87,7 @@ class Message {
                 .append(buttonSpan);
         let infoLine = $('<div/>')
                 .append(this.user.name + '. Asked ' + this.askedCount + ' times.')
+                .append(this.courseId)
                 .css('font-size', '0.7em');
         li.append(content);
         li.append(infoLine);
@@ -287,7 +289,7 @@ $( document).ready(function(){
                     hideCourses(checkbox.attr('data-cb-courseId'));
                 }
             });
-            let label = $('<label/>', {'for': 'cb-'+courseId, text: courseId.toUpperCase()})
+            let label = $('<label/>', {'for': 'cb-'+courseId, text: courseId})
                     .css('border', '1px solid #c00000')
                     .css('margin', '1px')
                     .css('padding', '2px');
