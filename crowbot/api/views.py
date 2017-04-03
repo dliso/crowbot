@@ -177,7 +177,7 @@ def user_feed(request):
         'thisUserVoted': ANSWERVOTE.none,
     }
     q_with_as = make_feed_item(FEEDITEMTYPE.question_with_answers,
-                               question,
+                               question['firstMessage'],
                                [answer]
     )
     feed.append(q_with_as)
