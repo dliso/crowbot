@@ -55,7 +55,8 @@ class Question(models.Model):
     creation_datetime = models.DateTimeField(auto_now_add = True)
     text = models.TextField()
     lemma = models.BinaryField()
-    interested_users = models.ManyToManyField(User, related_name='interested_in')
+    interested_users = models.ManyToManyField(User, related_name='interested_in',
+                                              blank=True)
 
 
     def __str__(self):
@@ -78,6 +79,8 @@ class Answer(models.Model):
     )
     creation_datetime = models.DateTimeField(auto_now_add = True)
     text = models.TextField()
-    upvoted_by = models.ManyToManyField(User, related_name='upvoted')
-    downvoted_by = models.ManyToManyField(User, related_name='downvoted')
+    upvoted_by = models.ManyToManyField(User, related_name='upvoted',
+                                        blank=True)
+    downvoted_by = models.ManyToManyField(User, related_name='downvoted',
+                                          blank=True)
 
