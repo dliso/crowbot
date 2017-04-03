@@ -141,48 +141,53 @@ def make_feed_item(item_type, first_message, replies=[]):
             'replies': replies}
 
 def user_feed(request):
-    u1 = {
-        'pk': 1,
-        'name': 'Student Smith',
-        'usertype': USERTYPE.student,
-        'avatarUrl': '',
-    }
-    u2 = {
-        'pk': 2,
-        'name': 'Dr. Teacher',
-        'usertype': USERTYPE.instructor,
-        'avatarUrl': '',
-    }
+    """
+    Return the following:
+    1. All questions and answers connected to a course
+    """
     feed = []
-    question = make_feed_item(FEEDITEMTYPE.question,
-                              {
-                                  'user': u1,
-                                  'ownMessage': False,
-                                  'timestamp': tz.now(),
-                                  'msgBody': 'hjølp',
-                                  'courseId': 'TDT4145',
-                                  'pk': 1,
-                                  'thisUserAsked': False,
-                                  'askedCount': 10,
-                                  'msgType': MESSAGETYPE.stored_question,
-                              })
-    feed.append(question)
-    answer = {
-        'user': u2,
-        'ownMessage': False,
-        'timestamp': tz.now(),
-        'msgBody': 'hjølp',
-        'courseId': 'TDT4145',
-        'pk': 1,
-        'score': 5,
-        'thisUserVoted': ANSWERVOTE.none,
-        'msgType': MESSAGETYPE.stored_answer,
-    }
-    q_with_as = make_feed_item(FEEDITEMTYPE.question_with_answers,
-                               question['firstMessage'],
-                               [answer]
-    )
-    feed.append(q_with_as)
+    courses = request.user.profile.subscribed_courses.values('code')
+    for course in courses:
+        print(course['code'])
+        qs = Question.objects.filter(course__code = course['code'])
+        for q in qs:
+            print(q)
+            profile = q.user_id.profile
+            if profile:
+                user = profile.to_dict()
+            else:
+                user = {}
+            firstMessage = {
+                    'user': user,
+                    'ownMessage': request.user == q.user_id,
+                    'timestamp': q.creation_datetime,
+                    'msgBody': q.text,
+                    'courseId': q.course.code,
+                    'pk': q.id,
+                    'thisUserAsked': False,
+                    'askedCount': q.interested_users.count(),
+                    'msgType': MESSAGETYPE.stored_question,
+                }
+            replies = []
+            for a in q.answers.all():
+                print(a.text)
+                reply = {
+                    'user': a.user_id.profile.to_dict(),
+                    'ownMessage': a.user_id == request.user,
+                    'timestamp': a.creation_datetime,
+                    'msgBody': a.text,
+                    'courseId': a.question.course.code,
+                    'pk': a.id,
+                    'score': a.upvoted_by.all().count() - a.downvoted_by.all().count(),
+                    'thisUserVoted': ANSWERVOTE.none,
+                    'msgType': MESSAGETYPE.stored_answer,
+                }
+                replies.append(reply)
+            feed.append({
+                'itemType': FEEDITEMTYPE.question,
+                'replies': replies,
+                'firstMessage': firstMessage,
+            })
     return HttpResponse(json_dump(feed))
 
 @csrf_exempt
