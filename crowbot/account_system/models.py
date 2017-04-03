@@ -1,14 +1,16 @@
-from __future__ import unicode_literals
+# from __future__ import unicode_literals
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils.encoding import python_2_unicode_compatible
+# from django.utils.encoding import python_2_unicode_compatible
 from django.db import models
 from backend import models as backend_models
 
+from api.usertype import *
+
 
 # Create your models here.
-@python_2_unicode_compatible
+# @python_2_unicode_compatible
 
 class Profile(models.Model):
     STUDENT = 1
@@ -25,8 +27,16 @@ class Profile(models.Model):
     subscribed_courses = models.ManyToManyField(backend_models.Course)
 
     def __str__(self):
-            return self.user.username
+        return self.user.username
 
+    def to_dict(self):
+        usertype = USERTYPE.from_profile_role(self.role)
+        return {
+            'name': self.user.username,
+            'pk': self.user.id,
+            'usertype': usertype,
+            'avatarUrl': '',
+        }
 
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
