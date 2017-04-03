@@ -10,6 +10,8 @@ from backend.models import Course, Question, Answer
 
 from apiai_connection import crowbot_chat
 
+from account_system.models import Profile
+
 # Create your views here.
 json_dump = lambda data: json.dumps(data, cls=serializers.json.DjangoJSONEncoder)
 
@@ -87,7 +89,8 @@ def questions_for_course(request, course_code):
     return HttpResponse(json_dump(list(questions)), content_type='application/json')
 
 def my_courses(request):
-    courses = ['tdt4145', 'tdt4140', 'tma4100', 'tdt4195', 'tma4110']
+    courses = request.user.profile.subscribed_courses.all().values('code')
+    courses = [c['code'] for c in courses]
     return HttpResponse(json_dump(list(courses)), content_type='application/json')
 
 @csrf_exempt
