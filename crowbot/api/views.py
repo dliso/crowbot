@@ -13,6 +13,8 @@ from apiai_connection import crowbot_chat
 
 from account_system.models import Profile
 
+from .usertype import *
+
 # Create your views here.
 json_dump = lambda data: json.dumps(data, cls=serializers.json.DjangoJSONEncoder)
 
@@ -115,12 +117,6 @@ def answers_for_question(request, pk):
     return HttpResponse(
         serializers.serialize('json', response)
     )
-
-class USERTYPE:
-    bot        = 'Bot'
-    instructor = 'Instructor'
-    student    = 'Student'
-    anonymous  = 'Anonymous'
 
 class FEEDITEMTYPE:
     question              = 'Question'
