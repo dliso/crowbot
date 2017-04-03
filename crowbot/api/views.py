@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
+from django.core import exceptions
 
 from backend.models import Course, Question, Answer
 
@@ -187,3 +188,33 @@ def user_feed(request):
     )
     feed.append(q_with_as)
     return HttpResponse(json_dump(feed))
+
+@csrf_exempt
+def subscribe_to_course(request, course_id):
+    print(course_id)
+    if request.user.is_authenticated:
+        profile = request.user.profile
+        print(profile)
+        print(profile.subscribed_courses)
+        try:
+            course = Course.objects.get(code__iexact = course_id)
+            profile.subscribed_courses.add(course)
+            print(course)
+            return HttpResponse('subscribed')
+        except exceptions.ObjectDoesNotExist as e:
+            return HttpResponse('Course does not exist', status=404)
+    else:
+        return HttpResponse('must be logged in to subscribe to courses', status=403)
+
+def unsubscribe_from_course(request, course_id):
+    if request.user.is_authenticated:
+        try:
+            course = Course.objects.get(code__iexact = course_id)
+        except exceptions.ObjectDoesNotExist as e:
+            return HttpResponse('Course does not exist', status=404)
+
+        request.user.profile.subscribed_courses.remove(course)
+        return HttpResponse('unsubscribed')
+    else:
+        return HttpResponse('must be logged in to unsubscribe from courses', status=403)
+
