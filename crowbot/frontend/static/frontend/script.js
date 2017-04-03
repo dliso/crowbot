@@ -199,6 +199,14 @@ function prettyDatetime(datetime) { //brukes ikke
     return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
 }
 
+function hideCourses(courseId) {
+    $(`#feed-items [data-courseId=${courseId}]`).hide();
+}
+
+function showCourses(courseId) {
+    $(`#feed-items [data-courseId=${courseId}]`).show();
+}
+
 
 
 $( document).ready(function(){
@@ -270,6 +278,15 @@ $( document).ready(function(){
         let feedToggles = $('#feed-toggles');
         for (courseId of courseList) {
             let checkbox = $('<input />', {type: 'checkbox', id: 'cb-'+courseId, checked: true});
+            checkbox.attr('data-cb-courseId', courseId);
+            checkbox.hide();
+            checkbox.change(event => {
+                if (event.currentTarget.checked) {
+                    showCourses(checkbox.attr('data-cb-courseId'));
+                } else {
+                    hideCourses(checkbox.attr('data-cb-courseId'));
+                }
+            });
             let label = $('<label/>', {'for': 'cb-'+courseId, text: courseId.toUpperCase()})
                     .css('border', '1px solid #c00000')
                     .css('margin', '1px')
@@ -300,10 +317,13 @@ $( document).ready(function(){
             li.attr('data-msgType', parent.msgType);
             li.attr('data-pk', parent.pk);
             replies = [];
-            for (r of repliesRaw) {
-                let rObj = new Message(r);
-                replies.push(r);
-                container.append(rObj.makeLi());
+            for (rRaw of repliesRaw) {
+                let r = new Message(rRaw);
+                let li = r.makeLi();
+                li.attr('data-courseId', r.courseId);
+                li.attr('data-msgType', r.msgType);
+                li.attr('data-pk', r.pk);
+                container.append(li);
             }
             feed.append(container);
         }
