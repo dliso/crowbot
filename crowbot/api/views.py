@@ -37,52 +37,51 @@ def add_question(question):
     q = Question(text=question)
     q.save()
 
+bot_user = {
+    'usertype': USERTYPE.bot,
+    'name': 'Crowbot',
+    'avatarUrl': 'crowbot.png'
+}
+
 @csrf_exempt
 def respond_to_message(request):
     if request.method != 'POST':
         return HttpResponse('only POST accepted', status=405)
     print(request)
-    if request.method == 'POST':
-        req_body = request.POST['body']
-        res_data = {
-            'usertype': 'bot',
-            'username': 'Crowbot',
-        }
-        # Handle special commands:
-        if req_body[0] == '!':
-            add_question(req_body[1:])
-            res_data['body'] = 'Your question was added to the manual review queue.'
-        elif req_body == 'test bot':
-            res_data['usertype'] = 'bot'
-            res_data['username'] = 'Crowbot'
-            res_data['body'] = 'beep boop boop boop'
-        elif req_body == 'test prof':
-            res_data['usertype'] = 'instructor'
-            res_data['username'] = 'Dr. Crowbot'
-            res_data['body'] = 'Slik ser et professor-svar ut.'
-            res_data['timestamp'] = tz.now()
-        elif req_body == 'test student':
-            res_data['usertype'] = 'student'
-            res_data['username'] = 'Testleif'
-            res_data['body'] = 'bla bla bla'
-            res_data['timestamp'] = tz.now()
-        elif req_body == 'test anon':
-            res_data['usertype'] = ''
-            res_data['username'] = 'Unknown'
-            res_data['body'] = 'jeg tør ikke oppgi navnet mitt'
-            res_data['timestamp'] = tz.now()
-        elif req_body == 'test multi':
-            res_data['body'] = 'multibeskjed'
-            res_data['timestamp'] = tz.now()
-            res_data = [res_data] * 3
+    responses = []
+    bot_response = crowbot_chat.ask_apiai(request.POST['body'],
+                                          request.user)
+
+    # Wrap the bot response in a list if it isn't one
+    if not isinstance(bot_response, list):
+        bot_response = [bot_response]
+
+    for message in bot_response:
+        print(message)
+        if isinstance(message, str):
+            user = bot_user
+            msgBody = message
+            res = {
+                'user': user,
+                'msgBody': msgBody,
+                'msgType': MESSAGETYPE.bot_response,
+                'ownMessage': False,
+                'courseId': None,
+                'pk': None,
+            }
+            responses.append(res)
         else:
-            response = crowbot_chat.ask_apiai(req_body)
-            res_data['body'] = response
-            if isinstance(response, list):
-                res_data = response
-    if not isinstance(res_data, list):
-        res_data = [res_data]
-    return HttpResponse(json_dump(res_data), content_type="application/json")
+            user = message['user'].profile.to_dict()
+            msgBody = message['body']
+            res = {
+                'user': user,
+                'msgBody': msgBody,
+                'ownMessage': False,
+                'msgType': message['type']
+            }
+            responses.append(res)
+
+    return HttpResponse(json_dump(responses), content_type='application/json')
 
 def questions_for_course(request, course_code):
     questions = Question.objects.filter(
