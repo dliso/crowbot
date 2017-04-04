@@ -35,8 +35,23 @@ class ChatMessage {
     }
 
     makeLi() {
+        let msg = this.message;
         let li = $('<li/>');
-        li.append(this.message.msgBody);
+
+        let content = $('<div/>');
+        content.append(msg.msgBody);
+
+        let info = $('<div/>');
+        info.addClass('info-line');
+        if (msg.user) {
+            info.append(msg.user.name)
+        }
+        if (msg.timestamp) {
+            info.append(msg.timestamp)
+        }
+
+        li.append(content);
+        li.append(info);
         return li;
     }
 }
@@ -285,7 +300,7 @@ $( document).ready(function(){
                         console.log('received:');
                         console.log(message);
                         // message.ownMessage = false;
-                        message = new Message(message);
+                        message = new ChatMessage(message);
                         console.log('received:');
                         console.log(message);
                         msgListManager.addItem(

@@ -187,3 +187,7 @@ header img {
 #feed-toggles input:checked + label {
     color: black;
 }
+
+.info-line {
+    font-size: 0.8em;
+}
