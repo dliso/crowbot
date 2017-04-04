@@ -77,7 +77,8 @@ def respond_to_message(request):
                 'user': user,
                 'msgBody': msgBody,
                 'ownMessage': False,
-                'msgType': message['type']
+                'msgType': message['type'],
+                'timestamp': message['timestamp'],
             }
             responses.append(res)
 
