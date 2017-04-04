@@ -320,10 +320,7 @@ $( document).ready(function(){
                     hideCourses(checkbox.attr('data-cb-courseId'));
                 }
             });
-            let label = $('<label/>', {'for': 'cb-'+courseId, text: courseId})
-                    .css('border', '1px solid #c00000')
-                    .css('margin', '1px')
-                    .css('padding', '2px');
+            let label = $('<label/>', {'for': 'cb-'+courseId, text: courseId});
             feedToggles.append(checkbox);
             feedToggles.append(label);
         }
