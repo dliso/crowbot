@@ -14,6 +14,7 @@ from apiai_connection import crowbot_chat
 from account_system.models import Profile
 
 from .usertype import *
+from .messagetype import *
 
 # Create your views here.
 json_dump = lambda data: json.dumps(data, cls=serializers.json.DjangoJSONEncoder)
@@ -129,11 +130,6 @@ class ANSWERVOTE:
     none = 'none'
     up   = 'up'
     down = 'down'
-
-class MESSAGETYPE:
-    bot_response    = 'BotResponse'
-    stored_question = 'StoredQuestion'
-    stored_answer   = 'StoredAnswer'
 
 def make_feed_item(item_type, first_message, replies=[]):
     return {'itemType': item_type,
