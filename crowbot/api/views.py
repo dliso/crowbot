@@ -103,7 +103,8 @@ def submit_answer(request):
     text = req_body['body'].split(' ', maxsplit=1)[1]
     ans = Answer(
         question = Question.objects.get(pk=req_body['q_pk']),
-        text = text
+        text = text,
+        user_id = request.user,
     )
     ans.save()
     response = {
