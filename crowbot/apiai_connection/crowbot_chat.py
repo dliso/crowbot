@@ -10,7 +10,7 @@ from backend.jaccard_similarity import *
 from backend.lemmalize import *
 from django.core import serializers
 
-
+from api.messagetype import *
 
 
 json_dump = lambda data: json.dumps(data, cls=serializers.json.DjangoJSONEncoder)
@@ -189,7 +189,7 @@ def recommended_previous_knowledge(course, response, code, name):
            .format(code, name, recommended_previous_knowledge))
 
 
-def ask_apiai(text):
+def ask_apiai(text, user):
     request = ai.text_request()
     request.query = text
     response = request.getresponse().read().decode()
@@ -229,39 +229,56 @@ def ask_apiai(text):
                         similar_question_object = q
                         similar_question = q.text
             if similar_question == '':
-                Question.objects.create(text=question, course=course, lemma=lemmas_pickled)
+                Question.objects.create(text=question,
+                                        course=course,
+                                        lemma=lemmas_pickled,
+                                        user_id=user)
                 #print(Question.objects.all())
                 text_response = 'No similar question detected, your question has been saved for the instructor to answer.'
                 return text_response
             else:
+                # Found a similar question -- let the user know
                 info_list = []
+
+                info_list.append('It looks like someone already asked that.')
+
+                # Format the similar question
                 if similar_question_object.user_id == None:
                     usertype = ''
                     username = ''
                 else:
-                    usertype = similar_question_object.user_id.role
-                    username = similar_question_object.user_id.user.username
+                    usertype = similar_question_object.user_id.profile.role
+                    username = similar_question_object.user_id.username
                 body = similar_question
                 timestamp = similar_question_object.creation_datetime
+                user = similar_question_object.user_id
                 similar_question_dict = {'usertype': usertype,
                                          'username': username,
                                          'body': body,
-                                         'timestamp': timestamp}
+                                         'timestamp': timestamp,
+                                         'user': user,
+                                         'type': MESSAGETYPE.stored_question,
+                                         'question': similar_question_object}
                 info_list.append(similar_question_dict)
                 pk = similar_question_object.pk
+
+                # Format any answers to the question
                 for answer in Answer.objects.filter(question__exact=pk):
                     if answer.user_id == None:
                         usertype = ''
                         username = ''
                     else:
-                        usertype = answer.user_id.role
-                        username = answer.user_id.user.username
+                        usertype = answer.user_id.profile.role
+                        username = answer.user_id.username
                     body = answer.text
                     timestamp = answer.creation_datetime
                     answer_dict = {'usertype': usertype,
                                    'username': username,
                                    'body': body,
-                                   'timestamp': timestamp}
+                                   'timestamp': timestamp,
+                                   'user': user,
+                                   'type': MESSAGETYPE.stored_answer,
+                                   'answer': answer}
                     info_list.append(answer_dict)
                 return info_list
 
