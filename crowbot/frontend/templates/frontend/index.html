@@ -94,6 +94,7 @@
 
                 <ul class="do-flex message-box" id="message-box">
                     <li class="message bot-msg">Hi! Welcome to Crowbot!</li>
+                    <li class="message bot-msg">Not sure what to do? Try writing "help".</li>
                 </ul>
 
                 <form id="message-form" action=""
@@ -104,11 +105,14 @@
                 </form>
 
             </div>
-            <div class="f-just-start full-height full-width bg-white border-left liten-marg">
+            <div id="feed-container"
+                 class="flex-container flex-column full-width full-height
+                        border-left">
                 <h2>Activity Feed</h2>
-                <div id="feed-container">
-                    <div id="feed-toggles"></div>
-                    <div id="feed-items"></div>
+                <div id="feed-toggles"
+                     class=""></div>
+                <ul id="feed-items"
+                    class="full-width no-margin no-padding"></ul>
                 </div>
             </div>
         </div>

@@ -15,7 +15,7 @@ h1, h2, h3, h4, h5, h6 {
 
 header {
     background: white;
-    border-bottom: 2px solid #c00000;
+    border-bottom: 1px solid #c00000;
     width: 100%;
     box-shadow: 0 0 5px 5px rgba(0,0,0,0.2);
     align-items: center;
@@ -155,4 +155,35 @@ header img {
 	position:absolute;
 	right:120px;
 	z-index:1;
+}
+
+#feed-container {
+    /* list-style: none; */
+    /* overflow-y: hidden; */
+}
+
+#feed-items {
+    overflow-y: auto;
+    list-style: none;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+#feed-toggles label {
+    border: 1px solid #c00000;
+    border-radius: 3px;
+    margin-right: 1px;
+    padding-left: 2px;
+    padding-right: 2px;
+    color: gray;
+}
+
+#feed-toggles input:checked + label {
+    color: black;
 }
