@@ -28,6 +28,19 @@ let MESSAGETYPE = {
     storedAnswer   : 'StoredAnswer'
 };
 
+class ChatMessage {
+    constructor(message) {
+        this.message = message;
+        console.log(message);
+    }
+
+    makeLi() {
+        let li = $('<li/>');
+        li.append(this.message.msgBody);
+        return li;
+    }
+}
+
 class Message {
     constructor(message) {
         this.msgBody = message.body;
@@ -52,7 +65,16 @@ class Message {
         case MESSAGETYPE.storedQuestion:
             li = this.makeQuestionLi();
             break;
+        case MESSAGETYPE.botResponse:
+            li = this.makeBotLi();
+            break;
         }
+        return li;
+    }
+
+    makeBotLi() {
+        let li = $('<li/>');
+        li.append(this.msgBody);
         return li;
     }
 
@@ -92,6 +114,7 @@ class Message {
         let infoLine = $('<div/>')
                 .append(this.user.name + '. Asked ' + this.askedCount + ' times.')
                 .append(this.courseId)
+                .append(' #' + this.pk)
                 .css('font-size', '0.7em');
         li.append(content);
         li.append(infoLine);
@@ -233,41 +256,45 @@ $( document).ready(function(){
 
         //Finds user input and appends it
         var input = $( "#user-input").val();
-        if (input !== "") {
-            userMessage = new Message({msgBody: input, ownMessage: true});
-            msgListManager.addItem(
-                userMessage.makeLi()
-                    .addClass('message user-msg')
-            );
-            updateScroll(msgBox);
+        event.preventDefault();
+        if (input == '') {
+            return;
+        }
+        userMessage = new ChatMessage({msgBody: input, ownMessage: true});
+        msgListManager.addItem(
+            userMessage.makeLi()
+                .addClass('message user-msg')
+        );
+        updateScroll(msgBox);
 
-            if (input.startsWith("#")){
-                var regexArray = input.match(primaryKeyRegex);
-                var q_pk = regexArray[0].substring(1); //Removes the '#'
-                let submit_answer_route = "/api/submit_answer/";
-                $.post(submit_answer_route, {q_pk: q_pk, body: input})
-                    .then(function(conf){ //conf = confirmation that the bot received the instructors answer
-                        let message = new Message(conf);
-                        msgListManager.addItem(message.makeLi().addClass('message bot-msg'));
-                        updateScroll(msgBox);
-                    });
-            } else {
-                let ask_question_route = '/api/ask_question';
-                $.post(ask_question_route, {body: input})
-                    .then(function (messages) {
+        if (input.startsWith("#")){
+            var regexArray = input.match(primaryKeyRegex);
+            var q_pk = regexArray[0].substring(1); //Removes the '#'
+            let submit_answer_route = "/api/submit_answer/";
+            $.post(submit_answer_route, {q_pk: q_pk, body: input})
+                .then(function(conf){ //conf = confirmation that the bot received the instructors answer
+                    let message = new ChatMessage(conf);
+                    msgListManager.addItem(message.makeLi().addClass('message bot-msg'));
+                    updateScroll(msgBox);
+                });
+        } else {
+            let ask_question_route = '/api/ask_question';
+            $.post(ask_question_route, {body: input})
+                .then(function (messages) {
                     for(message of messages) {
-                        message.ownMessage = false;
+                        console.log('received:');
+                        console.log(message);
+                        // message.ownMessage = false;
                         message = new Message(message);
+                        console.log('received:');
+                        console.log(message);
                         msgListManager.addItem(
                             message.makeLi().addClass('message bot-msg')
                         );
                         updateScroll(msgBox);
                     }
                 });
-            }
         }
-        //preventDefault prevents the site from updating.
-        event.preventDefault();
     });
 
     // Submit when the user presses enter
