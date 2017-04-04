@@ -140,6 +140,10 @@ def user_feed(request):
     """
     Return the following:
     1. All questions and answers connected to a course
+       - TODO Change to all questions asked by current user
+    2. Info messages, ie. answers without questions
+    3. FAQs, ie. questions asked by more than 1 person
+    4. Highly rated answers
     """
     feed = []
     courses = request.user.profile.subscribed_courses.values('code')
@@ -148,11 +152,12 @@ def user_feed(request):
         qs = Question.objects.filter(course__code = course['code'])
         for q in qs:
             print(q)
-            profile = q.user_id.profile
+            profile = None
+            if q.user_id:
+                profile = q.user_id.profile
+            user = {}
             if profile:
                 user = profile.to_dict()
-            else:
-                user = {}
             firstMessage = {
                     'user': user,
                     'ownMessage': request.user == q.user_id,
