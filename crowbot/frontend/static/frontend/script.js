@@ -324,7 +324,6 @@ $( document).ready(function(){
     }
 
     //RegEx pattern for q_pk (question primary key)
-    let primaryKeyRegex = /\#[0-9]+/g;
 
     msgListManager = new ListManager($("#message-box"));
 
@@ -345,10 +344,13 @@ $( document).ready(function(){
         updateScroll(msgBox);
 
         if (input.startsWith("#")){
+            let primaryKeyRegex = /\#([0-9]+) (.*)/;
             var regexArray = input.match(primaryKeyRegex);
-            var q_pk = regexArray[0].substring(1); //Removes the '#'
+            var q_pk = regexArray[1];
+            let q_body = regexArray[2];
+            console.log(regexArray);
             let submit_answer_route = "/api/submit_answer/";
-            $.post(submit_answer_route, {q_pk: q_pk, body: input})
+            $.post(submit_answer_route, {q_pk: q_pk, body: q_body})
                 .then(function(conf){ //conf = confirmation that the bot received the instructors answer
                     let message = new ChatMessage(conf);
                     msgListManager.addItem(message.makeLi().addClass('message bot-msg'));

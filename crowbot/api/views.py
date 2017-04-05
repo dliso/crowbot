@@ -101,7 +101,8 @@ def my_courses(request):
 def submit_answer(request):
     print(request.POST)
     req_body = request.POST
-    text = req_body['body'].split(' ', maxsplit=1)[1]
+    # text = req_body['body'].split(' ', maxsplit=1)[1]
+    text = req_body['body']
     ans = Answer(
         question = Question.objects.get(pk=req_body['q_pk']),
         text = text,
