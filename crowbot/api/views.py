@@ -235,7 +235,7 @@ def plus_one_question(request):
                 {'status': 'failure'}
             ))
         print(request.POST)
-        was_interested = False if q.interested_users.filter(id = profile.id).count() == 0 else True
+        was_interested = q.did_user_ask(user)
         is_interested = not was_interested
         if was_interested:
             q.interested_users.remove(user)
