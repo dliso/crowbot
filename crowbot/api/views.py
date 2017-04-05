@@ -44,6 +44,26 @@ bot_user = {
     'avatarUrl': 'crowbot.png'
 }
 
+def make_message(user, obj):
+    msgType = MESSAGETYPE.stored_question if isinstance(obj, Question) else MESSAGETYPE.stored_answer
+    msg = {
+        'user': user.profile.to_dict(),
+        'msgBody': obj.text,
+        'msgType': msgType,
+        'ownMessage': False,
+        'timestamp': obj.creation_datetime,
+        'pk': obj.id,
+    }
+    if msgType == MESSAGETYPE.stored_answer:
+        msg['courseId'] = obj.question.course.code
+        msg['score'] = obj.score()
+        msg['thisUserVoted'] = obj.user_voted(user)
+    else:
+        msg['courseId'] = obj.course.code
+        msg['askedCount'] = obj.times_asked()
+        msg['thisUserAsked'] = obj.did_user_ask(user)
+    return msg
+
 @csrf_exempt
 def respond_to_message(request):
     if request.method != 'POST':
