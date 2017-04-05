@@ -245,7 +245,8 @@ def plus_one_question(request):
         return HttpResponse(
             json_dump({'askedCount': num_interested,
                        'status': 'success',
-                       'thisUserAsked': is_interested})
+                       'thisUserAsked': is_interested}),
+            content_type='application/json'
         );
     else:
         return HttpResponse('must be logged in to +1 question')
