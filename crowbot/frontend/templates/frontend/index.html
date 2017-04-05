@@ -104,29 +104,31 @@
                 </form>
 
             </div>
-            <div class="f-just-start full-height full-width bg-white border-left liten-marg">
-                <h2>Activity Feed</h2>
-                <button id="showPQs">Show Pending Questions</button>
+			{% if user.is_authenticated %}
+				<div class="f-just-start full-height full-width bg-white border-left liten-marg">
+					<h2>Activity Feed</h2>
+
+						<button id="showPQs">Show Pending Questions</button>
 
 
-                <div id="PendingQs" class="" style="display:none;">
+						<div id="PendingQs" class="" style="display:none;">
 
-                    <p id="info"></p>
+							<p id="info"></p>
 
-                    <form id="checkboxes">
-                    </form>
+							<form id="checkboxes">
+							</form>
 
-                    <br>
+							<br>
 
-                    <div id="PendingQs-courselists" style="display:none;">
-                        <h3 id="PQ-heading">Pending questions</h3>
+							<div id="PendingQs-courselists" style="display:none;">
+								<h3 id="PQ-heading">Pending questions</h3>
 
-                        <ul id="question-queue" style="display:none;"></ul>
-                    </div>
+								<ul id="question-queue" style="display:none;"></ul>
+							</div>
+						</div>
+				</div>
+			{% endif %}
 
-
-                </div>
-            </div>
         </div>
 
     </body>
