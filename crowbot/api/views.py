@@ -167,7 +167,7 @@ def user_feed(request):
                     'msgBody': q.text,
                     'courseId': q.course.code,
                     'pk': q.id,
-                    'thisUserAsked': False,
+                    'thisUserAsked': q.did_user_ask(profile.user) if profile else False,
                     'askedCount': q.interested_users.count(),
                     'msgType': MESSAGETYPE.stored_question,
                 }
