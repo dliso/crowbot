@@ -139,24 +139,31 @@ class FeedItem extends Message {
             infoLine.append(replyButton);
 
             let buttons = $('<div/>');
-            let plusOne = $('<input/>', {type: 'checkbox', value: this.thisUserAsked, id: `asked-toggle-${this.pk}`});
-            plusOne.css('display', 'none');
-            let plusOneLabel = $('<label/>', {'for': plusOne.attr('id'), text: '+1'});
-            plusOneLabel.addClass('label-button');
+            let plusOne = $('<button/>', {text: '+1'})
+            plusOne.addClass('label-button');
+            if(this.thisUserAsked) {
+                plusOne.addClass('this-user-asked');
+            }
             let counter = $('<div/>')
                 .append(this.askedCount);
-            plusOne.change(e => {
-                let count = parseInt(counter.html(), 10);
-                if ( plusOne.prop('checked') ) {
-                    counter.html(count + 1);
-                } else {
-                    counter.html(count - 1);
-                }
+            plusOne.click(e => {
+                // Tell the server to toggle the current user's interest state.
+                // Update the view based on what the server responds with.
+                $.post('/api/toggle_interest/', {pk: this.pk})
+                    .then(response => {
+                        console.log(response);
+                        console.log(response.thisUserAsked)
+                        if(response.thisUserAsked) {
+                            plusOne.addClass('this-user-asked');
+                        } else {
+                            plusOne.removeClass('this-user-asked');
+                        }
+                        counter.html(response.askedCount);
+                    })
             })
 
             buttons
                 .append(plusOne)
-                .append(plusOneLabel)
                 .append(counter);
 
             elements.buttons = buttons;
