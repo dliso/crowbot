@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from api import answervote
+
 # Create your models here.
 
 class Course(models.Model):

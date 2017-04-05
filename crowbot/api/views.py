@@ -15,6 +15,7 @@ from account_system.models import Profile
 
 from .usertype import *
 from .messagetype import *
+from .answervote import *
 
 # Create your views here.
 json_dump = lambda data: json.dumps(data, cls=serializers.json.DjangoJSONEncoder)
@@ -127,11 +128,6 @@ class FEEDITEMTYPE:
     faq                   = 'FAQ'
     info                  = 'Info'
     highly_rated          = 'HighlyRated'
-
-class ANSWERVOTE:
-    none = 'none'
-    up   = 'up'
-    down = 'down'
 
 def make_feed_item(item_type, first_message, replies=[]):
     return {'itemType': item_type,
