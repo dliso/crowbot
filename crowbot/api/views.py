@@ -226,13 +226,32 @@ def unsubscribe_from_course(request, course_id):
 def plus_one_question(request):
     if request.user.is_authenticated:
         profile = request.user.profile
+        user = profile.user
         pk = request.POST['pk']
         try:
             q = Question.objects.get(id=pk)
         except exceptions.ObjectDoesNotExist as e:
-            return HttpResponse("question doesn't exist")
+            return HttpResponse(json_dump(
+                {'status': 'failure'}
+            ))
         print(request.POST)
-        return HttpResponse('thanks')
+        was_interested = False if q.interested_users.filter(id = profile.id).count() == 0 else True
+        is_interested = not was_interested
+        if was_interested:
+            q.interested_users.remove(user)
+        else:
+            q.interested_users.add(user)
+        num_interested = q.interested_users.count()
+        return HttpResponse(
+            json_dump({'askedCount': num_interested,
+                       'status': 'success',
+                       'thisUserAsked': is_interested})
+        );
     else:
         return HttpResponse('must be logged in to +1 question')
 
+def vote_on_answer(request):
+    if request.user.is_authenticated:
+        return HttpResponse('thanks')
+    else:
+        return HttpResponse('must be logged in to vote on questions')
