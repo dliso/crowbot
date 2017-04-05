@@ -254,11 +254,12 @@ def ask_apiai(text, user):
                 user = similar_question_object.user_id
                 similar_question_dict = {'usertype': usertype,
                                          'username': username,
+                                         'obj': similar_question_object,
                                          'body': body,
                                          'timestamp': timestamp,
                                          'user': user,
                                          'type': MESSAGETYPE.stored_question,
-                                         'question': similar_question_object}
+                }
                 info_list.append(similar_question_dict)
                 pk = similar_question_object.pk
 
@@ -278,6 +279,7 @@ def ask_apiai(text, user):
                                    'timestamp': timestamp,
                                    'user': user,
                                    'type': MESSAGETYPE.stored_answer,
+                                   'obj': answer,
                                    'answer': answer}
                     info_list.append(answer_dict)
                 return info_list
