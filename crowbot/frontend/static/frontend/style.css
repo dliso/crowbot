@@ -191,3 +191,44 @@ header img {
 .info-line {
     font-size: 0.8em;
 }
+
+#feed-container input {
+    background: inherit;
+    color: inherit;
+    border: none;
+    width: 3em;
+}
+
+.label-button {
+    background: white;
+    border: 1px solid black;
+    border-radius: 3px;
+    color: black;
+    width: 2em;
+    text-align: center;
+}
+
+.feed-item {
+    border-radius: 3px;
+    /* border: 1px solid #c00000; */
+    margin: 3px;
+    background: #c00000;
+    color: white;
+    padding: 3px;
+}
+
+.feed-indent {
+    margin-left: 2em;
+    background: lightgrey;
+    color: black;
+}
+
+.number-display {
+}
+
+#feed-container button {
+    background: white;
+    border: 1px solid black;
+    border-radius: 3px;
+    color: black;
+}

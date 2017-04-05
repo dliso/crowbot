@@ -28,34 +28,6 @@ let MESSAGETYPE = {
     storedAnswer   : 'StoredAnswer'
 };
 
-class ChatMessage {
-    constructor(message) {
-        this.message = message;
-        console.log(message);
-    }
-
-    makeLi() {
-        let msg = this.message;
-        let li = $('<li/>');
-
-        let content = $('<div/>');
-        content.append(msg.msgBody);
-
-        let info = $('<div/>');
-        info.addClass('info-line');
-        if (msg.user) {
-            info.append(msg.user.name)
-        }
-        if (msg.timestamp) {
-            info.append(msg.timestamp)
-        }
-
-        li.append(content);
-        li.append(info);
-        return li;
-    }
-}
-
 class Message {
     constructor(message) {
         this.msgBody = message.body;
@@ -68,9 +40,13 @@ class Message {
         this.user = message.user;
         this.pk = message.pk;
         this.askedCount = message.askedCount;
+        this.thisUserAsked = message.thisUserAsked;
         this.score = message.score;
     }
 
+}
+
+class FeedItem extends Message {
     makeLi() {
         let li;
         switch (this.msgType) {
@@ -94,47 +70,125 @@ class Message {
     }
 
     makeAnswerLi() {
-        let li = $('<li/>');
-        let contentSpan = $('<span/>').append(this.msgBody);
-        let symbolSpan = $('<span/>').append('!');
-        let buttonSpan = $('<span/>').append('👍' + this.score + '👎');
-        let content = $('<div/>')
-                .append(symbolSpan)
-                .append(contentSpan)
-                .append(buttonSpan);
-        let infoLine = $('<div/>')
-                .append(this.user.name)
-                .append(this.courseId)
-                .css('font-size', '0.7em');
-        li.append(content);
-        li.append(infoLine);
-        li.addClass('message');
-        li.addClass('user-msg');
+        let li = this.makeQuestionLi();
+        li.addClass('feed-indent');
         return li;
     }
 
     makeQuestionLi() {
         let li = $('<li/>');
-        let contentSpan = $('<span/>').append(this.msgBody);
-        let symbolSpan = $('<span/>').append('?');
-        let buttonSpan = $('<span/>').append('+1');
-        buttonSpan.click(event => {
-            $.post('/api/toggle_interest/', {pk: this.pk})
-                .then(console.log);
-        });
-        let content = $('<div/>')
-                .append(symbolSpan)
-                .append(contentSpan)
-                .append(buttonSpan);
-        let infoLine = $('<div/>')
-                .append(this.user.name + '. Asked ' + this.askedCount + ' times.')
-                .append(this.courseId)
-                .append(' #' + this.pk)
-                .css('font-size', '0.7em');
+
+        let elements = this.makeElements();
+
+        li.addClass('flex-container');
+        li.css('justify-content', 'space-between');
+
+        let left = $('<div/>');
+        left.append(elements.topDecoration);
+        left.append(elements.content);
+        left.append(elements.infoLine);
+
+        let right = $('<div/>');
+        right.append(elements.buttons);
+
+        li.append(left);
+        li.append(right);
+
+        li.addClass('feed-item');
+        return li;
+    }
+
+    makeElements() {
+        /* Make the elements that go into the DOM representations of items. These
+           are:
+           - The actual message
+           - Info line
+             - Username, timestamp, course code
+             - Question ID, if `this` is a question
+           - Voting buttons, if `this` is an answer
+           - +1 button, if `this` is a question
+          */
+        let elements = {};
+
+        let content = $('<div/>');
+        content.append(this.msgBody);
+        content.addClass('message-content');
+        elements.content = content;
+
+        let infoLine = $('<div/>');
+        let prettyTime = '2017-Feb-04 12:34';
+        infoLine.append(`${this.user.name} ${prettyTime}`);
+        elements.infoLine = infoLine;
+        infoLine.addClass('info-line');
+
+        let topDecoration = $('<div/>');
+        topDecoration.append(`${this.msgType} #${this.pk}`);
+        topDecoration.addClass('info-line')
+        elements.topDecoration = topDecoration;
+
+        if (this.msgType == MESSAGETYPE.storedQuestion) {
+            infoLine.append(` #${this.pk}`);
+
+            let buttons = $('<div/>');
+            let plusOne = $('<input/>', {type: 'checkbox', value: this.thisUserAsked, id: `asked-toggle-${this.pk}`});
+            plusOne.css('display', 'none');
+            let plusOneLabel = $('<label/>', {'for': plusOne.attr('id'), text: '+1'});
+            plusOneLabel.addClass('label-button');
+            let counter = $('<div/>')
+                .append(this.askedCount);
+            plusOne.change(e => {
+                let count = parseInt(counter.html(), 10);
+                if ( plusOne.prop('checked') ) {
+                    counter.html(count + 1);
+                } else {
+                    counter.html(count - 1);
+                }
+            })
+
+            buttons
+                .append(plusOne)
+                .append(plusOneLabel)
+                .append(counter);
+
+            elements.buttons = buttons;
+        }
+
+        if (this.msgType == MESSAGETYPE.storedAnswer) {
+            let buttons = $('<div/>');
+            let upvote = $('<button/>').append('+1');
+            let downvote = $('<button/>').append('-1');
+            let score = $('<div/>').append(this.score);
+
+            buttons
+                .append(upvote)
+                .append(score)
+                .append(downvote);
+
+            elements.buttons = buttons;
+        }
+
+        return elements;
+    }
+}
+
+class ChatMessage extends FeedItem {
+    makeLi() {
+        let li = $('<li/>');
+
+        let content = $('<div/>');
+        content.append(this.msgBody);
+
+        let info = $('<div/>');
+        info.addClass('info-line');
+        if (this.user) {
+            info.append(this.user.name)
+        }
+        if (this.timestamp) {
+            info.append(this.timestamp)
+        }
+
         li.append(content);
-        li.append(infoLine);
-        li.addClass('message');
-        li.addClass('bot-msg');
+        li.append(info);
         return li;
     }
 }
@@ -353,7 +407,8 @@ $( document).ready(function(){
             let repliesRaw = item.replies;
             let container = $('<div/>');
             container = decorate(container, itemType);
-            parent = new Message(firstMessageRaw);
+            parent = new FeedItem(firstMessageRaw);
+            new Message(firstMessageRaw);
             console.log(parent);
             let li = parent.makeLi();
             container.append(li);
@@ -363,7 +418,7 @@ $( document).ready(function(){
             li.attr('data-pk', parent.pk);
             replies = [];
             for (rRaw of repliesRaw) {
-                let r = new Message(rRaw);
+                let r = new FeedItem(rRaw);
                 let li = r.makeLi();
                 li.attr('data-courseId', r.courseId);
                 li.attr('data-msgType', r.msgType);
