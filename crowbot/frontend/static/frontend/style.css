@@ -219,8 +219,17 @@ header img {
 
 .feed-indent {
     margin-left: 2em;
-    background: lightgrey;
+}
+
+.modal textarea {
+    border: none;
+    max-width: 100%;
+    min-width: 100%;
+}
+
+.feed-reply {
     color: black;
+    background: lightgrey;
 }
 
 .number-display {

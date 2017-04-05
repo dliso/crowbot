@@ -117,6 +117,30 @@
             </div>
         </div>
 
+        <!-- Modal for answering questions -->
+        <div id="answer-modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Reply to question #<span id="modal-question-pk"></span></h4>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Question</h5>
+                        <div id="modal-question-text" class="feed-item full-width"></div>
+                        <textarea id="question-answer" name="question-answer" class="full-width feed-item feed-reply"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                                id="answer-modal-submit" data-question-pk="">Submit</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </body>
 
 </html>

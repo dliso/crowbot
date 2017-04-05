@@ -71,7 +71,7 @@ class FeedItem extends Message {
 
     makeAnswerLi() {
         let li = this.makeQuestionLi();
-        li.addClass('feed-indent');
+        li.addClass('feed-indent feed-reply');
         return li;
     }
 
@@ -128,6 +128,14 @@ class FeedItem extends Message {
 
         if (this.msgType == MESSAGETYPE.storedQuestion) {
             infoLine.append(` #${this.pk}`);
+            let replyButton = $('<span/>', {text: ' reply'});
+            replyButton.attr('data-toggle', 'modal');
+            replyButton.attr('data-target', '#answer-modal');
+            replyButton.click(e => {
+                $('#modal-question-pk').html(this.pk);
+                $('#modal-question-text').html(this.msgBody);
+            })
+            infoLine.append(replyButton);
 
             let buttons = $('<div/>');
             let plusOne = $('<input/>', {type: 'checkbox', value: this.thisUserAsked, id: `asked-toggle-${this.pk}`});
