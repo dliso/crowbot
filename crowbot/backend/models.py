@@ -58,6 +58,9 @@ class Question(models.Model):
     interested_users = models.ManyToManyField(User, related_name='interested_in',
                                               blank=True)
 
+    def did_user_ask(self, user):
+        was_interested = False if self.interested_users.filter(id = user.id).count() == 0 else True
+        return was_interested
 
     def __str__(self):
         return str((self.creation_datetime, self.text))
