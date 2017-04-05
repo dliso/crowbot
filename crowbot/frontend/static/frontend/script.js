@@ -184,6 +184,12 @@ class ChatMessage extends FeedItem {
     makeLi() {
         let li = $('<li/>');
 
+        if(!this.ownMessage) {
+            // let elements = this.makeElements();
+            // li.append(elements.topDecoration);
+            return super.makeLi();
+        }
+
         let content = $('<div/>');
         content.append(this.msgBody);
 
