@@ -134,6 +134,7 @@ class FeedItem extends Message {
             replyButton.click(e => {
                 $('#modal-question-pk').html(this.pk);
                 $('#modal-question-text').html(this.msgBody);
+                $('#answer-modal-submit').attr('data-question-pk', this.pk);
             })
             infoLine.append(replyButton);
 
@@ -441,5 +442,16 @@ $( document).ready(function(){
 
     $.getJSON('/api/my_courses/').then(populateFeedCourseList);
     $.getJSON('/api/my_feed/').then(populateFeed);
+
+    $('#answer-modal-submit').click(e =>{
+        let answer = $('#question-answer').val();
+        let q_pk = $('#answer-modal-submit').attr('data-question-pk');
+        // console.log(x);
+        // console.log(answer);
+        $.post('/api/submit_answer/', {
+            q_pk: q_pk,
+            body: answer
+        })
+    });
 
 });
