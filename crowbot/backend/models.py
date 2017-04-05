@@ -64,6 +64,9 @@ class Question(models.Model):
         was_interested = False if self.interested_users.filter(id = user.id).count() == 0 else True
         return was_interested
 
+    def times_asked(self):
+        return self.interested_users.count()
+
     def __str__(self):
         return str((self.creation_datetime, self.text))
 
@@ -88,4 +91,14 @@ class Answer(models.Model):
                                         blank=True)
     downvoted_by = models.ManyToManyField(User, related_name='downvoted',
                                           blank=True)
+
+    def score(self):
+        return self.upvoted_by.count() - self.downvoted_by.count()
+
+    def user_voted(self, user):
+        if self.upvoted_by.filter(id = user.id).count() == 1:
+            return answervote.ANSWERVOTE.up
+        if self.downvoted_by.filter(id = user.id).count() == 1:
+            return answervote.ANSWERVOTE.down
+        return answervote.ANSWERVOTE.none
 
