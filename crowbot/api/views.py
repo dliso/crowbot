@@ -92,15 +92,11 @@ def respond_to_message(request):
             }
             responses.append(res)
         else:
-            user = message['user'].profile.to_dict()
+            user = message['user']
             msgBody = message['body']
-            res = {
-                'user': user,
-                'msgBody': msgBody,
-                'ownMessage': False,
-                'msgType': message['type'],
-                'timestamp': message['timestamp'],
-            }
+            print(message)
+            obj = message['obj']
+            res = make_message(user, obj)
             responses.append(res)
 
     return HttpResponse(json_dump(responses), content_type='application/json')
