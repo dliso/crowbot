@@ -235,9 +235,13 @@ header img {
 .number-display {
 }
 
-#feed-container button {
-    background: white;
-    border: 1px solid black;
-    border-radius: 3px;
-    color: black;
+/* #feed-container button { */
+/*     background: white; */
+/*     border: 1px solid black; */
+/*     border-radius: 3px; */
+/*     color: black; */
+/* } */
+
+.this-user-asked {
+    background: lightgreen;
 }
