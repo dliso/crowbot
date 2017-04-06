@@ -166,7 +166,7 @@ class FeedItem extends Message {
             let plusOne = $('<button/>', {text: '+1'})
             plusOne.addClass('label-button');
             if(this.thisUserAsked) {
-                plusOne.addClass('this-user-asked');
+                plusOne.addClass('active-button');
             }
             let counter = $('<div/>')
                 .append(this.askedCount);
@@ -178,9 +178,9 @@ class FeedItem extends Message {
                         console.log(response);
                         console.log(response.thisUserAsked)
                         if(response.thisUserAsked) {
-                            plusOne.addClass('this-user-asked');
+                            plusOne.addClass('active-button');
                         } else {
-                            plusOne.removeClass('this-user-asked');
+                            plusOne.removeClass('active-button');
                         }
                         counter.html(response.askedCount);
                     })

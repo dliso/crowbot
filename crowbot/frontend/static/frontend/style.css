@@ -242,6 +242,7 @@ header img {
 /*     color: black; */
 /* } */
 
-.this-user-asked {
-    background: lightgreen;
+.active-button {
+    background: #4caf50;
+    color: black;
 }
