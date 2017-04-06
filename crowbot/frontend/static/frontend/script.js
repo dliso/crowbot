@@ -1,5 +1,27 @@
 // This file is loaded and executed when the main Crowbot page is opened.
 
+Date.prototype.customTime = function() {
+    let date = this.getDate();
+    let months = ['Jan',
+                  'Feb',
+                  'Mar',
+                  'Apr',
+                  'Jun',
+                  'Jul',
+                  'Aug',
+                  'Sep',
+                  'Oct',
+                  'Nov',
+                  'Dec']
+    let month = months[this.getMonth()];
+    let year = this.getFullYear();
+
+    let hour = this.getHours();
+    let minute = this.getMinutes();
+
+    return `${date} ${month} ${year} ${hour}:${minute}`;
+}
+
 let FEEDITEMTYPE = {
     question            : 'Question',
     questionWithAnswers : 'QuestionWithAnswers',
