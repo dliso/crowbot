@@ -245,7 +245,7 @@ def plus_one_question(request):
         except exceptions.ObjectDoesNotExist as e:
             return HttpResponse(json_dump(
                 {'status': 'failure'}
-            ))
+            ), content_type='application/json')
         print(request.POST)
         was_interested = q.did_user_ask(user)
         is_interested = not was_interested
