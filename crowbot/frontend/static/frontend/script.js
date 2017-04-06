@@ -199,7 +199,33 @@ class FeedItem extends Message {
             let downvote = $('<button/>').append('-1');
             let score = $('<div/>').append(this.score);
 
-            buttons
+            
+			
+			upvote.click(e =>{
+				//tell the server to check and add on the value stored
+				//update the view based on the vote.
+				$.post('/api/vote_answer/', {button:'up', pk: this.pk})
+					.then(response => {
+						console.log(response);
+						console.log(response.vote);
+						upvote.addClass('active-button');
+						score.html(response.score);
+					})
+			})
+			
+			downvote.click(e =>{
+				//tell the server to check and subtract on the value stored
+				//update the view based on the vote.
+				$.post('/api/vote_answer/',{button:'down',pk:this.pk})
+					.then(response => {
+						console.log(response);
+						console.log(response.vote);
+						//upvote.addClass('active-button');
+						score.html(response.score);
+					})
+			})
+			
+			buttons
                 .append(upvote)
                 .append(score)
                 .append(downvote);
