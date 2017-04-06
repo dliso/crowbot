@@ -50,11 +50,16 @@
                 </form>
 
             </div>
-			{% if user.is_authenticated %}
-				<div class="f-just-start full-height full-width bg-white border-left liten-marg">
-					<h2>Activity Feed</h2>
+            <div style="display:none;">
+                <audio class="crowsound" controls preload="none">
+                    <source src="{% static 'frontend/crow1.wav' %}" type="audio/mpeg">
+                </audio>
+            </div>
+            {% if user.is_authenticated %}
+            <div class="f-just-start full-height full-width bg-white border-left liten-marg">
+                <h2>Activity Feed</h2>
 
-						<button id="showPQs">Show Pending Questions</button>
+                <button id="showPQs">Show Pending Questions</button>
 
 
 						<div id="PendingQs" class="" style="display:none;">

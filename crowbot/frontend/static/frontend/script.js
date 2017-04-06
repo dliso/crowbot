@@ -44,7 +44,7 @@ class ListManager {
         else{
             subtext = "Answer by " + usertype + " " + username + " " + "[" + timestamp.substring(0,10)
                 + " " + timestamp.substring(11,16) + "]";
-               var task = "stop";
+            var task = "stop";
         }
         $(".crowsound").trigger('play');
         this.play_audio(task);
