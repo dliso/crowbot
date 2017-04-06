@@ -219,7 +219,7 @@ def ask_apiai(text):
             if code.lower() not in lemmas1:
                 lemmas1.append(code.lower())
             lemmas_pickled = pickle.dumps(lemmas1)
-            for q in Question.objects.all():
+            for q in Question.objects.filter(course = course):
                 #ta inn lemma fra question
                 lemmas2 = pickle.loads(q.lemma)
                 result = jaccard_similarity(lemmas1,lemmas2)
