@@ -148,7 +148,10 @@ header img {
     justify-content: flex-end;
 }
 
-.linker {
+.liten-marg {
+    padding-left: 0.1cm;
+}
+.dropdown {
 	position:absolute;
 	right:130px;
 	z-index:1;
@@ -176,6 +179,3 @@ header img {
 	background: #FFFFFF;
 	box-shadow: 5px 5px 10px 5px #9d0000;
 }
-
-
-
