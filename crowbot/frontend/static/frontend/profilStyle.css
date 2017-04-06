@@ -1,10 +1,50 @@
 
-body{
-	margin-top:100px;
-	margin-left:450px;
-	margin-right:450px;
+body, html{
+	padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #c00000;
 	font-family: 'Noto Sans', sans;
-	
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 3px;
+    font-family: 'Noto Serif', serif;
+}
+
+#profil-block{
+	height:90%;
+	width: 60%;
+	margin:auto;
+	border-style:Solid;
+	border-width:5px;
+	border-color:#FFFFFF;
+	background: #FFFFFF;
+}
+
+header {
+    background: white;
+    border-bottom: 2px solid #c00000;
+    width: 100%;
+    box-shadow: 0 0 5px 5px rgba(0,0,0,0.2);
+	align-items: center;
+}
+
+.linker {
+	position:absolute;
+	right:130px;
+	z-index:1;
+}
+
+
+header img {
+    height: 4em;
+    padding: 9px;
+}
+.flex-container {
+    display: flex;
+    overflow: hidden;
 }
 
 .listeTing{

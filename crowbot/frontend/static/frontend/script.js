@@ -30,6 +30,7 @@ class ListManager {
         //Når Crowbot svarer (dvs. svaret kommer automatisk fra API.AI-boten:
         if (username == "Crowbot"){
             subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
+            var text = this.randomBirdSound() + ' ' + text;
             var task = "play";
         }
 
@@ -58,6 +59,15 @@ class ListManager {
             $(".crowsound").trigger('pause');
             $(".crowsound").prop("currentTime", 0);
         }
+    }
+
+    randomBirdSound() {
+        var birdSounds = ['Caw caw!', 'Squawk!', 'Chirp chirp!', ''];
+        var sound = '';
+        if (Math.random(0,10) < 2) {
+            sound = birdSounds[Math.floor(Math.random() * birdSounds.length)];
+        }
+        return sound;
     }
 
 /*    addToListWithTimeAndUser(text, usertype, username, timestamp, cssClasses, number){
@@ -97,20 +107,7 @@ function prettyDatetime(datetime) { //brukes ikke
     return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
 }
 
-let birdSounds = [
-    'Caw caw!',
-    'Squawk!',
-    'Chirp chirp!',
-    ''
-];
 
-function randomBirdSound() {
-    let sound = '';
-    if (Math.random(0,10) < 2) {
-        sound = birdSounds[Math.floor(Math.random() * birdSounds.length)];
-    }
-    return sound;
-}
 
 $( document).ready(function(){
     // jQuery example:
@@ -198,10 +195,19 @@ $( document).ready(function(){
                         body: input
                     }
                     //Gets the input back and appends it to the list
-                }).then(function (data) {
-                    message = randomBirdSound() + ' ' + data.body;
-                    msgListManager.chatReply(message, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
-                    updateScroll(msgBox);
+                }).then(function (data_raw) {
+                    // We expect to receive either a single message or a list of messages.
+                    // If it's a single message, we wrap it in a list so we can treat both
+                    // cases the same way.
+                    if(Array.isArray(data_raw)) {
+                        data = data_raw;
+                    } else {
+                        data = [data_raw];
+                    }
+                    for(data of data) {
+                        msgListManager.chatReply(data.body, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
+                        updateScroll(msgBox);
+                    }
                 });
             }
         }

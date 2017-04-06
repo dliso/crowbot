@@ -1,10 +1,10 @@
-from nltk.corpus import wordnet
-import nltk
-import string
+
 
 def jaccard_similarity(lemmas1, lemmas2, threshold=0.7):
     """
     Calculates the similarity of two statements based on the Jaccard index.
+
+    Function now changed to take to lists with lemmas from lemmalize as arguments
 
     The Jaccard index is composed of a numerator and denominator.
     In the numerator, we count the number of items that are shared between the sets.
@@ -35,29 +35,3 @@ def jaccard_similarity(lemmas1, lemmas2, threshold=0.7):
         ratio = 0
     return [ratio >= threshold, ratio]
 
-"""
-print(jaccard_similarity('When is the exam in TDT4140?',
-                         'What is the exam date for TDT4140?'))
-#Likehet 66,6666%
-
-print(jaccard_similarity('How many exercises is needed in TMA4100?',
-                         'How many exercises is mandatory in TMA4100?')[0])
-#Likhet 100%
-
-print(jaccard_similarity('If I completed the exercises last year, are they valid this year?',
-                         'Are the exercises I did last year valid this year?'))
-#Likhet 100%
-
-print(jaccard_similarity('If I completed the exercises four years ago, are they valid this year?',
-                         'Are the exercises I did last year valid this year?'))
-#Likhet 66,66666%
-
-print(jaccard_similarity('Are the exercises I did four years ago valid this year?',
-                         'Are the exercises I did last year valid this year?'))
-#Likhet 50%
-
-print(jaccard_similarity('If I completed the exercises last year, are they valid this year?',
-                         'How old can previously completed exercises be, to be valid?'))
-#Likhet 50%
-
-"""
