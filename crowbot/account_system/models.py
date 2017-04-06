@@ -30,4 +30,4 @@ def __str__(self):
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
-    instance.profile.save()#lagrer dataen som profilen får inn
+    instance.profile.save()#lagrer dataen som profilen fÃ¥r inn
