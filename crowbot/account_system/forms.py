@@ -12,9 +12,10 @@ class SignUpForm(UserCreationForm):
     roles = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
     institute = forms.CharField(max_length=30, required=True, help_text='*')
 
-
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2',
-                  'roles', 'institute', 'birth_date')
+        'roles', 'institute', 'birth_date')
+
+
 

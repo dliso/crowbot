@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'email_notification.apps.EmailNotificationConfig',
     'account_system.apps.AccountSystemConfig',
     'api.apps.ApiConfig',
     'backend.apps.BackendConfig',
@@ -81,6 +82,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'CONN_MAX_AGE': 1,
     }
 }
 
