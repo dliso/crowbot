@@ -1,21 +1,50 @@
-{% extends 'base.html' %}
-
+{% load static %}
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Crowbot</title>
+        <meta name="author" content="Crow Crew">
+        <meta name="description" content="description here">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel='stylesheet' href='//fonts.googleapis.com/css?family=Roboto|Noto+Serif|Noto+Sans' type='text/css'>
+        <link rel='stylesheet' href="{% static 'frontend/style.css' %}" type='text/css'>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="{% static 'frontend/script.js' %}"></script>
+    </head>
 {% block content %}
-  <h2>Sign up</h2>
-  <form method="post">
-    {% csrf_token %}
-    {% for field in form %}
-      <p>
-        {{ field.label_tag }}<br>
-        {{ field }}
-        {% if field.help_text %}
-          <small style="color: red">{{ field.help_text }}</small>
-        {% endif %}
-        {% for error in field.errors %}
-          <p style="color: red">{{ error }}</p>
-        {% endfor %}
-      </p>
-    {% endfor %}
-    <button type="submit">Sign up</button>
-  </form>
+	<header class="flex-container">
+            <img alt="" src="{% static 'frontend/crowbot.png' %}"/>
+            <h1>Crowbot</h1>
+			<div class=linker>
+			<a id="profilLink" href="{% url 'login' %}">Log in</a> / <a id="profilLink"href="{% url 'logout' %}">Home</a>
+			</div>
+	</header>
+	<div id="sign-block">
+	{% if user.is_authenticated %}
+	<h3> You're already logged in</h3>
+	{% else %}
+		<h2>Sign up</h2>
+		<form method="post">
+			{% csrf_token %}
+			{% for field in form %}
+		<p>
+				{{ field.label_tag }}<br>
+				{{ field }}
+			{% if field.help_text %}
+			<small style="color: red">{{ field.help_text }}</small>
+			{% endif %}
+			{% for error in field.errors %}
+			<p style="color: red">{{ error }}</p>
+			{% endfor %}
+		</p>
+		{% endfor %}
+		<button type="submit">Sign up</button>
+	</form>
+	
+	{% endif %}
+	</div>
 {% endblock %}
+
+</html>

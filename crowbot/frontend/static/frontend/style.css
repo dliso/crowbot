@@ -153,7 +153,7 @@ header img {
 }
 .dropdown {
 	position:absolute;
-	right:120px;
+	right:130px;
 	z-index:1;
 }
 
@@ -246,3 +246,27 @@ header img {
     background: #4caf50;
     color: black;
 }
+
+#sign-block{
+	background: white;
+	max-width:60em;
+	height:80%;
+	margin:auto;
+	border-style:Solid;
+	border-width:2px;
+	border-color:#c00000;
+}
+
+#logg-block{
+	height:30%;
+	width:20%;
+	text-align:center;
+	border-style:Solid;
+	border-width:2px;
+	border-color:#c00000;
+	margin-left:450px;
+	margin-right:450px;
+	background: #FFFFFF;
+	box-shadow: 5px 5px 10px 5px #9d0000;
+}
+

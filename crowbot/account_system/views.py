@@ -1,13 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
-
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from .forms import SignUpForm
+
 
 @login_required
 def home(request):
-    return render(request, 'index.html')
-
+    return HttpResponseRedirect(reverse('frontend:index'))
 
 def signup(request):
     if request.method == 'POST':
@@ -25,4 +26,4 @@ def signup(request):
             return redirect('home')
     else:
         form = SignUpForm()
-    return None
+    return render (request, 'signup.html', {'form': form})
