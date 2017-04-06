@@ -263,8 +263,26 @@ def plus_one_question(request):
     else:
         return HttpResponse('must be logged in to +1 question')
 
+@csrf_exempt
 def vote_on_answer(request):
     if request.user.is_authenticated:
-        return HttpResponse('thanks')
+        user = request.user
+        profile = user.profile
+        pk = request.POST['pk']
+        clicked_button = request.POST['button']
+        try:
+            ans = Answer.objects.get(id=pk)
+        except exceptions.ObjectDoesNotExist as e:
+            return HttpResponse(json_dump(
+                {'status': 'failure'}
+            ), content_type='application/json')
+
+        new_vote = ans.vote(user, clicked_button)
+
+        return HttpResponse(json_dump({
+            'status': 'success',
+            'score': ans.score(),
+            'vote': new_vote,
+        }), content_type='application/json')
     else:
         return HttpResponse('must be logged in to vote on questions')
