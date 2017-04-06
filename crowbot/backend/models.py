@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from api import answervote
+from api.answervote import *
 
 # Create your models here.
 
@@ -102,3 +103,25 @@ class Answer(models.Model):
             return answervote.ANSWERVOTE.down
         return answervote.ANSWERVOTE.none
 
+    def vote(self, user, button):
+        # button: ANSWERVOTE.up | ANSWERVOTE.down
+        old_vote = self.user_voted(user)
+        if button == ANSWERVOTE.up:
+            if old_vote == ANSWERVOTE.up:
+                self.upvoted_by.remove(user)
+            elif old_vote == ANSWERVOTE.down:
+                self.downvoted_by.remove(user)
+                self.upvoted_by.add(user)
+            elif old_vote == ANSWERVOTE.none:
+                self.upvoted_by.add(user)
+        elif button == ANSWERVOTE.down:
+            if old_vote == ANSWERVOTE.up:
+                self.upvoted_by.remove(user)
+                self.downvoted_by.add(user)
+            elif old_vote == ANSWERVOTE.down:
+                self.downvoted_by.remove(user)
+            elif old_vote == ANSWERVOTE.none:
+                self.downvoted_by.add(user)
+        else:
+            raise ValueError("'vote' must be one of 'up' or 'down'")
+        return self.user_voted(user)
