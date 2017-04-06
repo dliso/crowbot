@@ -140,7 +140,7 @@ class FeedItem extends Message {
         elements.content = content;
 
         let infoLine = $('<div/>');
-        let prettyTime = '2017-Feb-04 12:34';
+        let prettyTime = this.date.customTime();
         infoLine.append(`${this.user.name} ${prettyTime}`);
         elements.infoLine = infoLine;
         infoLine.addClass('info-line');
