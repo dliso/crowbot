@@ -200,12 +200,36 @@ header img {
 }
 
 .label-button {
-    background: white;
-    border: 1px solid black;
+    /* background: white; */
+    /* border: 1px solid black; */
     border-radius: 3px;
-    color: black;
-    width: 2em;
-    text-align: center;
+    border: 1px solid black;
+    /* color: black; */
+    /* width: 2em; */
+    min-width: 2em;
+    /* text-align: center; */
+    /* box-shadow: 0 0 0.4em black; */
+    margin-bottom: 2px;
+    background: inherit;
+    box-shadow: 0 4px;
+}
+
+/* .feed-Question { */
+/*     border: 3px solid blue; */
+/* } */
+
+/* .feed-QuestionWithAnswers { */
+/*     border: 3px dashed green; */
+/* } */
+
+.active-button {
+    /* box-shadow: inset 0 0 0.4em black; */
+    /* background: #4caf50; */
+    /* color: black; */
+    /* background: #d50000; */
+    box-shadow: 0 1px black;
+    transform: translateY(3px);
+    border-color: white;
 }
 
 .feed-item {
@@ -232,6 +256,11 @@ header img {
     background: lightgrey;
 }
 
+.score-field {
+    text-align: center;
+    font-weight: 900;
+}
+
 .number-display {
 }
 
@@ -241,11 +270,6 @@ header img {
 /*     border-radius: 3px; */
 /*     color: black; */
 /* } */
-
-.active-button {
-    background: #4caf50;
-    color: black;
-}
 
 #sign-block{
 	background: white;
