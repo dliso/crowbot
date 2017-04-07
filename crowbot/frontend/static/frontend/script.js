@@ -499,13 +499,11 @@ $( document).ready(function(){
             let firstMessageRaw = item.firstMessage;
             let repliesRaw = item.replies;
             let container = $('<div/>');
+            container.addClass('feed-' + itemType);
             container = decorate(container, itemType);
             parent = new FeedItem(firstMessageRaw);
-            new Message(firstMessageRaw);
-            console.log(parent);
             let li = parent.makeLi();
             container.append(li);
-            // li.addClass('message bot-msg');
             li.attr('data-courseId', parent.courseId);
             li.attr('data-msgType', parent.msgType);
             li.attr('data-pk', parent.pk);
