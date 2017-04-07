@@ -195,36 +195,57 @@ class FeedItem extends Message {
         }
 
         if (this.msgType == MESSAGETYPE.storedAnswer) {
+            console.log(this);
             let buttons = $('<div/>');
-            let upvote = $('<button/>').append('+1');
-            let downvote = $('<button/>').append('-1');
-            let score = $('<div/>').append(this.score);
+            let upvote = $('<button/>').append('+1').addClass('label-button');
+            let downvote = $('<button/>').append('-1').addClass('label-button');
+            let score = $('<div/>').append(this.score).addClass('score-field');
 
-			upvote.click(e =>{
-				//tell the server to check and add on the value stored
-				//update the view based on the vote.
-				$.post('/api/vote_answer/', {button:'up', pk: this.pk})
-					.then(response => {
-						console.log(response);
-						console.log(response.vote);
-						upvote.addClass('active-button');
-						score.html(response.score);
-					})
-			})
+            switch(this.thisUserVoted) {
+            case ANSWERVOTE.up:
+                upvote.addClass('active-button');
+                break;
+            case ANSWERVOTE.down:
+                downvote.addClass('active-button');
+                break;
+            }
 
-			downvote.click(e =>{
-				//tell the server to check and subtract on the value stored
-				//update the view based on the vote.
-				$.post('/api/vote_answer/',{button:'down',pk:this.pk})
-					.then(response => {
-						console.log(response);
-						console.log(response.vote);
-						//upvote.addClass('active-button');
-						score.html(response.score);
-					})
-			})
+            upvote.click(e =>{
+                //tell the server to check and add on the value stored
+                //update the view based on the vote.
+                $.post('/api/vote_answer/', {button:'up', pk: this.pk})
+                    .then(response => {
+                        console.log(response);
+                        console.log(response.vote);
+                        score.html(response.score);
+                        if (response.vote == ANSWERVOTE.up) {
+                            upvote.addClass('active-button');
+                            downvote.removeClass('active-button');
+                        } else {
+                            upvote.removeClass('active-button');
+                        }
+                    })
+            })
 
-			buttons
+            downvote.click(e =>{
+                //tell the server to check and subtract on the value stored
+                //update the view based on the vote.
+                $.post('/api/vote_answer/',{button:'down',pk:this.pk})
+                    .then(response => {
+                        console.log(response);
+                        console.log(response.vote);
+                        //upvote.addClass('active-button');
+                        score.html(response.score);
+                        if (response.vote == ANSWERVOTE.down) {
+                            downvote.addClass('active-button');
+                            upvote.removeClass('active-button');
+                        } else {
+                            downvote.removeClass('active-button');
+                        }
+                    })
+			      });
+
+			      buttons
                 .append(upvote)
                 .append(score)
                 .append(downvote);
