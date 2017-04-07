@@ -194,7 +194,7 @@ def user_feed(request):
                     'courseId': a.question.course.code,
                     'pk': a.id,
                     'score': a.upvoted_by.all().count() - a.downvoted_by.all().count(),
-                    'thisUserVoted': ANSWERVOTE.none,
+                    'thisUserVoted': a.user_voted(request.user),
                     'msgType': MESSAGETYPE.stored_answer,
                 }
                 replies.append(reply)

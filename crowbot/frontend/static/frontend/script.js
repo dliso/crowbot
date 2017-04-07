@@ -63,6 +63,7 @@ class Message {
         this.pk = message.pk;
         this.askedCount = message.askedCount;
         this.thisUserAsked = message.thisUserAsked;
+        this.thisUserVoted = message.thisUserVoted;
         this.score = message.score;
         this.timestamp = message.timestamp;
         this.date = new Date(this.timestamp);
