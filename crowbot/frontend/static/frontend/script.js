@@ -164,13 +164,14 @@ class FeedItem extends Message {
             infoLine.append(replyButton);
 
             let buttons = $('<div/>');
-            let plusOne = $('<button/>', {text: '+1'})
+            let plusOne = $('<button/>', {text: 'follow'})
             plusOne.addClass('label-button');
             if(this.thisUserAsked) {
                 plusOne.addClass('active-button');
             }
             let counter = $('<div/>')
-                .append(this.askedCount);
+                .append(this.askedCount)
+                .addClass('score-field');
             plusOne.click(e => {
                 // Tell the server to toggle the current user's interest state.
                 // Update the view based on what the server responds with.
