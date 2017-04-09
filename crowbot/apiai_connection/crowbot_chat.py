@@ -218,24 +218,6 @@ def ask_apiai(text):
     elif response["result"]["metadata"]["intentName"] == 'Default Goodbye Intent':
         return crowbot_answer(response)
     elif response["result"]["metadata"]["intentName"] == "Default Fallback Intent":
-        #legge til spørsmål i Questions modell
-        question = response["result"]["resolvedQuery"]
-        # om spørsmålet slutter med '?', fjern dette
-        if question.strip().endswith('?'):
-            question = question.strip()[:-1]
-        # fjerner ',' og '.' fra setningen
-        question = question.replace(',','')
-        question = question.replace('.','')
-        # splitter setningen til en liste med ord
-        words = question.split()
-        code = ''
-        # går igjennom ordene for å finne emnekoden
-        for word in words:
-            # antagelse om at alle emnekoder begynner med bokstaver og slutter med tall
-            # og at bruker bare skriver inn en emnekode i hver "spørring"
-            if re.search('[ÆæØøÅåa-zA-Z]'+'[0-9]', word):
-                code = word.upper()
-                break
         try:
             course = Course.objects.get(code=code)
             highest_ratio = 0
