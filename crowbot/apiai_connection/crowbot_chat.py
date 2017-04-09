@@ -24,8 +24,7 @@ def crowbot_answer(response):
 
 
 def user_request(response, code):
-    #response is a dict
-    #what course are the user interested in
+
     print(code)
 
 
@@ -35,7 +34,6 @@ def user_request(response, code):
     #ime api
     #base_url = "http://www.ime.ntnu.no/api/course/en/"
 
-    #go trough every course code to find a match
     try:
         #get the object that contains the right subject
         course = Course.objects.get(code=code)
@@ -194,7 +192,26 @@ def ask_apiai(text):
     request.query = text
     response = request.getresponse().read().decode()
     response = json.loads(response)
-    #
+    #find code from query
+    question = response["result"]["resolvedQuery"]
+    # om spørsmålet slutter med '?', fjern dette
+    question = question.strip()
+    if question.endswith('?'):
+        question = question[:-1]
+    # fjerner ',' og '.' fra setningen
+    question = question.replace(',', '')
+    question = question.replace('.', '')
+    # splitter setningen til en liste med ord
+    words = question.split()
+    code = ''
+    # går igjennom ordene for å finne emnekoden
+    for word in words:
+        # antagelse om at alle emnekoder begynner med bokstaver og slutter med tall
+        # og at bruker bare skriver inn en emnekode i hver "spørring"
+        if re.search('[ÆæØøÅåa-zA-Z]' + '[0-9]', word):
+            code = word.upper()
+            break
+
     # print(response)
     if response["result"]["metadata"]["intentName"] == 'Default Welcome Intent':
         return crowbot_answer(response)
@@ -282,4 +299,4 @@ def ask_apiai(text):
     elif response["result"]["metadata"]["intentName"] == "Default Help Intent":
         return crowbot_answer(response)
     else:
-        return user_request(response)
+        return user_request(response, code)
