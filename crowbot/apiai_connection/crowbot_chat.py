@@ -205,7 +205,6 @@ def ask_apiai(text):
     question = question.replace(',', '')
     question = question.replace('.', '')
     question = question.replace('"', '')
-    question = question.replace("'", "")
     # splitter setningen til en liste med ord
     words = question.split()
     code = ''
