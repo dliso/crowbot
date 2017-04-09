@@ -23,10 +23,10 @@ def crowbot_answer(response):
 
 
 
-def user_request(response):
+def user_request(response, code):
     #response is a dict
     #what course are the user interested in
-    code = response["result"]["parameters"]["course"].upper()
+    print(code)
 
 
     #find what action to perform
@@ -194,6 +194,7 @@ def ask_apiai(text):
     request.query = text
     response = request.getresponse().read().decode()
     response = json.loads(response)
+    #
     # print(response)
     if response["result"]["metadata"]["intentName"] == 'Default Welcome Intent':
         return crowbot_answer(response)
