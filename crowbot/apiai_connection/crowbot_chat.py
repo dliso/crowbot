@@ -204,6 +204,8 @@ def ask_apiai(text):
     # fjerner ',' og '.' fra setningen
     question = question.replace(',', '')
     question = question.replace('.', '')
+    question = question.replace('"', '')
+    question = question.replace("'", "")
     # splitter setningen til en liste med ord
     words = question.split()
     code = ''
