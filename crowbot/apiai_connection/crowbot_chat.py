@@ -62,7 +62,10 @@ def user_request(response, code):
             return(recommended_previous_knowledge(course, response, code, name))
     except django.core.exceptions.ObjectDoesNotExist:
     #if no code matches
-        return("No course with code {:s}.".format(code))
+        if code == '':
+            return ("Please provide a course code with your question.")
+        else:
+            return ("No course with code {:s}. Please provide a valid course code.".format(code))
 
     #just test prints
     # print("Course:",code)
@@ -276,7 +279,11 @@ def ask_apiai(text):
 
 
         except django.core.exceptions.ObjectDoesNotExist:
-            return crowbot_answer(response)
+            if code == '':
+                return ("Please provide a course code with your question.")
+            else:
+                return ("No course with code {:s}. Please provide a valid course code.".format(code))
+                # return crowbot_answer(response)
 
     elif response["result"]["metadata"]["intentName"] == "Default Help Intent":
         return crowbot_answer(response)
