@@ -92,10 +92,10 @@ def respond_to_message(request):
             }
             responses.append(res)
         else:
-            user = message['user']
             msgBody = message['body']
             print(message)
             obj = message['obj']
+            user = obj.user_id
             res = make_message(user, obj)
             responses.append(res)
 
