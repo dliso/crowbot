@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 from django.core import exceptions
 
-from backend.models import Course, Question, Answer
+from backend.models import Course, Question, Answer, ChatLog
 
 from apiai_connection import crowbot_chat
 
@@ -68,7 +68,8 @@ def make_message(user, obj):
 def respond_to_message(request):
     if request.method != 'POST':
         return HttpResponse('only POST accepted', status=405)
-    print(request)
+    user = request.user
+    ChatLog.record_user_message(request.POST['body'], user)
     responses = []
     bot_response = crowbot_chat.ask_apiai(request.POST['body'],
                                           request.user)
@@ -78,7 +79,6 @@ def respond_to_message(request):
         bot_response = [bot_response]
 
     for message in bot_response:
-        print(message)
         if isinstance(message, str):
             user = bot_user
             msgBody = message
@@ -93,11 +93,13 @@ def respond_to_message(request):
             responses.append(res)
         else:
             msgBody = message['body']
-            print(message)
             obj = message['obj']
             user = obj.user_id
             res = make_message(user, obj)
             responses.append(res)
+
+    for msg in responses:
+        ChatLog.record_stored_object(msg, request.user)
 
     return HttpResponse(json_dump(responses), content_type='application/json')
 
