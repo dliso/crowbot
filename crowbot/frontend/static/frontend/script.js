@@ -153,7 +153,8 @@ class FeedItem extends Message {
 
         if (this.msgType == MESSAGETYPE.storedQuestion) {
             infoLine.append(` #${this.pk}`);
-            let replyButton = $('<span/>', {text: ' reply'});
+            let replyButton = $('<span/>', {text: 'Reply'});
+            replyButton.addClass('btn btn-xs btn-primary');
             replyButton.attr('data-toggle', 'modal');
             replyButton.attr('data-target', '#answer-modal');
             replyButton.click(e => {
@@ -164,7 +165,7 @@ class FeedItem extends Message {
             infoLine.append(replyButton);
 
             let buttons = $('<div/>');
-            let plusOne = $('<button/>', {text: 'follow'})
+            let plusOne = $('<button/>', {text: 'Follow'})
             plusOne.addClass('label-button');
             if(this.thisUserAsked) {
                 plusOne.addClass('active-button');
