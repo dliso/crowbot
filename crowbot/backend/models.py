@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from api import answervote
+from api.messagetype import *
 from api.answervote import *
 
 # Create your models here.
@@ -153,3 +154,102 @@ class Answer(models.Model):
             'thisUserVoted': self.user_voted(asking_user),
             'msgType': MESSAGETYPE.stored_answer,
         }
+
+class ChatLog(models.Model):
+    """Either a plain text message, a stored question, or a stored answer."""
+    user_id = models.ForeignKey(
+        User,
+        on_delete = models.CASCADE,
+        null = False,
+        related_name = 'chatlog'
+    )
+    timestamp = models.DateTimeField(auto_now_add = True)
+    plain_user = models.TextField(null = True)
+    plain_bot = models.TextField(null = True)
+    question = models.ForeignKey(
+        Question,
+        on_delete = models.SET_NULL,
+        null = True
+    )
+    answer = models.ForeignKey(
+        Answer,
+        on_delete = models.SET_NULL,
+        null = True
+    )
+
+    @classmethod
+    def record_user_message(cls, text, user):
+        print('Recording user message')
+        log_entry = ChatLog(
+            user_id = user,
+            plain_user = text,
+        )
+        log_entry.save()
+        print(log_entry.user_id)
+        print(log_entry.timestamp)
+        print(log_entry.plain_user)
+
+    @classmethod
+    def record_stored_object(cls, message, user):
+        # print('Recording bot response')
+        # print(user)
+        # print(message['msgType'])
+        # print(message)
+        msg_type = message['msgType']
+        if msg_type == MESSAGETYPE.bot_response:
+            print('Recording bot response')
+            msg = cls(
+                user_id=user,
+                plain_bot=message['msgBody']
+            )
+            msg.save()
+            pass
+        if msg_type == MESSAGETYPE.stored_answer:
+            print('Recording stored answer')
+            pk = message['pk']
+            msg = cls(
+                user_id = user,
+                answer = Answer.objects.get(pk=pk)
+            )
+            msg.save()
+            print(msg.answer)
+            pass
+        if msg_type == MESSAGETYPE.stored_question:
+            print('Recording stored question')
+            pk = message['pk']
+            msg = cls(
+                user_id = user,
+                question = Question.objects.get(pk=pk)
+            )
+            msg.save()
+            print(msg.question)
+            pass
+        pass
+
+    @classmethod
+    def record_message(self, message):
+        print('Recording message in DB:')
+        print(message)
+        pass
+
+    def format(self, user):
+        res = {}
+        res['user'] = self.user_id.profile.to_dict()
+        if self.plain_user:
+            res['msgType'] = MESSAGETYPE.user_message
+            res['msgBody'] = self.plain_user
+            res['timestamp'] = self.timestamp
+            res['ownMessage'] = True
+        if self.plain_bot:
+            res['msgType'] = MESSAGETYPE.bot_response
+            res['msgBody'] = self.plain_bot
+            res['timestamp'] = self.timestamp
+            res['ownMessage'] = False
+        if self.answer:
+            res = self.answer.to_dict(user)
+        if self.question:
+            res = self.question.to_dict(user)
+        return res
+
+    def get(self, num_msgs = 10):
+        pass
