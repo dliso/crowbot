@@ -172,31 +172,11 @@ def user_feed(request):
             user = {}
             if profile:
                 user = profile.to_dict()
-            firstMessage = {
-                    'user': user,
-                    'ownMessage': request.user == q.user_id,
-                    'timestamp': q.creation_datetime,
-                    'msgBody': q.text,
-                    'courseId': q.course.code,
-                    'pk': q.id,
-                    'thisUserAsked': q.did_user_ask(profile.user) if profile else False,
-                    'askedCount': q.interested_users.count(),
-                    'msgType': MESSAGETYPE.stored_question,
-                }
+            firstMessage = q.to_dict(request.user)
             replies = []
             for a in q.answers.all():
                 print(a.text)
-                reply = {
-                    'user': a.user_id.profile.to_dict(),
-                    'ownMessage': a.user_id == request.user,
-                    'timestamp': a.creation_datetime,
-                    'msgBody': a.text,
-                    'courseId': a.question.course.code,
-                    'pk': a.id,
-                    'score': a.upvoted_by.all().count() - a.downvoted_by.all().count(),
-                    'thisUserVoted': a.user_voted(request.user),
-                    'msgType': MESSAGETYPE.stored_answer,
-                }
+                reply = a.to_dict(request.user)
                 replies.append(reply)
             feed.append({
                 'itemType': FEEDITEMTYPE.question,

@@ -71,6 +71,20 @@ class Question(models.Model):
     def __str__(self):
         return str((self.creation_datetime, self.text))
 
+    def to_dict(self, asking_user):
+        profile = self.user_id.profile
+        return {
+            'user': profile.to_dict(),
+            'ownMessage': asking_user == self.user_id,
+            'timestamp': self.creation_datetime,
+            'msgBody': self.text,
+            'courseId': self.course.code,
+            'pk': self.id,
+            'thisUserAsked': self.did_user_ask(profile.user) if profile else False,
+            'askedCount': self.interested_users.count(),
+            'msgType': MESSAGETYPE.stored_question,
+        }
+
 class Answer(models.Model):
     """
     Answers to questions.
@@ -125,3 +139,17 @@ class Answer(models.Model):
         else:
             raise ValueError("'vote' must be one of 'up' or 'down'")
         return self.user_voted(user)
+
+    def to_dict(self, asking_user):
+        profile = self.user_id.profile
+        return {
+            'user': profile.to_dict(),
+            'ownMessage': self.user_id == asking_user,
+            'timestamp': self.creation_datetime,
+            'msgBody': self.text,
+            'courseId': self.question.course.code,
+            'pk': self.id,
+            'score': self.score(),
+            'thisUserVoted': self.user_voted(asking_user),
+            'msgType': MESSAGETYPE.stored_answer,
+        }
