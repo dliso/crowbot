@@ -47,7 +47,8 @@ let ANSWERVOTE = {
 let MESSAGETYPE = {
     botResponse    : 'BotResponse',
     storedQuestion : 'StoredQuestion',
-    storedAnswer   : 'StoredAnswer'
+    storedAnswer   : 'StoredAnswer',
+    userMessage    : 'UserMessage'
 };
 
 class Message {
@@ -534,5 +535,24 @@ $( document).ready(function(){
             body: answer
         })
     });
+
+    $.getJSON('/api/chat_log/').then(chatLog => {
+        for (logEntry of chatLog) {
+            if (logEntry.msgType === MESSAGETYPE.userMessage) {
+                userMessage = new ChatMessage(logEntry);
+                msgListManager.addItem(
+                    userMessage.makeLi()
+                        .addClass('message user-msg')
+                );
+            } else {
+                message = new ChatMessage(logEntry);
+                msgListManager.addItem(
+                    message.makeLi().addClass('message bot-msg')
+                );
+            }
+        }
+        updateScroll(msgBox);
+    }
+    );
 
 });
