@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^vote_answer/?$', api_views.vote_on_answer, name='vote_answer'),
     url(r'^unsubscribe_from/(.*)/?$', api_views.unsubscribe_from_course, name='unsubscribe_from_course'),
     url(r'^my_feed/?$', api_views.user_feed, name='my_feed'),
+    url(r'^chat_log/?$', api_views.chat_log, name='chat_log'),
     url(r'^question_queue/(.*)/?$', api_views.questions_for_course, name='question_queue'),
     url(r'^$', views.index, name='index'),
 ]

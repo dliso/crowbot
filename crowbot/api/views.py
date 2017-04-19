@@ -268,3 +268,12 @@ def vote_on_answer(request):
         }), content_type='application/json')
     else:
         return HttpResponse('must be logged in to vote on questions')
+
+
+def chat_log(request):
+    if not request.user.is_authenticated:
+        return HttpResponse('must be logged in to retrieve chat log')
+    user = request.user
+    chatlog = ChatLog.objects.filter(user_id=user)
+    log = [m.format(user) for m in chatlog]
+    return HttpResponse(json_dump(log), content_type='application/json')
