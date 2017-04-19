@@ -183,7 +183,7 @@ def user_feed(request):
                 'replies': replies,
                 'firstMessage': firstMessage,
             })
-    return HttpResponse(json_dump(feed))
+    return HttpResponse(json_dump(feed), content_type='application/json')
 
 @csrf_exempt
 def subscribe_to_course(request, course_id):
