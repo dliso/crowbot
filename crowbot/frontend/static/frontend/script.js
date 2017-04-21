@@ -1,14 +1,306 @@
 // This file is loaded and executed when the main Crowbot page is opened.
 
+Date.prototype.customTime = function() {
+    let date = this.getDate();
+    let months = ['Jan',
+                  'Feb',
+                  'Mar',
+                  'Apr',
+                  'Jun',
+                  'Jul',
+                  'Aug',
+                  'Sep',
+                  'Oct',
+                  'Nov',
+                  'Dec']
+    let month = months[this.getMonth()];
+    let year = this.getFullYear();
+
+    let hour = this.getHours();
+    let minute = this.getMinutes();
+
+    return `${date} ${month} ${year} ${hour}:${minute}`;
+}
+
+let FEEDITEMTYPE = {
+    question            : 'Question',
+    questionWithAnswers : 'QuestionWithAnswers',
+    faq                 : 'FAQ',
+    info                : 'Info',
+    highlyRated         : 'HighlyRated'
+};
+
+let USERTYPE = {
+    bot        : 'Bot',
+    instructor : 'Instructor',
+    student    : 'Student',
+    anonymous  : 'Anonymous'
+};
+
+
+let ANSWERVOTE = {
+    none : 'none',
+    up   : 'up',
+    down : 'down'
+};
+
+let MESSAGETYPE = {
+    botResponse    : 'BotResponse',
+    storedQuestion : 'StoredQuestion',
+    storedAnswer   : 'StoredAnswer',
+    userMessage    : 'UserMessage'
+};
+
+class Message {
+    constructor(message) {
+        this.msgBody = message.body;
+        if (message.msgBody) {
+            this.msgBody = message.msgBody;
+        }
+        this.ownMessage = message.ownMessage;
+        this.courseId = message.courseId;
+        this.msgType = message.msgType;
+        this.user = message.user;
+        this.pk = message.pk;
+        this.askedCount = message.askedCount;
+        this.thisUserAsked = message.thisUserAsked;
+        this.thisUserVoted = message.thisUserVoted;
+        this.score = message.score;
+        this.timestamp = message.timestamp;
+        this.date = new Date(this.timestamp);
+    }
+
+}
+
+class FeedItem extends Message {
+    makeLi() {
+        let li;
+        switch (this.msgType) {
+        case MESSAGETYPE.storedAnswer:
+            li = this.makeAnswerLi();
+            break;
+        case MESSAGETYPE.storedQuestion:
+            li = this.makeQuestionLi();
+            break;
+        case MESSAGETYPE.botResponse:
+            li = this.makeBotLi();
+            break;
+        }
+        return li;
+    }
+
+    makeBotLi() {
+        let li = $('<li/>');
+        li.append(this.msgBody);
+        return li;
+    }
+
+    makeAnswerLi() {
+        let li = this.makeQuestionLi();
+        li.addClass('feed-indent feed-reply');
+        return li;
+    }
+
+    makeQuestionLi() {
+        let li = $('<li/>');
+
+        let elements = this.makeElements();
+
+        li.addClass('flex-container');
+        li.css('justify-content', 'space-between');
+
+        let left = $('<div/>');
+        left.append(elements.topDecoration);
+        left.append(elements.content);
+        left.append(elements.infoLine);
+
+        let right = $('<div/>');
+        right.append(elements.buttons);
+
+        li.append(left);
+        li.append(right);
+
+        li.addClass('feed-item');
+        return li;
+    }
+
+    makeElements() {
+        /* Make the elements that go into the DOM representations of items. These
+           are:
+           - The actual message
+           - Info line
+             - Username, timestamp, course code
+             - Question ID, if `this` is a question
+           - Voting buttons, if `this` is an answer
+           - +1 button, if `this` is a question
+          */
+        let elements = {};
+
+        let content = $('<div/>');
+        content.append(this.msgBody);
+        content.addClass('message-content');
+        elements.content = content;
+
+        let infoLine = $('<div/>');
+        let prettyTime = this.date.customTime();
+        infoLine.append(`${this.user.name} ${prettyTime}`);
+        elements.infoLine = infoLine;
+        infoLine.addClass('info-line');
+
+        let topDecoration = $('<div/>');
+        topDecoration.append(`${this.msgType} #${this.pk}`);
+        topDecoration.addClass('info-line')
+        elements.topDecoration = topDecoration;
+
+        if (this.msgType == MESSAGETYPE.storedQuestion) {
+            infoLine.append(` #${this.pk}`);
+            let replyButton = $('<span/>', {text: 'Reply'});
+            replyButton.addClass('btn btn-xs btn-primary');
+            replyButton.attr('data-toggle', 'modal');
+            replyButton.attr('data-target', '#answer-modal');
+            replyButton.click(e => {
+                $('#modal-question-pk').html(this.pk);
+                $('#modal-question-text').html(this.msgBody);
+                $('#answer-modal-submit').attr('data-question-pk', this.pk);
+            })
+            infoLine.append(replyButton);
+
+            let buttons = $('<div/>');
+            let plusOne = $('<button/>', {text: 'Follow'})
+            plusOne.addClass('label-button');
+            if(this.thisUserAsked) {
+                plusOne.addClass('active-button');
+            }
+            let counter = $('<div/>')
+                .append(this.askedCount)
+                .addClass('score-field');
+            plusOne.click(e => {
+                // Tell the server to toggle the current user's interest state.
+                // Update the view based on what the server responds with.
+                $.post('/api/toggle_interest/', {pk: this.pk})
+                    .then(response => {
+                        console.log(response);
+                        console.log(response.thisUserAsked)
+                        if(response.thisUserAsked) {
+                            plusOne.addClass('active-button');
+                        } else {
+                            plusOne.removeClass('active-button');
+                        }
+                        counter.html(response.askedCount);
+                    })
+            })
+
+            buttons
+                .append(plusOne)
+                .append(counter);
+
+            elements.buttons = buttons;
+        }
+
+        if (this.msgType == MESSAGETYPE.storedAnswer) {
+            console.log(this);
+            let buttons = $('<div/>');
+            let upvote = $('<button/>').append('+1').addClass('label-button');
+            let downvote = $('<button/>').append('-1').addClass('label-button');
+            let score = $('<div/>').append(this.score).addClass('score-field');
+
+            switch(this.thisUserVoted) {
+            case ANSWERVOTE.up:
+                upvote.addClass('active-button');
+                break;
+            case ANSWERVOTE.down:
+                downvote.addClass('active-button');
+                break;
+            }
+
+            upvote.click(e =>{
+                //tell the server to check and add on the value stored
+                //update the view based on the vote.
+                $.post('/api/vote_answer/', {button:'up', pk: this.pk})
+                    .then(response => {
+                        console.log(response);
+                        console.log(response.vote);
+                        score.html(response.score);
+                        if (response.vote == ANSWERVOTE.up) {
+                            upvote.addClass('active-button');
+                            downvote.removeClass('active-button');
+                        } else {
+                            upvote.removeClass('active-button');
+                        }
+                    })
+            })
+
+            downvote.click(e =>{
+                //tell the server to check and subtract on the value stored
+                //update the view based on the vote.
+                $.post('/api/vote_answer/',{button:'down',pk:this.pk})
+                    .then(response => {
+                        console.log(response);
+                        console.log(response.vote);
+                        //upvote.addClass('active-button');
+                        score.html(response.score);
+                        if (response.vote == ANSWERVOTE.down) {
+                            downvote.addClass('active-button');
+                            upvote.removeClass('active-button');
+                        } else {
+                            downvote.removeClass('active-button');
+                        }
+                    })
+			      });
+
+			      buttons
+                .append(upvote)
+                .append(score)
+                .append(downvote);
+
+            elements.buttons = buttons;
+        }
+
+        return elements;
+    }
+}
+
+class ChatMessage extends FeedItem {
+    makeLi() {
+        let li = $('<li/>');
+
+        if(!this.ownMessage) {
+            // let elements = this.makeElements();
+            // li.append(elements.topDecoration);
+            return super.makeLi();
+        }
+
+        let content = $('<div/>');
+        content.append(this.msgBody);
+
+        let info = $('<div/>');
+        info.addClass('info-line');
+        if (this.user) {
+            info.append(this.user.name)
+        }
+        if (this.timestamp) {
+            info.append(this.timestamp)
+        }
+
+        li.append(content);
+        li.append(info);
+        return li;
+    }
+}
+
 class ListManager {
 
     constructor(listID){  //f.eks question-queue
         this.list = listID;
     }
 
+    addItem(item) {
+        this.list.append(item);
+    }
+
     appendText(content, cssClasses){ //cssClasses er ei liste.
         var li = $("<li/>").text(content).addClass(cssClasses.join(" ")); // lager liste-element med klasser.
-        this.list.append(li)
+        this.list.append(li);
     }
 
     appendWithSubtext(maintext, subtext, cssClasses){
@@ -68,84 +360,47 @@ class ListManager {
         return sound;
     }
 
-/*    addToListWithTimeAndUser(text, usertype, username, timestamp, cssClasses, number){
-        var subtext = "";
-        if (username == "Crowbot") {
-            subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
+}
+
+class FeedManager {
+    constructor() {
+        // this.container = feedContainer;
+        this.header = $('#feed-toggles');
+        this.items = $('#feed-items');
+        this.manager = new ListManager($('#feed-items'));
+        this.itemsByCourse = new Object();
+    }
+
+    addItem(item) {
+        let li = $('<li/>');
+        li.append(item.itemContent.msgBody);
+
+        let courseId = item.itemContent.courseId;
+        if(this.itemsByCourse[courseId] === undefined) {
+            this.itemsByCourse[courseId] = [];
         }
-        else if (username == undefined || username == "" || username == "Unknown"){
-            subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16);
-            if (number != null){
-                subtext += " id = " + number;
-            }
-        }
-        else{
-            subtext = "Answer by " + usertype + " " + username + " " + "[" + timestamp.substring(0,10)
-                + " " + timestamp.substring(11,16) + "]";
-        }
-        var listItem = $('<li/>')
-            .append($('<div/>', {text: text}))
-            .append($('<div/>', {text: subtext}).css('font-size', '10px'));
-        var li = listItem.addClass(cssClasses.join(" ")); // lager liste-element med klasser.
+        this.itemsByCourse[courseId].push(courseId);
 
-        this.list.append(li);
-   }*/
-
-
-
-/*   //content is a list item.
-    addListItemToList(content, cssClasses){ //cssClasses er ei liste.
-        var li = content.addClass(cssClasses.join(" ")); // lager liste-element med klasser.
-        this.list.append(li);
-    }*/
-
+        this.manager.addItem(li);
+        console.log(this.itemsByCourse);
+    }
 }
 
 function prettyDatetime(datetime) { //brukes ikke
     return "[" + datetime.substring(0,10) + " " + datetime.substring(11,16) + "]";
 }
 
+function hideCourses(courseId) {
+    $(`#feed-items [data-courseId=${courseId}]`).hide();
+}
+
+function showCourses(courseId) {
+    $(`#feed-items [data-courseId=${courseId}]`).show();
+}
+
 
 
 $( document).ready(function(){
-    // jQuery example:
-    var root = 'https://jsonplaceholder.typicode.com';
-    $.ajax({
-        url: root + '/posts/1',
-        method: 'GET'
-    }).then(function(data) {
-        console.log(data);
-    });
-
-
-
-
-    //Changes color of the list:
-    //$( '#message-box').css("color","blue");
-
-    //Adds the word "Hei" to the lists:
-    //$( "#message-box").append("<li>Hei</li>");
-
-    //Creates a new XMLHttpRequest-object but we're not using it. Yet.
-    //var xhttp = new XMLHttpRequest();
-
-    // http://scooterlabs.com/echo is the url of an "echoing site",
-    // but we're not using it and I don't even know if the code works.
-    // xhttp.open("POST", "http://scooterlabs.com/echo", true);
-
-    //Another jQuery example:
-    // $.ajax({
-    //     url: root + '/posts', //URL
-    //     method: "POST", //POST or GET etc...
-    //     data: {
-    //         title: "foo",
-    //         body: "bar",
-    //         userId: 1
-    //     }
-    //     //dataType: "jsonp"
-    // }).then(function(data){ //"then" waits for the response and executes the function when it arrives.
-    //     console.log(data)
-    // });
 
     msgBox = document.getElementById("message-box");
 
@@ -154,7 +409,6 @@ $( document).ready(function(){
     }
 
     //RegEx pattern for q_pk (question primary key)
-    var re = /\#[0-9]+/g;
 
     msgListManager = new ListManager($("#message-box"));
 
@@ -163,57 +417,48 @@ $( document).ready(function(){
 
         //Finds user input and appends it
         var input = $( "#user-input").val();
-        if (input !== "") {
-            //input_html = "<li class='message user-msg'>" + input + "</li>"; // Jeg kommenterte denne ut fordi det virker ikke som den brukes.
-            msgListManager.appendText(input, ['user-msg', 'message']);
-            updateScroll(msgBox);
+        event.preventDefault();
+        if (input == '') {
+            return;
+        }
+        userMessage = new ChatMessage({msgBody: input, ownMessage: true});
+        msgListManager.addItem(
+            userMessage.makeLi()
+                .addClass('message user-msg')
+        );
+        updateScroll(msgBox);
 
-            if (input.startsWith("#")){
-                var regexArray = input.match(re);
-                var q_pk = regexArray[0].substring(1); //Removes the '#'
-                //console.log(q_pk);
-                root = "/api/submit_answer/";
-                $.ajax({
-                    url: root,
-                    method: "POST",
-                    data: {
-                        body: input,
-                        q_pk: q_pk
-                    }
-                }).then(function(conf){ //conf = confirmation that the bot received the instructors answer
-                    msgListManager.appendText(conf.body,['bot-msg', 'message']);
+        if (input.startsWith("#")){
+            let primaryKeyRegex = /\#([0-9]+) (.*)/;
+            var regexArray = input.match(primaryKeyRegex);
+            var q_pk = regexArray[1];
+            let q_body = regexArray[2];
+            console.log(regexArray);
+            let submit_answer_route = "/api/submit_answer/";
+            $.post(submit_answer_route, {q_pk: q_pk, body: q_body})
+                .then(function(conf){ //conf = confirmation that the bot received the instructors answer
+                    let message = new ChatMessage(conf);
+                    msgListManager.addItem(message.makeLi().addClass('message bot-msg'));
                     updateScroll(msgBox);
                 });
-
-            } else {
-                root = '/api/ask_question';
-
-                //Sends input to URL
-                $.ajax({
-                    url: root,
-                    method: "POST",
-                    data: {
-                        body: input
-                    }
-                    //Gets the input back and appends it to the list
-                }).then(function (data_raw) {
-                    // We expect to receive either a single message or a list of messages.
-                    // If it's a single message, we wrap it in a list so we can treat both
-                    // cases the same way.
-                    if(Array.isArray(data_raw)) {
-                        data = data_raw;
-                    } else {
-                        data = [data_raw];
-                    }
-                    for(data of data) {
-                        msgListManager.chatReply(data.body, data.usertype, data.username, data.timestamp,['bot-msg', 'message']);
+        } else {
+            let ask_question_route = '/api/ask_question';
+            $.post(ask_question_route, {body: input})
+                .then(function (messages) {
+                    for(message of messages) {
+                        console.log('received:');
+                        console.log(message);
+                        // message.ownMessage = false;
+                        message = new ChatMessage(message);
+                        console.log('received:');
+                        console.log(message);
+                        msgListManager.addItem(
+                            message.makeLi().addClass('message bot-msg')
+                        );
                         updateScroll(msgBox);
                     }
                 });
-            }
         }
-        //preventDefault prevents the site from updating.
-        event.preventDefault();
     });
 
     // Submit when the user presses enter
@@ -225,78 +470,89 @@ $( document).ready(function(){
         }
     });
 
-    var q_list_root = '/api/question_queue';
+    function populateFeedCourseList(courseList) {
+        let feedContainer = $('#feed-container');
+        let feedToggles = $('#feed-toggles');
+        for (courseId of courseList) {
+            let checkbox = $('<input />', {type: 'checkbox', id: 'cb-'+courseId, checked: true});
+            checkbox.attr('data-cb-courseId', courseId);
+            checkbox.hide();
+            checkbox.change(event => {
+                if (event.currentTarget.checked) {
+                    showCourses(checkbox.attr('data-cb-courseId'));
+                } else {
+                    hideCourses(checkbox.attr('data-cb-courseId'));
+                }
+            });
+            let label = $('<label/>', {'for': 'cb-'+courseId, text: courseId});
+            feedToggles.append(checkbox);
+            feedToggles.append(label);
+        }
+    }
 
-    function addPendingQuestions(course_code, listmanager){
-        $.ajax({
-        //Get the question
-            url: q_list_root + "/" + course_code,
-            method: "GET"
-        }).then(function(questions){
-            for (q of questions){
-                listmanager.addPendingQuestion(q.text,q.datetime,q.pk);
+    function decorate(container, type) {
+        return container;
+    }
+
+    function populateFeed(feedResponse) {
+        let feed = $('#feed-items');
+        for (item of feedResponse) {
+            let itemType = item.itemType;
+            let firstMessageRaw = item.firstMessage;
+            let repliesRaw = item.replies;
+            let container = $('<div/>');
+            container.addClass('feed-' + itemType);
+            container = decorate(container, itemType);
+            parent = new FeedItem(firstMessageRaw);
+            let li = parent.makeLi();
+            container.append(li);
+            li.attr('data-courseId', parent.courseId);
+            li.attr('data-msgType', parent.msgType);
+            li.attr('data-pk', parent.pk);
+            replies = [];
+            for (rRaw of repliesRaw) {
+                let r = new FeedItem(rRaw);
+                let li = r.makeLi();
+                li.attr('data-courseId', r.courseId);
+                li.attr('data-msgType', r.msgType);
+                li.attr('data-pk', r.pk);
+                container.append(li);
             }
-        });
-    }
-    //pendingQuestionList = new ListManager($("#question-queue"));
-
-    //addPendingQuestions("TDT4100", pendingQuestionList);
-
-
-    // The following code controls the button that you can click to show/hide Pending Questions
-    $("#showPQs").click(function(){
-        $("#PendingQs").toggle();
-    });
-
-    // The following code will show/hide the pending quetion according to which checkbox is checked.
-    // Every course has its own checkbox with its unique checkbox id.
-    function displaySelectedPQs(course) {
-        $('#'+course+"checkbox").click(function() {
-        if($(this).is(":checked")) {
-            $('#PendingQs-courselists').show(); // This is to show the div where the Pending Question lists are hidden
-            $('#'+course+"list").show();
-        } else {
-             //$('#PendingQs-courselists').hide(); // Must be commented out, or else the lists will disappear
-            $('#'+course+"list").hide();
-        }
-        });
-    }
-
-    // The following code takes in a list of courses that the user has subscribed to (given to us by ajax further down this file).
-    function createCheckboxes(subscribed_courses) {
-        $("#info").append("Select the courses you want to see the pending questions for.").css('font-size', '12px');
-
-        for (course of subscribed_courses) {
-            // For every subscribed course, make a checkbox.
-            $("#checkboxes").append($('<input/>', {id: course + "checkbox", type: "checkbox", name: "course", value: "Courses"})).append(" " + course.toUpperCase()).append($('<br>'));
-
-            // For every subscribed course, make a list.
-            $("#PendingQs-courselists").append($('<ul/>', {id: course + "list", style: "display:none;"}).addClass("question-list"));
-
-
-            lm = new ListManager($("#" + course + "list"));
-
-            // Append the pending questions for the current course to the newly made list
-            addPendingQuestions(course, lm);
-
-            // Run the code that hide/show the pending questions when you check the boxes
-            displaySelectedPQs(course);
+            feed.append(container);
         }
     }
 
-    // Get the subscribed courses
-    $.ajax({
-        url: '/api/my_courses/', //URL
-        method: "GET"
-    }).then(function(data){ //"then" waits for the response and executes the function when it arrives.
+    $.getJSON('/api/my_courses/').then(populateFeedCourseList);
+    $.getJSON('/api/my_feed/').then(populateFeed);
 
-        // Run the code that creates checkboxes, appends the questions to the lists, and hide/show the lists.
-        createCheckboxes(data);
+    $('#answer-modal-submit').click(e =>{
+        let answer = $('#question-answer').val();
+        let q_pk = $('#answer-modal-submit').attr('data-question-pk');
+        // console.log(x);
+        // console.log(answer);
+        $.post('/api/submit_answer/', {
+            q_pk: q_pk,
+            body: answer
+        })
     });
 
-
-
-
-
+    $.getJSON('/api/chat_log/').then(chatLog => {
+        for (logEntry of chatLog) {
+            if (logEntry.msgType === MESSAGETYPE.userMessage) {
+                userMessage = new ChatMessage(logEntry);
+                msgListManager.addItem(
+                    userMessage.makeLi()
+                        .addClass('message user-msg')
+                );
+            } else {
+                message = new ChatMessage(logEntry);
+                msgListManager.addItem(
+                    message.makeLi().addClass('message bot-msg')
+                );
+            }
+        }
+        updateScroll(msgBox);
+    }
+    );
 
 });
