@@ -277,3 +277,14 @@ def chat_log(request):
     chatlog = ChatLog.objects.filter(user_id=user)
     log = [m.format(user) for m in chatlog]
     return HttpResponse(json_dump(log), content_type='application/json')
+
+
+def courses_matching(request, course_name_fragment):
+    if len(course_name_fragment) < 2:
+        return HttpResponse('fragment to match must contain at least 2 characters')
+    courses_matching_name = Course.objects.filter(name__icontains=course_name_fragment)
+    courses_matching_code = Course.objects.filter(code__icontains=course_name_fragment)
+    courses = list(set(courses_matching_code).union(set(courses_matching_name)))
+    return HttpResponse(json_dump(
+        [{'code': c.code, 'name': c.name} for c in courses]
+    ), content_type='application/json')
