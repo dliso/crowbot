@@ -142,9 +142,9 @@ class Answer(models.Model):
         return self.user_voted(user)
 
     def to_dict(self, asking_user):
-        profile = self.user_id.profile
+        profile = self.user_id.profile if self.user_id else None
         return {
-            'user': profile.to_dict(),
+            'user': profile.to_dict() if profile else None,
             'ownMessage': self.user_id == asking_user,
             'timestamp': self.creation_datetime,
             'msgBody': self.text,
