@@ -556,16 +556,17 @@ $( document).ready(function(){
     }
 
     $('#answer-modal-submit').click(e =>{
-        let answer = $('#question-answer').val();
+        let answer = $('#question-answer');
         let q_pk = $('#answer-modal-submit').attr('data-question-pk');
         // console.log(x);
         // console.log(answer);
         $.post('/api/submit_answer/', {
             q_pk: q_pk,
-            body: answer
-        }).then( event =>
-            updateFeed()
-        );
+            body: answer.val()
+        }).then( event => {
+            updateFeed();
+            answer.val('');
+        });
     });
 
     $.getJSON('/api/chat_log/').then(chatLog => {
