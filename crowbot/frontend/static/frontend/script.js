@@ -143,7 +143,11 @@ class FeedItem extends Message {
 
         let infoLine = $('<div/>');
         let prettyTime = this.date.customTime();
-        infoLine.append(`${this.user.name} ${prettyTime}`);
+        let userName = 'Anonymous user';
+        if (this.user) {
+            userName = this.user.name;
+        }
+        infoLine.append(`${userName} ${prettyTime}`);
         elements.infoLine = infoLine;
         infoLine.addClass('info-line');
 
@@ -179,8 +183,8 @@ class FeedItem extends Message {
                 // Update the view based on what the server responds with.
                 $.post('/api/toggle_interest/', {pk: this.pk})
                     .then(response => {
-                        console.log(response);
-                        console.log(response.thisUserAsked)
+                        // console.log(response);
+                        // console.log(response.thisUserAsked)
                         if(response.thisUserAsked) {
                             plusOne.addClass('active-button');
                         } else {
@@ -198,7 +202,7 @@ class FeedItem extends Message {
         }
 
         if (this.msgType == MESSAGETYPE.storedAnswer) {
-            console.log(this);
+            // console.log(this);
             let buttons = $('<div/>');
             let upvote = $('<button/>').append('+1').addClass('label-button');
             let downvote = $('<button/>').append('-1').addClass('label-button');
@@ -218,8 +222,8 @@ class FeedItem extends Message {
                 //update the view based on the vote.
                 $.post('/api/vote_answer/', {button:'up', pk: this.pk})
                     .then(response => {
-                        console.log(response);
-                        console.log(response.vote);
+                        // console.log(response);
+                        // console.log(response.vote);
                         score.html(response.score);
                         if (response.vote == ANSWERVOTE.up) {
                             upvote.addClass('active-button');
@@ -235,8 +239,8 @@ class FeedItem extends Message {
                 //update the view based on the vote.
                 $.post('/api/vote_answer/',{button:'down',pk:this.pk})
                     .then(response => {
-                        console.log(response);
-                        console.log(response.vote);
+                        // console.log(response);
+                        // console.log(response.vote);
                         //upvote.addClass('active-button');
                         score.html(response.score);
                         if (response.vote == ANSWERVOTE.down) {
@@ -382,7 +386,7 @@ class FeedManager {
         this.itemsByCourse[courseId].push(courseId);
 
         this.manager.addItem(li);
-        console.log(this.itemsByCourse);
+        // console.log(this.itemsByCourse);
     }
 }
 
@@ -433,7 +437,7 @@ $( document).ready(function(){
             var regexArray = input.match(primaryKeyRegex);
             var q_pk = regexArray[1];
             let q_body = regexArray[2];
-            console.log(regexArray);
+            // console.log(regexArray);
             let submit_answer_route = "/api/submit_answer/";
             $.post(submit_answer_route, {q_pk: q_pk, body: q_body})
                 .then(function(conf){ //conf = confirmation that the bot received the instructors answer
@@ -446,12 +450,12 @@ $( document).ready(function(){
             $.post(ask_question_route, {body: input})
                 .then(function (messages) {
                     for(message of messages) {
-                        console.log('received:');
-                        console.log(message);
+                        // console.log('received:');
+                        // console.log(message);
                         // message.ownMessage = false;
                         message = new ChatMessage(message);
-                        console.log('received:');
-                        console.log(message);
+                        // console.log('received:');
+                        // console.log(message);
                         msgListManager.addItem(
                             message.makeLi().addClass('message bot-msg')
                         );
@@ -524,39 +528,6 @@ $( document).ready(function(){
         }
     }
 
-    $.getJSON('/api/my_courses/').then(populateFeedCourseList);
-    $.getJSON('/api/my_feed/').then(populateFeed);
-
-    $('#answer-modal-submit').click(e =>{
-        let answer = $('#question-answer').val();
-        let q_pk = $('#answer-modal-submit').attr('data-question-pk');
-        // console.log(x);
-        // console.log(answer);
-        $.post('/api/submit_answer/', {
-            q_pk: q_pk,
-            body: answer
-        })
-    });
-
-    $.getJSON('/api/chat_log/').then(chatLog => {
-        for (logEntry of chatLog) {
-            if (logEntry.msgType === MESSAGETYPE.userMessage) {
-                userMessage = new ChatMessage(logEntry);
-                msgListManager.addItem(
-                    userMessage.makeLi()
-                        .addClass('message user-msg')
-                );
-            } else {
-                message = new ChatMessage(logEntry);
-                msgListManager.addItem(
-                    message.makeLi().addClass('message bot-msg')
-                );
-            }
-        }
-        updateScroll(msgBox);
-    }
-    );
-
     function loadModelCourseList() {
         let modelCourseList = $('#course-list-manager');
         modelCourseList.empty();
@@ -584,6 +555,38 @@ $( document).ready(function(){
         loadModelCourseList();
     }
 
+    $('#answer-modal-submit').click(e =>{
+        let answer = $('#question-answer').val();
+        let q_pk = $('#answer-modal-submit').attr('data-question-pk');
+        // console.log(x);
+        // console.log(answer);
+        $.post('/api/submit_answer/', {
+            q_pk: q_pk,
+            body: answer
+        }).then( event =>
+            updateFeed()
+        );
+    });
+
+    $.getJSON('/api/chat_log/').then(chatLog => {
+        for (logEntry of chatLog) {
+            if (logEntry.msgType === MESSAGETYPE.userMessage) {
+                userMessage = new ChatMessage(logEntry);
+                msgListManager.addItem(
+                    userMessage.makeLi()
+                        .addClass('message user-msg')
+                );
+            } else {
+                message = new ChatMessage(logEntry);
+                msgListManager.addItem(
+                    message.makeLi().addClass('message bot-msg')
+                );
+            }
+        }
+        updateScroll(msgBox);
+    }
+    );
+
     let select = $('#course-select');
     select.on('change', event => {
         console.log(event);
@@ -603,6 +606,7 @@ $( document).ready(function(){
         }
     });
 
-    loadModelCourseList();
+    // loadModelCourseList();
+    updateFeed();
 
 });

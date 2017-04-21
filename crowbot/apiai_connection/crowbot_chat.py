@@ -190,6 +190,8 @@ def recommended_previous_knowledge(course, response, code, name):
 
 
 def ask_apiai(text, user):
+    if not user.is_authenticated:
+        user = None
     request = ai.text_request()
     request.query = text
     response = request.getresponse().read().decode()
