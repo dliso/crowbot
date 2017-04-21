@@ -23,10 +23,9 @@ def crowbot_answer(response):
 
 
 
-def user_request(response):
-    #response is a dict
-    #what course are the user interested in
-    code = response["result"]["parameters"]["course"].upper()
+def user_request(response, code):
+
+    print(code)
 
 
     #find what action to perform
@@ -35,7 +34,6 @@ def user_request(response):
     #ime api
     #base_url = "http://www.ime.ntnu.no/api/course/en/"
 
-    #go trough every course code to find a match
     try:
         #get the object that contains the right subject
         course = Course.objects.get(code=code)
@@ -64,7 +62,10 @@ def user_request(response):
             return(recommended_previous_knowledge(course, response, code, name))
     except django.core.exceptions.ObjectDoesNotExist:
     #if no code matches
-        return("No course with code {:s}.".format(code))
+        if code == '':
+            return ("Please provide a course code with your question.")
+        else:
+            return ("No course with code {:s}. Please provide a valid course code.".format(code))
 
     #just test prints
     # print("Course:",code)
@@ -194,30 +195,33 @@ def ask_apiai(text):
     request.query = text
     response = request.getresponse().read().decode()
     response = json.loads(response)
+    #find code from query
+    question = response["result"]["resolvedQuery"]
+    # om spørsmålet slutter med '?', fjern dette
+    question = question.strip()
+    if question.endswith('?'):
+        question = question[:-1]
+    # fjerner ',' og '.' fra setningen
+    question = question.replace(',', '')
+    question = question.replace('.', '')
+    question = question.replace('"', '')
+    # splitter setningen til en liste med ord
+    words = question.split()
+    code = ''
+    # går igjennom ordene for å finne emnekoden
+    for word in words:
+        # antagelse om at alle emnekoder begynner med bokstaver og slutter med tall
+        # og at bruker bare skriver inn en emnekode i hver "spørring"
+        if re.search('[ÆæØøÅåa-zA-Z]' + '[0-9]', word):
+            code = word.upper()
+            break
+
     # print(response)
     if response["result"]["metadata"]["intentName"] == 'Default Welcome Intent':
         return crowbot_answer(response)
     elif response["result"]["metadata"]["intentName"] == 'Default Goodbye Intent':
         return crowbot_answer(response)
     elif response["result"]["metadata"]["intentName"] == "Default Fallback Intent":
-        #legge til spørsmål i Questions modell
-        question = response["result"]["resolvedQuery"]
-        # om spørsmålet slutter med '?', fjern dette
-        if question.strip().endswith('?'):
-            question = question.strip()[:-1]
-        # fjerner ',' og '.' fra setningen
-        question = question.replace(',','')
-        question = question.replace('.','')
-        # splitter setningen til en liste med ord
-        words = question.split()
-        code = ''
-        # går igjennom ordene for å finne emnekoden
-        for word in words:
-            # antagelse om at alle emnekoder begynner med bokstaver og slutter med tall
-            # og at bruker bare skriver inn en emnekode i hver "spørring"
-            if re.search('[ÆæØøÅåa-zA-Z]'+'[0-9]', word):
-                code = word.upper()
-                break
         try:
             course = Course.objects.get(code=code)
             highest_ratio = 0
@@ -276,9 +280,13 @@ def ask_apiai(text):
 
 
         except django.core.exceptions.ObjectDoesNotExist:
-            return crowbot_answer(response)
+            if code == '':
+                return ("Please provide a course code with your question.")
+            else:
+                return ("No course with code {:s}. Please provide a valid course code.".format(code))
+                # return crowbot_answer(response)
 
     elif response["result"]["metadata"]["intentName"] == "Default Help Intent":
         return crowbot_answer(response)
     else:
-        return user_request(response)
+        return user_request(response, code)
