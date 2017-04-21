@@ -47,7 +47,7 @@ bot_user = {
 def make_message(user, obj):
     msgType = MESSAGETYPE.stored_question if isinstance(obj, Question) else MESSAGETYPE.stored_answer
     msg = {
-        'user': user.profile.to_dict(),
+        'user': user.profile.to_dict() if user is not None else None,
         'msgBody': obj.text,
         'msgType': msgType,
         'ownMessage': False,
@@ -197,8 +197,7 @@ def subscribe_to_course(request, course_id):
         try:
             course = Course.objects.get(code__iexact = course_id)
             profile.subscribed_courses.add(course)
-            print(course)
-            return HttpResponse('subscribed')
+            return HttpResponse('subscribed to ' + course.code)
         except exceptions.ObjectDoesNotExist as e:
             return HttpResponse('Course does not exist', status=404)
     else:
