@@ -473,6 +473,7 @@ $( document).ready(function(){
     function populateFeedCourseList(courseList) {
         let feedContainer = $('#feed-container');
         let feedToggles = $('#feed-toggles');
+        feedToggles.empty();
         for (courseId of courseList) {
             let checkbox = $('<input />', {type: 'checkbox', id: 'cb-'+courseId, checked: true});
             checkbox.attr('data-cb-courseId', courseId);
@@ -496,6 +497,7 @@ $( document).ready(function(){
 
     function populateFeed(feedResponse) {
         let feed = $('#feed-items');
+        feed.empty();
         for (item of feedResponse) {
             let itemType = item.itemType;
             let firstMessageRaw = item.firstMessage;
@@ -554,5 +556,53 @@ $( document).ready(function(){
         updateScroll(msgBox);
     }
     );
+
+    function loadModelCourseList() {
+        let modelCourseList = $('#course-list-manager');
+        modelCourseList.empty();
+        $.getJSON('/api/my_courses/').then(courses => {
+            for (course of courses) {
+                let li = $('<li/>');
+                li.attr('data-courseid', course);
+                let unsubBtn = $('<button/>').text('x');
+                unsubBtn.click( event => {
+                    $.get(`/api/unsubscribe_from/${li.attr('data-courseid')}`).then(
+                        event => updateFeed()
+                    );
+                });
+                li.append(unsubBtn);
+                li.append(course);
+                modelCourseList.append(li);
+
+            }
+        });
+    };
+
+    function updateFeed() {
+        $.getJSON('/api/my_courses/').then(populateFeedCourseList);
+        $.getJSON('/api/my_feed/').then(populateFeed);
+        loadModelCourseList();
+    }
+
+    let select = $('#course-select');
+    select.on('change', event => {
+        console.log(event);
+        let courseCode = select.val();
+        $.get(`/api/subscribe_to/${courseCode}`).then(response => {
+            updateFeed();
+        });
+    });
+
+    $.getJSON('/api/courses/tma').then(courseList => {
+        let select = $('#course-select');
+        for (course of courseList) {
+            select.append(
+                $('<option/>', {value: course.code}).text(`${course.code}: ${course.name}`)
+            );
+            select.selectpicker('refresh');
+        }
+    });
+
+    loadModelCourseList();
 
 });
