@@ -47,7 +47,7 @@ bot_user = {
 def make_message(user, obj):
     msgType = MESSAGETYPE.stored_question if isinstance(obj, Question) else MESSAGETYPE.stored_answer
     msg = {
-        'user': user.profile.to_dict(),
+        'user': user.profile.to_dict() if user is not None else None,
         'msgBody': obj.text,
         'msgType': msgType,
         'ownMessage': False,
@@ -197,8 +197,7 @@ def subscribe_to_course(request, course_id):
         try:
             course = Course.objects.get(code__iexact = course_id)
             profile.subscribed_courses.add(course)
-            print(course)
-            return HttpResponse('subscribed')
+            return HttpResponse('subscribed to ' + course.code)
         except exceptions.ObjectDoesNotExist as e:
             return HttpResponse('Course does not exist', status=404)
     else:
@@ -277,3 +276,14 @@ def chat_log(request):
     chatlog = ChatLog.objects.filter(user_id=user)
     log = [m.format(user) for m in chatlog]
     return HttpResponse(json_dump(log), content_type='application/json')
+
+
+def courses_matching(request, course_name_fragment):
+    if len(course_name_fragment) < 2:
+        return HttpResponse('fragment to match must contain at least 2 characters')
+    courses_matching_name = Course.objects.filter(name__icontains=course_name_fragment)
+    courses_matching_code = Course.objects.filter(code__icontains=course_name_fragment)
+    courses = list(set(courses_matching_code).union(set(courses_matching_name)))
+    return HttpResponse(json_dump(
+        [{'code': c.code, 'name': c.name} for c in courses]
+    ), content_type='application/json')
