@@ -25,7 +25,7 @@ def crowbot_answer(response):
 
 def user_request(response, code):
 
-    print(code)
+    #print(code)
 
 
     #find what action to perform

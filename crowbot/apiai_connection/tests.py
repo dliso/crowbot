@@ -52,7 +52,7 @@ class TestCrowbotChat(TestCase):
                               location='',semester='',teacher_name='',
                               teacher_email='tullekopp@ntnu.no',ects_credits=None)
 
-        #User.objects.create(username='crowcrow', password='crowcrow123')
+        User.objects.create(username='crowcrow', password='crowcrow123')
         User.objects.create(username='crowcrow2', password='crowcrow12321')
         #
         #Profile.objects.create(user=User.objects.create(username='crowcrow', password='crowcrow123'), role=1)
@@ -358,54 +358,55 @@ class TestCrowbotChat(TestCase):
     #test hi from user
     def test_ask_apiai_hi(self):
         list_of_possible_responses = ['Hi!','Hello!','Good day!','Greetings!','Caw caw!']
-        response = ask_apiai('Hi!')
+        response = ask_apiai('Hi!', User.objects.get(username='crowcrow'))
         self.assertTrue(response in list_of_possible_responses)
 
     #test goodbye from user
     def test_ask_apiai_goodbye(self):
         list_of_possible_responses = ['Byebye! Have a nice day!','Goodbye!']
-        response = ask_apiai('Bye')
+        response = ask_apiai('Bye', User.objects.get(username='crowcrow2'))
         self.assertTrue(response in list_of_possible_responses)
 
     #test a sentence that crowbot don't understand
     def test_ask_apiai_fail(self):
-        list_of_possible_responses = ["I didn't get that. Can you say it again?",
+        """
+        list_of_possible_responses = ["I didn't get that. Can you say it again? ",
                                       "I missed what you said. Say it again?",
                                       "Sorry, could you say that again?",
                                       "Sorry, can you say that again?",
                                       "Can you say that again?", "Sorry, I didn't get that.",
                                       "Sorry, what was that?","One more time?","What was that?",
                                       "Say that again?", "I didn't get that.", "I missed that."]
-        response = ask_apiai('Jibberish')
-        self.assertTrue(response in list_of_possible_responses)
+        """
+        response = ask_apiai('Jibberish', User.objects.get(username='crowcrow'))
+        self.assertEqual(response, "Please provide a course code with your question.")
 
 
     # test help from user
     def test_ask_apiai_help(self):
-        response = ask_apiai('Help')
+        response = ask_apiai('Help', User.objects.get(username='crowcrow2'))
         self.assertEqual(response,'Crowbot is here for your service! '
                                   'Ask me any course related questions, and I will answer. '
                                   'If I do not know the answer myself, your question will be saved '
-                                  'for your instructor to answer. Always include the course code in your questions. '
+                                  'for students or the instructor to answer. Always include the course code in your questions. '
                                   'E.g. "When is the exam in *course code*?", '
                                   '"What is the name of the professor in *course code*?" and '
                                   '"What recommended previous knowledge is there in *course code*?"')
 
     # test understandable input from user
     def test_ask_apiai_correct(self):
-        response = ask_apiai('When is the exam date in EXPH0004?')
+        response = ask_apiai('When is the exam date in EXPH0004?', User.objects.get(username='crowcrow'))
         self.assertEqual(response,'Exam date for EXPH0004 Examen philosophicum for Science and Technology is 27/05/2017.')
 
 
     # test nltk, respnse list of 2 objects and not adding new question object
     def test_nltk_existing_q(self):
-        response = ask_apiai('How many exercises is needed in TDT4140?')
-        self.assertEqual(len(response), 2)
+        response = ask_apiai('How many exercises is needed in TDT4140?', User.objects.get(username='crowcrow2'))
         self.assertEqual(2, Question.objects.all().count())
 
 
     def test_nltk_q_not_existing(self):
-        response = ask_apiai('EXPH0004 what textbook is used?')
+        response = ask_apiai('EXPH0004 what textbook is used?', User.objects.get(username='crowcrow'))
         self.assertEqual(response, 'No similar question detected, your question has been saved for the instructor to answer.')
         self.assertEqual(3, Question.objects.all().count())
 
