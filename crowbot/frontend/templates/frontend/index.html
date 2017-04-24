@@ -31,6 +31,8 @@
                 <a href="accounts/login" class="btn btn-primary">Log in</a>
                 <a href="accounts/signup" class="btn btn-primary">Signup</a>
                 {% endif %}	
+                <button type="button" class="btn btn-primary"
+                        data-toggle="modal" data-target="#help-modal">Help</button>
             </div>
         </header>
 
@@ -120,6 +122,27 @@
                                 <ul id="course-list-manager">
                                 </ul>
                             </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="help-modal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Get started with Crowbot</h4>
+                        </div>
+
+                        <div class="modal-body">
+                            Crowbot? Crowbot.
                         </div>
 
                         <div class="modal-footer">
