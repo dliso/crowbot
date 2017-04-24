@@ -165,7 +165,7 @@ def user_feed(request):
     courses = request.user.profile.subscribed_courses.values('code')
     for course in courses:
         print(course['code'])
-        qs = Question.objects.filter(course__code = course['code'])
+        qs = Question.objects.filter(course__code = course['code']).order_by('-creation_datetime')
         for q in qs:
             print(q)
             profile = None
