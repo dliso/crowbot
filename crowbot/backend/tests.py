@@ -40,4 +40,6 @@ class BackendViewTests(TestCase):
 #test for jaccard_similarity som testene fra crowbot ikke klarer dekke
 class JaccardSimilarityTest(TestCase):
     def test_nltk_q_error(self):
-        self.assertRaises(Exception, jaccard_similarity,['hi', 'school'], 6544)
+        response = jaccard_similarity(['hi', 'school'], 6544)
+        self.assertEqual(response, [False, 0])
+        #self.assertRaises(Exception, jaccard_similarity,['hi', 'school'], 6544)

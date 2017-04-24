@@ -1,7 +1,9 @@
 from django.test import TestCase
 import json, apiai, datetime, pickle
 from apiai_connection.crowbot_chat import *
-from backend.models import Course, Question
+from backend.models import Course, Question, Answer
+from django.contrib.auth.models import User
+from account_system.models import Profile
 
 CLIENT_ACCESS_TOKEN = '1b0f421f4b1045c5a9b29c8372573383'
 
@@ -48,6 +50,11 @@ class TestCrowbotChat(TestCase):
                               exam_date=None,exam_support_code='',exam_support_name='Just yourself.',
                               location='',semester='',teacher_name='',
                               teacher_email='tullekopp@ntnu.no',ects_credits=None)
+        # user1 = User.objects.create(username='crowcrow', password='crowcrow123')
+        # user2 = User.objects.create(username='crowcrow2', password='crowcrow12321')
+        #
+        # profile1 = Profile.objects.create(user=user1, role=1)
+        # profile2 = Profile.objects.create(user=user2, role=2)
 
         Question.objects.create(text='How many exercises is mandatory in TDT4140?',
                                 course=Course.objects.get(code='TDT4140'),
@@ -55,6 +62,11 @@ class TestCrowbotChat(TestCase):
         Question.objects.create(text='How many exercises is there in total in EXPH0004?',
                                 course=Course.objects.get(code='EXPH0004'),
                                 lemma=pickle.dumps(['exercise', 'exph0004']))
+
+        Answer.objects.create(question = Question.objects.get(text = 'How many exercises is mandatory in TDT4140?'),
+                              text = 'No exercises in TDT4140, just a mandatory project.')
+
+
 
 
     def load_text_request_with_query(self, query):
@@ -199,14 +211,14 @@ class TestCrowbotChat(TestCase):
 
     #test for course with location stored
     def test_user_request_location(self):
-        query = 'Where is FE8111 taught?'
+        query = 'Where is FE8111 located?'
         response = self.load_text_request_with_query(query)
         output = user_request(response)
         self.assertEqual(output,'FE8111 Molecular Beam Epitaxy is taught in Trondheim.')
 
     #test for course with no location stored
     def test_user_request_location_none(self):
-        query = 'Where is YRT5678 taught?'
+        query = 'Where is YRT5678 located?'
         response = self.load_text_request_with_query(query)
         output = user_request(response)
         self.assertEqual(output,'No location information for YRT5678 Tulle Emne.')
@@ -367,13 +379,13 @@ class TestCrowbotChat(TestCase):
     # test help from user
     def test_ask_apiai_help(self):
         response = ask_apiai('Help')
-        self.assertEqual(response,'Crowbot is here for your service! Ask me course related questions, '
-                                  'like what semester a course is taught, exam dates, examination support, '
-                                  'coursecredit, professors name and email address and '
-                                  'recommended/required previous knowledge. '
-                                  'E.g. "When is the exam in *coursecode*?", '
-                                  '"What is the name of the professor in *coursecode*?" and '
-                                  '"What recommended previous knowledge is there in *coursecode*?"')
+        self.assertEqual(response,'Crowbot is here for your service! '
+                                  'Ask me any course related questions, and I will answer. '
+                                  'If I do not know the answer myself, your question will be saved '
+                                  'for your instructor to answer. Always include the course code in your questions. '
+                                  'E.g. "When is the exam in *course code*?", '
+                                  '"What is the name of the professor in *course code*?" and '
+                                  '"What recommended previous knowledge is there in *course code*?"')
 
     # test understandable input from user
     def test_ask_apiai_correct(self):
@@ -381,24 +393,16 @@ class TestCrowbotChat(TestCase):
         self.assertEqual(response,'Exam date for EXPH0004 Examen philosophicum for Science and Technology is 27/05/2017.')
 
 
-    # test nltk
+    # test nltk, respnse list of 2 objects and not adding new question object
     def test_nltk_existing_q(self):
         response = ask_apiai('How many exercises is needed in TDT4140?')
-        self.assertEqual(response,
-                         'Similar question detected: How many exercises is mandatory in TDT4140? with ratio 1.0.')
+        self.assertEqual(len(response), 2)
         self.assertEqual(2, Question.objects.all().count())
 
 
     def test_nltk_q_not_existing(self):
-        list_of_possible_responses = ["I didn't get that. Can you say it again?",
-                                      "I missed what you said. Say it again?",
-                                      "Sorry, could you say that again?",
-                                      "Sorry, can you say that again?",
-                                      "Can you say that again?", "Sorry, I didn't get that.",
-                                      "Sorry, what was that?", "One more time?", "What was that?",
-                                      "Say that again?", "I didn't get that.", "I missed that."]
-        response = ask_apiai('If I did the exercises in EXPH0004 last year, are they valid this year?')
-        self.assertTrue(response in list_of_possible_responses)
+        response = ask_apiai('EXPH0004 what textbook is used?')
+        self.assertEqual(response, 'No similar question detected, your question has been saved for the instructor to answer.')
         self.assertEqual(3, Question.objects.all().count())
 
 
