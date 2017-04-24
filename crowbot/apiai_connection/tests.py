@@ -13,6 +13,7 @@ class TestCrowbotChat(TestCase):
     def setUp(self):
         self.ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
 
+        #create test database
         Course.objects.create(code='TDT4140', name='Software Engineering',
                               recommended_previous_knowledge='Subjects TDT4100 Object-Oriented Programming and TDT4120 Algorithms and Data Structures, or equivalent.',
                               required_previous_knowledge='',exam_date=None,exam_support_code='',exam_support_name='',location='Trondheim',
@@ -50,11 +51,12 @@ class TestCrowbotChat(TestCase):
                               exam_date=None,exam_support_code='',exam_support_name='Just yourself.',
                               location='',semester='',teacher_name='',
                               teacher_email='tullekopp@ntnu.no',ects_credits=None)
-        # user1 = User.objects.create(username='crowcrow', password='crowcrow123')
-        # user2 = User.objects.create(username='crowcrow2', password='crowcrow12321')
+
+        #User.objects.create(username='crowcrow', password='crowcrow123')
+        User.objects.create(username='crowcrow2', password='crowcrow12321')
         #
-        # profile1 = Profile.objects.create(user=user1, role=1)
-        # profile2 = Profile.objects.create(user=user2, role=2)
+        #Profile.objects.create(user=User.objects.create(username='crowcrow', password='crowcrow123'), role=1)
+        #Profile.objects.create(user=User.objects.get(username='crowcrow2'), role=2)
 
         Question.objects.create(text='How many exercises is mandatory in TDT4140?',
                                 course=Course.objects.get(code='TDT4140'),
@@ -65,6 +67,7 @@ class TestCrowbotChat(TestCase):
 
         Answer.objects.create(question = Question.objects.get(text = 'How many exercises is mandatory in TDT4140?'),
                               text = 'No exercises in TDT4140, just a mandatory project.')
+
 
 
 
@@ -183,14 +186,15 @@ class TestCrowbotChat(TestCase):
     def test_user_request_credit(self):
         query = 'How much credit do I get in tdt4140?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'TDT4140')
+        #output = ask_apiai(query, None)
         self.assertEqual(output,'Credits for TDT4140 Software Engineering is 7.50.')
 
     #test for course with no credit stored
     def test_user_request_credit_none(self):
         query = 'How much credit do I get in yrt5678?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'YRT5678')
         self.assertEqual(output,'No information about credits in this course, YRT5678 Tulle Emne.')
 
 
@@ -198,14 +202,14 @@ class TestCrowbotChat(TestCase):
     def test_user_request_exam_date(self):
         query = 'When is the exam in exph0004?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'EXPH0004')
         self.assertEqual(output,'Exam date for EXPH0004 Examen philosophicum for Science and Technology is 27/05/2017.')
 
     #test for course with no exam date
     def test_user_request_exam_date_none(self):
         query = 'When is the exam in tdt4140?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'TDT4140')
         self.assertEqual(output,"No info about the exam in this course TDT4140 Software Engineering.")
 
 
@@ -213,14 +217,14 @@ class TestCrowbotChat(TestCase):
     def test_user_request_location(self):
         query = 'Where is FE8111 located?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'FE8111')
         self.assertEqual(output,'FE8111 Molecular Beam Epitaxy is taught in Trondheim.')
 
     #test for course with no location stored
     def test_user_request_location_none(self):
         query = 'Where is YRT5678 located?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'YRT5678')
         self.assertEqual(output,'No location information for YRT5678 Tulle Emne.')
 
 
@@ -228,14 +232,14 @@ class TestCrowbotChat(TestCase):
     def test_user_request_professor_name(self):
         query = 'Who is teaching FE8111?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'FE8111')
         self.assertEqual(output,'FE8111 Molecular Beam Epitaxy is taught by Bjørn-Ove Fimland.')
 
     #test for course with no professor name stored
     def test_user_request_professor_name_none(self):
         query = 'Who is teaching YRT5678?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'YRT5678')
         self.assertEqual(output,'No information about the lecturer in YRT5678 Tulle Emne.')
 
 
@@ -243,28 +247,28 @@ class TestCrowbotChat(TestCase):
     def test_user_request_professor_mail(self):
         query = 'How can I reach the professor in FE8111?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'FE8111')
         self.assertEqual(output, 'FE8111 Molecular Beam Epitaxy is taught by Bjørn-Ove Fimland. They can be reached at bjorn.fimland@ntnu.no.')
 
     #test for course with no teacher name or teacher email
     def test_user_request_professor_mail_none(self):
         query = 'How can I reach the professor in YRT5678?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'YRT5678')
         self.assertEqual(output, 'No information about the professors email in YRT5678 Tulle Emne.')
 
     #test for course with teacher name, but no teacher email
     def test_user_request_professor_mail_no_mail(self):
         query = 'How can I reach the professor in YRT6789?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'YRT6789')
         self.assertEqual(output, "No information about Tulla Fisher's email in YRT6789 Tulle Emne 0,5.")
 
     #test for course with no teacher name, but teacher email
     def test_user_request_professor_mail_no_name(self):
         query = 'How can I reach the professor in YRT1234?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'YRT1234')
         self.assertEqual(output, 'You can reach the professor in YRT1234 Tulle Emne 2 at tullekopp@ntnu.no.')
 
 
@@ -273,14 +277,14 @@ class TestCrowbotChat(TestCase):
     def test_user_request_semester(self):
         query = 'In what term is EXPH0004 taught?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'EXPH0004')
         self.assertEqual(output, 'EXPH0004 Examen philosophicum for Science and Technology is taught in the Autumn and Spring.')
 
     #test for course with no semester info
     def test_user_request_semester_none(self):
         query = 'In what term is yrt5678 taught?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'YRT5678')
         self.assertEqual(output, 'No information about semesters in YRT5678 Tulle Emne.')
 
 
@@ -288,28 +292,28 @@ class TestCrowbotChat(TestCase):
     def test_user_request_exam_aids(self):
         query = 'What examination support is permitted in EXPH0004?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response,'EXPH0004')
         self.assertEqual(output, 'Exam support materials for EXPH0004 Examen philosophicum for Science and Technology is code D: No written or handwritten examination support material is permitted. Specified simple calculator is permitted.')
 
     #test course with no exam support code or exam support name
     def test_user_request_exam_aids_none(self):
         query = 'What exam aids is permitted in TDT4140?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response,'TDT4140')
         self.assertEqual(output, 'No information about examination support in TDT4140 Software Engineering.')
 
     #test course with exam support code, but no exam support name
     def test_user_request_exam_aids_no_name(self):
         query = 'What exam aids is permitted in YRT6789?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'YRT6789')
         self.assertEqual(output, 'Examination support materials for YRT6789 Tulle Emne 0,5 is code D.')
 
     #test course with exam support name, but no exam support code
     def test_user_request_exam_aids_no_code(self):
         query = 'What exam aids is permitted in YRT1234?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'YRT1234')
         self.assertEqual(output, 'Examination support materials for YRT1234 Tulle Emne 2 is: Just yourself.')
 
 
@@ -318,14 +322,14 @@ class TestCrowbotChat(TestCase):
     def test_user_request_needed_knowledge(self):
         query = 'What required previous knowledge is there in YRT5678?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'YRT5678')
         self.assertEqual(output, 'Required previous knowledge is: YRT6789 Tulle Emne 0,5.')
 
     #test course with no needed prev knowledge stored
     def test_user_request_needed_knowledge_none(self):
         query = 'What required previous knowledge is there in FE8111?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'FE8111')
         self.assertEqual(output, 'No information about required previous knowledge in FE8111 Molecular Beam Epitaxy.')
 
 
@@ -333,22 +337,22 @@ class TestCrowbotChat(TestCase):
     def test_user_request_recommended_knowledge(self):
         query = 'What recommended previous knowledge is there in TDT4140?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'TDT4140')
         self.assertEqual(output, 'Recommended previous knowledge for TDT4140 Software Engineering is: Subjects TDT4100 Object-Oriented Programming and TDT4120 Algorithms and Data Structures, or equivalent.')
 
     #test for course with no recommended prev knowledge
     def test_user_request_recommended_knowledge_none(self):
         query = 'What recommended previous knowledge is there in EXPH0004?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
+        output = user_request(response, 'EXPH0004')
         self.assertEqual(output, 'No information about recommended previous knowledge for EXPH0004 Examen philosophicum for Science and Technology.')
 
 
     def test_user_request_not_valid_coursecode(self):
         query = 'Who is the teacher in TYU7643?'
         response = self.load_text_request_with_query(query)
-        output = user_request(response)
-        self.assertEqual(output,'No course with code TYU7643.')
+        output = user_request(response, 'TYU7643')
+        self.assertEqual(output,'No course with code TYU7643. Please provide a valid course code.')
 
 #tests for ask_apiai in crowbot_chat
     #test hi from user
