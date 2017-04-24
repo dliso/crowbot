@@ -1,5 +1,11 @@
 // This file is loaded and executed when the main Crowbot page is opened.
 
+function pad(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
+
 Date.prototype.customTime = function() {
     let date = this.getDate();
     let months = ['Jan',
@@ -19,7 +25,7 @@ Date.prototype.customTime = function() {
     let hour = this.getHours();
     let minute = this.getMinutes();
 
-    return `${date} ${month} ${year} ${hour}:${minute}`;
+    return `${date} ${month} ${year} ${pad(hour, 2)}:${pad(minute, 2)}`;
 }
 
 let FEEDITEMTYPE = {
@@ -152,8 +158,12 @@ class FeedItem extends Message {
         infoLine.addClass('info-line');
 
         let topDecoration = $('<div/>');
-        topDecoration.append(`${this.msgType} #${this.pk}`);
-        topDecoration.addClass('info-line')
+        // topDecoration.append(`${this.msgType} #${this.pk}`);
+        // console.log(this.user);
+        if (this.user && this.user.type == USERTYPE.instructor) {
+            topDecoration.append("Instructor's answer");
+        }
+        topDecoration.addClass('info-line');
         elements.topDecoration = topDecoration;
 
         if (this.msgType == MESSAGETYPE.storedQuestion) {
@@ -195,8 +205,9 @@ class FeedItem extends Message {
             })
 
             buttons
-                .append(plusOne)
-                .append(counter);
+                .append(replyButton);
+                // .append(plusOne)
+                // .append(counter);
 
             elements.buttons = buttons;
         }
@@ -204,8 +215,8 @@ class FeedItem extends Message {
         if (this.msgType == MESSAGETYPE.storedAnswer) {
             // console.log(this);
             let buttons = $('<div/>');
-            let upvote = $('<button/>').append('+1').addClass('label-button');
-            let downvote = $('<button/>').append('-1').addClass('label-button');
+            let upvote = $('<button/>').append('👍').addClass('label-button');
+            let downvote = $('<button/>').append('👎').addClass('label-button');
             let score = $('<div/>').append(this.score).addClass('score-field');
 
             switch(this.thisUserVoted) {
