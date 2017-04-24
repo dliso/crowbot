@@ -65,7 +65,10 @@ class Question(models.Model):
                                               blank=True)
 
     def did_user_ask(self, user):
-        was_interested = False if self.interested_users.filter(id = user.id).count() == 0 else True
+        if not user:
+            was_interested = False
+        else:
+            was_interested = False if self.interested_users.filter(id = user.id).count() == 0 else True
         return was_interested
 
     def times_asked(self):
