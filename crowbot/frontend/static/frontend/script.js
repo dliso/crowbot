@@ -160,10 +160,10 @@ class FeedItem extends Message {
         let topDecoration = $('<div/>');
         // topDecoration.append(`${this.msgType} #${this.pk}`);
         // console.log(this.user);
-        if (this.user && this.user.type == USERTYPE.instructor) {
-            topDecoration.append("Instructor's answer");
+        if (this.user && this.user.usertype == USERTYPE.instructor) {
+            topDecoration.append("🌟 Instructor's answer");
         }
-        topDecoration.addClass('info-line');
+        topDecoration.addClass('info-line top-decoration');
         elements.topDecoration = topDecoration;
 
         if (this.msgType == MESSAGETYPE.storedQuestion) {
