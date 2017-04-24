@@ -291,10 +291,11 @@ class ChatMessage extends FeedItem {
         let info = $('<div/>');
         info.addClass('info-line');
         if (this.user) {
-            info.append(this.user.name)
+            info.append(this.user.name);
         }
         if (this.timestamp) {
-            info.append(this.timestamp)
+            let time = new Date(this.timestamp);
+            info.append(' ' + time.customTime());
         }
 
         li.append(content);
