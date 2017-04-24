@@ -215,8 +215,8 @@ class FeedItem extends Message {
         if (this.msgType == MESSAGETYPE.storedAnswer) {
             // console.log(this);
             let buttons = $('<div/>');
-            let upvote = $('<button/>').append('+1').addClass('label-button');
-            let downvote = $('<button/>').append('-1').addClass('label-button');
+            let upvote = $('<button/>').append('👍').addClass('label-button');
+            let downvote = $('<button/>').append('👎').addClass('label-button');
             let score = $('<div/>').append(this.score).addClass('score-field');
 
             switch(this.thisUserVoted) {
