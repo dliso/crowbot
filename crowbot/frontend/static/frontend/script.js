@@ -98,6 +98,11 @@ class FeedItem extends Message {
     makeBotLi() {
         let li = $('<li/>');
         li.append(this.msgBody);
+        let timestamp = this.timestamp ? new Date(this.timestamp).customTime() : '';
+        let infoText = `Crowbot ${timestamp}`;
+        let infoLine = $('<div/>').text(infoText);
+        infoLine.addClass('info-line');
+        li.append(infoLine);
         return li;
     }
 
