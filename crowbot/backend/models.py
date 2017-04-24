@@ -96,12 +96,14 @@ class Answer(models.Model):
         Question,
         on_delete = models.SET_NULL,
         null = True,
-        related_name = 'answers'
+        related_name = 'answers',
+        blank = True,
     )
     user_id = models.ForeignKey(
         User,
         on_delete = models.SET_NULL,
         null = True,
+        blank = True,
     )
     creation_datetime = models.DateTimeField(auto_now_add = True)
     text = models.TextField()
