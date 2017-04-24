@@ -158,8 +158,12 @@ class FeedItem extends Message {
         infoLine.addClass('info-line');
 
         let topDecoration = $('<div/>');
-        topDecoration.append(`${this.msgType} #${this.pk}`);
-        topDecoration.addClass('info-line')
+        // topDecoration.append(`${this.msgType} #${this.pk}`);
+        // console.log(this.user);
+        if (this.user && this.user.type == USERTYPE.instructor) {
+            topDecoration.append("Instructor's answer");
+        }
+        topDecoration.addClass('info-line');
         elements.topDecoration = topDecoration;
 
         if (this.msgType == MESSAGETYPE.storedQuestion) {
@@ -201,8 +205,9 @@ class FeedItem extends Message {
             })
 
             buttons
-                .append(plusOne)
-                .append(counter);
+                .append(replyButton);
+                // .append(plusOne)
+                // .append(counter);
 
             elements.buttons = buttons;
         }
