@@ -160,14 +160,13 @@ class FeedItem extends Message {
         let topDecoration = $('<div/>');
         // topDecoration.append(`${this.msgType} #${this.pk}`);
         // console.log(this.user);
-        if (this.user && this.user.type == USERTYPE.instructor) {
-            topDecoration.append("Instructor's answer");
+        if (this.user && this.user.usertype == USERTYPE.instructor) {
+            topDecoration.append("🌟 Instructor's post");
         }
-        topDecoration.addClass('info-line');
+        topDecoration.addClass('info-line top-decoration');
         elements.topDecoration = topDecoration;
 
         if (this.msgType == MESSAGETYPE.storedQuestion) {
-            infoLine.append(` #${this.pk}`);
             let replyButton = $('<span/>', {text: 'Reply'});
             replyButton.addClass('btn btn-xs btn-primary');
             replyButton.attr('data-toggle', 'modal');
@@ -176,8 +175,7 @@ class FeedItem extends Message {
                 $('#modal-question-pk').html(this.pk);
                 $('#modal-question-text').html(this.msgBody);
                 $('#answer-modal-submit').attr('data-question-pk', this.pk);
-            })
-            infoLine.append(replyButton);
+            });
 
             let buttons = $('<div/>');
             let plusOne = $('<button/>', {text: 'Follow'})
@@ -546,7 +544,7 @@ $( document).ready(function(){
             for (course of courses) {
                 let li = $('<li/>');
                 li.attr('data-courseid', course);
-                let unsubBtn = $('<button/>').text('x');
+                let unsubBtn = $('<button/>').text('×');
                 unsubBtn.click( event => {
                     $.get(`/api/unsubscribe_from/${li.attr('data-courseid')}`).then(
                         event => updateFeed()
@@ -599,26 +597,35 @@ $( document).ready(function(){
     }
     );
 
-    let select = $('#course-select');
-    select.on('change', event => {
-        console.log(event);
-        let courseCode = select.val();
-        $.get(`/api/subscribe_to/${courseCode}`).then(response => {
-            updateFeed();
-        });
-    });
-
-    $.getJSON('/api/courses/tma').then(courseList => {
-        let select = $('#course-select');
-        for (course of courseList) {
-            select.append(
-                $('<option/>', {value: course.code}).text(`${course.code}: ${course.name}`)
-            );
-            select.selectpicker('refresh');
+    let courseHound = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        // local: courses
+        remote: {
+            url: '/api/courses/%QUERY',
+            wildcard: '%QUERY'
         }
     });
 
-    // loadModelCourseList();
+    let typeahead = $('#course-select-2').typeahead(
+        null,
+        {
+            name: 'courses',
+            source: courseHound,
+            limit: 10,
+            display: s => `${s.code} ${s.name}`
+        });
+
+    function subscribeToCourse(code) {
+        $.get(`/api/subscribe_to/${code}`).then(response => {
+            updateFeed();
+        });
+    }
+
+    typeahead.bind('typeahead:select', (ev, suggestion) => {
+        subscribeToCourse(suggestion.code);
+    });
+
     updateFeed();
 
 });

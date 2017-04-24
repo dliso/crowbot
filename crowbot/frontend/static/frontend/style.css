@@ -196,6 +196,10 @@ header img {
     font-size: 0.8em;
 }
 
+.top-decoration {
+    font-weight: 900;
+}
+
 #feed-container input {
     background: inherit;
     color: inherit;
@@ -296,3 +300,36 @@ header img {
 	  border-color:#c00000;
 }
 
+.tt-input, .tt-hint, .tt-menu {
+    padding: 3px;
+    background: white;
+    border: 1px solid #c00000;
+    border-radius: 3px;
+    width: auto;
+}
+
+.tt-cursor {
+    background: #c00000;
+    color: white;
+}
+
+#course-list-manager {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+#course-list-manager li {
+    list-style: none;
+    border-radius: 3px;
+    margin-bottom: 3px;
+    border: 1px solid black;
+}
+
+#course-list-manager button {
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    margin-right: 3px;
+}
