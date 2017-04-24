@@ -121,7 +121,9 @@ class FeedItem extends Message {
         left.append(elements.infoLine);
 
         let right = $('<div/>');
-        right.append(elements.buttons);
+        if (loggedIn) {
+            right.append(elements.buttons);
+        }
 
         li.append(left);
         li.append(right);
