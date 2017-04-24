@@ -597,26 +597,35 @@ $( document).ready(function(){
     }
     );
 
-    let select = $('#course-select');
-    select.on('change', event => {
-        console.log(event);
-        let courseCode = select.val();
-        $.get(`/api/subscribe_to/${courseCode}`).then(response => {
-            updateFeed();
-        });
-    });
-
-    $.getJSON('/api/courses/tma').then(courseList => {
-        let select = $('#course-select');
-        for (course of courseList) {
-            select.append(
-                $('<option/>', {value: course.code}).text(`${course.code}: ${course.name}`)
-            );
-            select.selectpicker('refresh');
+    let courseHound = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        // local: courses
+        remote: {
+            url: '/api/courses/%QUERY',
+            wildcard: '%QUERY'
         }
     });
 
-    // loadModelCourseList();
+    let typeahead = $('#course-select-2').typeahead(
+        null,
+        {
+            name: 'courses',
+            source: courseHound,
+            limit: 10,
+            display: s => `${s.code} ${s.name}`
+        });
+
+    function subscribeToCourse(code) {
+        $.get(`/api/subscribe_to/${code}`).then(response => {
+            updateFeed();
+        });
+    }
+
+    typeahead.bind('typeahead:select', (ev, suggestion) => {
+        subscribeToCourse(suggestion.code);
+    });
+
     updateFeed();
 
 });
