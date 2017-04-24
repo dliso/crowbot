@@ -132,4 +132,12 @@
 
     </body>
 
+    <script type="text/javascript">
+     {% if user.is_authenticated %}
+        let loggedIn = true;
+     {% else %}
+        let loggedIn = false;
+     {% endif %}
+     </script>
+
 </html>
