@@ -1,5 +1,11 @@
 // This file is loaded and executed when the main Crowbot page is opened.
 
+function pad(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
+
 Date.prototype.customTime = function() {
     let date = this.getDate();
     let months = ['Jan',
@@ -19,7 +25,7 @@ Date.prototype.customTime = function() {
     let hour = this.getHours();
     let minute = this.getMinutes();
 
-    return `${date} ${month} ${year} ${hour}:${minute}`;
+    return `${date} ${month} ${year} ${pad(hour, 2)}:${pad(minute, 2)}`;
 }
 
 let FEEDITEMTYPE = {
