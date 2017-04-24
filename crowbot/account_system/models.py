@@ -21,7 +21,7 @@ class Profile(models.Model):
     )
     #Dette er modellen for formen i admin viewet.
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    institute = models.CharField(max_length=30, blank=True)
+    institute = models.CharField(max_length=30, blank=True, null=True)
     birthdate = models.DateField(null=True, blank=True)
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, null=True, blank=True)
     subscribed_courses = models.ManyToManyField(backend_models.Course)
