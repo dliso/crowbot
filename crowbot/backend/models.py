@@ -45,6 +45,7 @@ class Question(models.Model):
         User,
         on_delete = models.SET_NULL,
         null = True,
+        blank = True,
     )
     course = models.ForeignKey(
         Course,
@@ -55,6 +56,7 @@ class Question(models.Model):
         Semester,
         on_delete = models.SET_NULL,
         null = True,
+        blank = True,
     )
     creation_datetime = models.DateTimeField(auto_now_add = True)
     text = models.TextField()
@@ -94,12 +96,14 @@ class Answer(models.Model):
         Question,
         on_delete = models.SET_NULL,
         null = True,
-        related_name = 'answers'
+        related_name = 'answers',
+        blank = True,
     )
     user_id = models.ForeignKey(
         User,
         on_delete = models.SET_NULL,
         null = True,
+        blank = True,
     )
     creation_datetime = models.DateTimeField(auto_now_add = True)
     text = models.TextField()
@@ -112,9 +116,11 @@ class Answer(models.Model):
         return self.upvoted_by.count() - self.downvoted_by.count()
 
     def user_voted(self, user):
-        if self.upvoted_by.filter(id = user.id).count() == 1:
+        if not user:
+            pass
+        elif self.upvoted_by.filter(id = user.id).count() == 1:
             return answervote.ANSWERVOTE.up
-        if self.downvoted_by.filter(id = user.id).count() == 1:
+        elif self.downvoted_by.filter(id = user.id).count() == 1:
             return answervote.ANSWERVOTE.down
         return answervote.ANSWERVOTE.none
 
