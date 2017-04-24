@@ -14,6 +14,7 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="http://twitter.github.com/typeahead.js/releases/latest/typeahead.bundle.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
         <script src="{% static 'frontend/script.js' %}"></script>
     </head>
@@ -110,10 +111,9 @@
                         </div>
 
                         <div class="modal-body" id="subscription-manager">
-                            <div>
-                                Add courses
-                                <select class="selectpicker" data-live-search="true" id="course-select">
-                                </select>
+                            <div id="course-picker">
+                                Add course
+                                <input type="text" class="typeahead" id="course-select-2"/>
                             </div>
                             <div>
                                 Subscribed courses
