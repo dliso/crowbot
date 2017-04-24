@@ -21,8 +21,10 @@
 
     <body class="flex-container flex-column">
         <header class="flex-container">
-            <img alt="" src="{% static 'frontend/crowbot.png' %}"/>
-            <h1>Crowbot</h1> 
+            <div>
+                <img alt="" src="{% static 'frontend/crowbot.png' %}"/>
+            </div>
+            <h1>Crowbot</h1>
             <div class="linker">
                 {% if user.is_authenticated %}
                 <a href="profilside" class="btn btn-primary">{{ user.username }}</a>
