@@ -116,9 +116,11 @@ class Answer(models.Model):
         return self.upvoted_by.count() - self.downvoted_by.count()
 
     def user_voted(self, user):
-        if self.upvoted_by.filter(id = user.id).count() == 1:
+        if not user:
+            pass
+        elif self.upvoted_by.filter(id = user.id).count() == 1:
             return answervote.ANSWERVOTE.up
-        if self.downvoted_by.filter(id = user.id).count() == 1:
+        elif self.downvoted_by.filter(id = user.id).count() == 1:
             return answervote.ANSWERVOTE.down
         return answervote.ANSWERVOTE.none
 
