@@ -1,26 +1,22 @@
 // This file is loaded and executed when the main Crowbot page is opened.
 
+function pad(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
+
 Date.prototype.customTime = function() {
     let date = this.getDate();
-    let months = ['Jan',
-                  'Feb',
-                  'Mar',
-                  'Apr',
-                  'Jun',
-                  'Jul',
-                  'Aug',
-                  'Sep',
-                  'Oct',
-                  'Nov',
-                  'Dec']
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     let month = months[this.getMonth()];
     let year = this.getFullYear();
 
     let hour = this.getHours();
     let minute = this.getMinutes();
 
-    return `${date} ${month} ${year} ${hour}:${minute}`;
-}
+    return `${date} ${month} ${year} ${pad(hour, 2)}:${pad(minute, 2)}`;
+};
 
 let FEEDITEMTYPE = {
     question            : 'Question',
@@ -92,6 +88,11 @@ class FeedItem extends Message {
     makeBotLi() {
         let li = $('<li/>');
         li.append(this.msgBody);
+        let timestamp = this.timestamp ? new Date(this.timestamp).customTime() : '';
+        let infoText = `Crowbot ${timestamp}`;
+        let infoLine = $('<div/>').text(infoText);
+        infoLine.addClass('info-line');
+        li.append(infoLine);
         return li;
     }
 
@@ -115,7 +116,9 @@ class FeedItem extends Message {
         left.append(elements.infoLine);
 
         let right = $('<div/>');
-        right.append(elements.buttons);
+        if (loggedIn) {
+            right.append(elements.buttons);
+        }
 
         li.append(left);
         li.append(right);
@@ -152,12 +155,13 @@ class FeedItem extends Message {
         infoLine.addClass('info-line');
 
         let topDecoration = $('<div/>');
-        topDecoration.append(`${this.msgType} #${this.pk}`);
-        topDecoration.addClass('info-line')
+        if (this.user && this.user.usertype == USERTYPE.instructor) {
+            topDecoration.append("🌟 Instructor's post");
+        }
+        topDecoration.addClass('info-line top-decoration');
         elements.topDecoration = topDecoration;
 
         if (this.msgType == MESSAGETYPE.storedQuestion) {
-            infoLine.append(` #${this.pk}`);
             let replyButton = $('<span/>', {text: 'Reply'});
             replyButton.addClass('btn btn-xs btn-primary');
             replyButton.attr('data-toggle', 'modal');
@@ -166,11 +170,10 @@ class FeedItem extends Message {
                 $('#modal-question-pk').html(this.pk);
                 $('#modal-question-text').html(this.msgBody);
                 $('#answer-modal-submit').attr('data-question-pk', this.pk);
-            })
-            infoLine.append(replyButton);
+            });
 
             let buttons = $('<div/>');
-            let plusOne = $('<button/>', {text: 'Follow'})
+            let plusOne = $('<button/>', {text: 'Follow'});
             plusOne.addClass('label-button');
             if(this.thisUserAsked) {
                 plusOne.addClass('active-button');
@@ -183,29 +186,29 @@ class FeedItem extends Message {
                 // Update the view based on what the server responds with.
                 $.post('/api/toggle_interest/', {pk: this.pk})
                     .then(response => {
-                        // console.log(response);
-                        // console.log(response.thisUserAsked)
                         if(response.thisUserAsked) {
                             plusOne.addClass('active-button');
                         } else {
                             plusOne.removeClass('active-button');
                         }
                         counter.html(response.askedCount);
-                    })
-            })
+                    });
+            });
 
             buttons
-                .append(plusOne)
-                .append(counter);
+                .append(replyButton);
 
             elements.buttons = buttons;
         }
 
         if (this.msgType == MESSAGETYPE.storedAnswer) {
-            // console.log(this);
             let buttons = $('<div/>');
-            let upvote = $('<button/>').append('+1').addClass('label-button');
-            let downvote = $('<button/>').append('-1').addClass('label-button');
+            let upvoteImg = $('<img/>', {src: '/static/frontend/thumbup.png'});
+            upvoteImg.css('width', '1em');
+            let upvote = $('<button/>').append(upvoteImg).addClass('label-button');
+            let downvoteImg = $('<img/>', {src: '/static/frontend/thumbdown.png'});
+            downvoteImg.css('width', '1em');
+            let downvote = $('<button/>').append(downvoteImg).addClass('label-button');
             let score = $('<div/>').append(this.score).addClass('score-field');
 
             switch(this.thisUserVoted) {
@@ -222,8 +225,6 @@ class FeedItem extends Message {
                 //update the view based on the vote.
                 $.post('/api/vote_answer/', {button:'up', pk: this.pk})
                     .then(response => {
-                        // console.log(response);
-                        // console.log(response.vote);
                         score.html(response.score);
                         if (response.vote == ANSWERVOTE.up) {
                             upvote.addClass('active-button');
@@ -231,17 +232,14 @@ class FeedItem extends Message {
                         } else {
                             upvote.removeClass('active-button');
                         }
-                    })
-            })
+                    });
+            });
 
             downvote.click(e =>{
                 //tell the server to check and subtract on the value stored
                 //update the view based on the vote.
                 $.post('/api/vote_answer/',{button:'down',pk:this.pk})
                     .then(response => {
-                        // console.log(response);
-                        // console.log(response.vote);
-                        //upvote.addClass('active-button');
                         score.html(response.score);
                         if (response.vote == ANSWERVOTE.down) {
                             downvote.addClass('active-button');
@@ -249,7 +247,7 @@ class FeedItem extends Message {
                         } else {
                             downvote.removeClass('active-button');
                         }
-                    })
+                    });
 			      });
 
 			      buttons
@@ -269,8 +267,6 @@ class ChatMessage extends FeedItem {
         let li = $('<li/>');
 
         if(!this.ownMessage) {
-            // let elements = this.makeElements();
-            // li.append(elements.topDecoration);
             return super.makeLi();
         }
 
@@ -280,10 +276,11 @@ class ChatMessage extends FeedItem {
         let info = $('<div/>');
         info.addClass('info-line');
         if (this.user) {
-            info.append(this.user.name)
+            info.append(this.user.name);
         }
         if (this.timestamp) {
-            info.append(this.timestamp)
+            let time = new Date(this.timestamp);
+            info.append(' ' + time.customTime());
         }
 
         li.append(content);
@@ -302,73 +299,10 @@ class ListManager {
         this.list.append(item);
     }
 
-    appendText(content, cssClasses){ //cssClasses er ei liste.
-        var li = $("<li/>").text(content).addClass(cssClasses.join(" ")); // lager liste-element med klasser.
-        this.list.append(li);
-    }
-
-    appendWithSubtext(maintext, subtext, cssClasses){
-        var listItem = $('<li/>')
-            .append($('<div/>', {text: maintext}))
-            .append($('<div/>', {text: subtext}).css('font-size', '10px'))
-            .addClass(cssClasses.join(" ")); // lager liste-element med klasser.
-        this.list.append(listItem);
-    }
-
-    addPendingQuestion(text, timestamp, number){
-        var subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16) + " #" + number;
-        this.appendWithSubtext(text, subtext, ["question-item"]);
-    }
-
-    chatReply(text, usertype, username, timestamp, cssClasses){
-        var subtext = "";
-
-        //Når Crowbot svarer (dvs. svaret kommer automatisk fra API.AI-boten:
-        if (username == "Crowbot"){
-            subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
-            var text = this.randomBirdSound() + ' ' + text;
-            this.play_audio();
-        }
-
-        //Hvis svaret er lagt inn av anon:
-        else if (username == undefined || username == "" || username == "Unknown"){
-            subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16);
-        }
-
-        //Hvis svaret er lagt inn av usertype 'instructor' eller 'student':
-        else{
-            subtext = "Answer by " + usertype + " " + username + " " + "[" + timestamp.substring(0,10)
-                + " " + timestamp.substring(11,16) + "]";
-        }
-
-
-        this.appendWithSubtext(text, subtext, cssClasses);
-    }
-
-    play_audio() {
-        if ($('#toggleaudio').is(":checked")) {
-            $(".crowsound").trigger('play');
-        }
-        else {
-            $(".crowsound").trigger('pause');
-            $(".crowsound").prop("currentTime", 0);
-        }
-    }
-
-    randomBirdSound() {
-        var birdSounds = ['Caw caw!', 'Squawk!', 'Chirp chirp!', ''];
-        var sound = '';
-        if (Math.random(0,10) < 2) {
-            sound = birdSounds[Math.floor(Math.random() * birdSounds.length)];
-        }
-        return sound;
-    }
-
 }
 
 class FeedManager {
     constructor() {
-        // this.container = feedContainer;
         this.header = $('#feed-toggles');
         this.items = $('#feed-items');
         this.manager = new ListManager($('#feed-items'));
@@ -386,7 +320,6 @@ class FeedManager {
         this.itemsByCourse[courseId].push(courseId);
 
         this.manager.addItem(li);
-        // console.log(this.itemsByCourse);
     }
 }
 
@@ -437,7 +370,6 @@ $( document).ready(function(){
             var regexArray = input.match(primaryKeyRegex);
             var q_pk = regexArray[1];
             let q_body = regexArray[2];
-            // console.log(regexArray);
             let submit_answer_route = "/api/submit_answer/";
             $.post(submit_answer_route, {q_pk: q_pk, body: q_body})
                 .then(function(conf){ //conf = confirmation that the bot received the instructors answer
@@ -450,12 +382,7 @@ $( document).ready(function(){
             $.post(ask_question_route, {body: input})
                 .then(function (messages) {
                     for(message of messages) {
-                        // console.log('received:');
-                        // console.log(message);
-                        // message.ownMessage = false;
                         message = new ChatMessage(message);
-                        // console.log('received:');
-                        // console.log(message);
                         msgListManager.addItem(
                             message.makeLi().addClass('message bot-msg')
                         );
@@ -471,6 +398,8 @@ $( document).ready(function(){
             $("#message-form").submit();
             $("#user-input").val('');
             return false;
+        } else {
+            return true;
         }
     });
 
@@ -535,7 +464,7 @@ $( document).ready(function(){
             for (course of courses) {
                 let li = $('<li/>');
                 li.attr('data-courseid', course);
-                let unsubBtn = $('<button/>').text('x');
+                let unsubBtn = $('<button/>').text('×');
                 unsubBtn.click( event => {
                     $.get(`/api/unsubscribe_from/${li.attr('data-courseid')}`).then(
                         event => updateFeed()
@@ -558,8 +487,6 @@ $( document).ready(function(){
     $('#answer-modal-submit').click(e =>{
         let answer = $('#question-answer');
         let q_pk = $('#answer-modal-submit').attr('data-question-pk');
-        // console.log(x);
-        // console.log(answer);
         $.post('/api/submit_answer/', {
             q_pk: q_pk,
             body: answer.val()
@@ -588,26 +515,34 @@ $( document).ready(function(){
     }
     );
 
-    let select = $('#course-select');
-    select.on('change', event => {
-        console.log(event);
-        let courseCode = select.val();
-        $.get(`/api/subscribe_to/${courseCode}`).then(response => {
-            updateFeed();
-        });
-    });
-
-    $.getJSON('/api/courses/tma').then(courseList => {
-        let select = $('#course-select');
-        for (course of courseList) {
-            select.append(
-                $('<option/>', {value: course.code}).text(`${course.code}: ${course.name}`)
-            );
-            select.selectpicker('refresh');
+    let courseHound = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+            url: '/api/courses/%QUERY',
+            wildcard: '%QUERY'
         }
     });
 
-    // loadModelCourseList();
+    let typeahead = $('#course-select-2').typeahead(
+        null,
+        {
+            name: 'courses',
+            source: courseHound,
+            limit: 10,
+            display: s => `${s.code} ${s.name}`
+        });
+
+    function subscribeToCourse(code) {
+        $.get(`/api/subscribe_to/${code}`).then(response => {
+            updateFeed();
+        });
+    }
+
+    typeahead.bind('typeahead:select', (ev, suggestion) => {
+        subscribeToCourse(suggestion.code);
+    });
+
     updateFeed();
 
 });

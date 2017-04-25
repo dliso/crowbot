@@ -8,36 +8,41 @@
         <meta name="author" content="Crow Crew">
         <meta name="description" content="description here">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Roboto|Noto+Serif|Noto+Sans' type='text/css'>
+        <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Roboto%7CNoto+Serif%7CNoto+Sans' type='text/css'>
         <link rel='stylesheet' href="{% static 'frontend/style.css' %}" type='text/css'>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="http://twitter.github.com/typeahead.js/releases/latest/typeahead.bundle.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
         <script src="{% static 'frontend/script.js' %}"></script>
     </head>
 
     <body class="flex-container flex-column">
         <header class="flex-container">
-            <img alt="" src="{% static 'frontend/crowbot.png' %}"/>
-            <h1>Crowbot</h1> 
+            <div>
+                <img alt="" src="{% static 'frontend/crowbot.png' %}"/>
+            </div>
+            <h1>Crowbot</h1>
             <div class="linker">
                 {% if user.is_authenticated %}
-                <a id="profilLink" href="profilside" class="btn btn-primary">{{ user.username }}</a>
-                <a id="profilLink" href="accounts/logout" class="btn btn-primary">Log out</a>
+                <a href="profilside" class="btn btn-primary">{% firstof user.first_name user.username %}</a>
+                <a href="accounts/logout" class="btn btn-primary">Log out</a>
                 {% else %}
-                <a id="profilLink" href="accounts/login" class="btn btn-primary">Log in</a>
-                <a id="profilLink" href="accounts/signup" class="btn btn-primary">Signup</a>
+                <a href="accounts/login" class="btn btn-primary">Log in</a>
+                <a href="accounts/signup" class="btn btn-primary">Signup</a>
                 {% endif %}	
-			      </div>
+                <button type="button" class="btn btn-primary"
+                        data-toggle="modal" data-target="#help-modal">Help</button>
+            </div>
         </header>
 
-		<div style="display:none;">
-            	<audio class="crowsound" controls preload="none">
-                	<source src="{% static 'frontend/crow1.wav' %}" type="audio/mpeg">
-            	</audio>
-		</div>
+        <div style="display:none;">
+            <audio class="crowsound" controls preload="none">
+                <source src="{% static 'frontend/crow1.wav' %}" type="audio/mpeg">
+            </audio>
+        </div>
 
         <div class="content-column flex-container flex-row full-height full-width">
             <div class="flex-container flex-column full-width full-height flex-backwards">
@@ -47,9 +52,9 @@
                     <li class="message bot-msg">Not sure what to do? Try writing "help".</li>
                 </ul>
 
-                <form id="message-form" action=""
+                <form id="message-form" action="/"
                       class="dont-flex message-form min-height-5em">
-                    <textarea id="user-input" name="input-field" type="textarea" value=""
+                    <textarea id="user-input" name="input-field"
                               placeholder="Ask Crowbot something"
                               class="input-field"></textarea>
                 </form>
@@ -65,72 +70,99 @@
                  class="flex-container flex-column full-width full-height
                         border-left">
                 <h2>Activity Feed</h2>
-                <button type="button" class="btn btn-info btn-xs"
-                data-toggle="modal" data-target="#subscription-manager-modal">Manage courses</button>
+                <button type="button" class="btn btn-primary btn-xs"
+                        data-toggle="modal" data-target="#subscription-manager-modal">Manage courses</button>
                 <div id="feed-toggles"
                      class=""></div>
                 <ul id="feed-items"
                     class="full-width no-margin no-padding"></ul>
             </div>
             {% endif %}
-            </div>
         </div>
 
-        <!-- Modal for answering questions -->
-        <div id="answer-modal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
+            <!-- Modal for answering questions -->
+            <div id="answer-modal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
 
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Reply to question #<span id="modal-question-pk"></span></h4>
-                    </div>
-                    <div class="modal-body">
-                        <h5>Question</h5>
-                        <div id="modal-question-text" class="feed-item full-width"></div>
-                        <textarea id="question-answer" name="question-answer" class="full-width feed-item feed-reply"></textarea>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal"
-                                id="answer-modal-submit" data-question-pk="">Submit</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <div id="subscription-manager-modal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Manage subscriptions</h4>
-                    </div>
-
-                    <div class="modal-body" id="subscription-manager">
-                        <div>
-                            Add courses
-                            <select class="selectpicker" data-live-search="true" id="course-select">
-                            </select>
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Reply to question #<span id="modal-question-pk"></span></h4>
                         </div>
-                        <div>
-                            Subscribed courses
-                            <ul id="course-list-manager">
-                            </ul>
+                        <div class="modal-body">
+                            <h5>Question</h5>
+                            <div id="modal-question-text" class="feed-item full-width"></div>
+                            <textarea id="question-answer" name="question-answer" class="full-width feed-item feed-reply"></textarea>
                         </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"
+                                    id="answer-modal-submit" data-question-pk="">Submit</button>
+                        </div>
                     </div>
 
                 </div>
             </div>
-        </div>
+
+            <div id="subscription-manager-modal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Manage subscriptions</h4>
+                        </div>
+
+                        <div class="modal-body" id="subscription-manager">
+                            <div id="course-picker">
+                                Add course
+                                <input type="text" class="typeahead" id="course-select-2"/>
+                            </div>
+                            <div>
+                                Subscribed courses
+                                <ul id="course-list-manager">
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="help-modal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Get started with Crowbot</h4>
+                        </div>
+
+                        <div class="modal-body">
+                            Crowbot? Crowbot.
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
 
     </body>
+
+    <script type="text/javascript">
+     {% if user.is_authenticated %}
+        let loggedIn = true;
+     {% else %}
+        let loggedIn = false;
+     {% endif %}
+     </script>
 
 </html>
