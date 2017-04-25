@@ -61,3 +61,4 @@ class ApiViewTests(TestCase):
         self.assertEqual(response, {'itemType': 'question',
             'firstMessage': 'Hello?',
             'replies': ['Hi', 'Good day!']})
+        
