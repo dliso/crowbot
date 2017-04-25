@@ -403,12 +403,37 @@ $( document).ready(function(){
         }
     });
 
+    function loadTogglesState() {
+        let togglesState;
+        try {
+            togglesState = JSON.parse(localStorage.feedTogglesState);
+        } catch (e) {
+            togglesState = {};
+        }
+        return togglesState;
+    };
+
+    function saveToggleState() {
+        let togglesState = loadTogglesState();
+        $('#feed-toggles').children('[type="checkbox"]').each( (index, cb) => {
+            let courseId = $(cb).attr('data-cb-courseid');
+            console.log(cb);
+            console.log(courseId);
+            togglesState[courseId] = cb.checked;
+            localStorage.feedTogglesState = JSON.stringify(togglesState);
+        });
+    };
+
     function populateFeedCourseList(courseList) {
         let feedContainer = $('#feed-container');
         let feedToggles = $('#feed-toggles');
+        saveToggleState();
+        let togglesState = loadTogglesState();
+        console.log(togglesState);
         feedToggles.empty();
         for (courseId of courseList) {
-            let checkbox = $('<input />', {type: 'checkbox', id: 'cb-'+courseId, checked: true});
+            let checked = togglesState[courseId];
+            let checkbox = $('<input />', {type: 'checkbox', id: 'cb-'+courseId, checked: checked});
             checkbox.attr('data-cb-courseId', courseId);
             checkbox.hide();
             checkbox.change(event => {
@@ -417,6 +442,7 @@ $( document).ready(function(){
                 } else {
                     hideCourses(checkbox.attr('data-cb-courseId'));
                 }
+                saveToggleState();
             });
             let label = $('<label/>', {'for': 'cb-'+courseId, text: courseId});
             feedToggles.append(checkbox);
@@ -431,6 +457,7 @@ $( document).ready(function(){
     function populateFeed(feedResponse) {
         let feed = $('#feed-items');
         feed.empty();
+        let feedTogglesState = loadTogglesState();
         for (item of feedResponse) {
             let itemType = item.itemType;
             let firstMessageRaw = item.firstMessage;
@@ -440,7 +467,11 @@ $( document).ready(function(){
             container = decorate(container, itemType);
             parent = new FeedItem(firstMessageRaw);
             let li = parent.makeLi();
+            if(!feedTogglesState[parent.courseId]) {
+                container.hide();
+            };
             container.append(li);
+            container.attr('data-courseId', parent.courseId);
             li.attr('data-courseId', parent.courseId);
             li.attr('data-msgType', parent.msgType);
             li.attr('data-pk', parent.pk);
