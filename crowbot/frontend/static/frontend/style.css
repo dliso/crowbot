@@ -308,9 +308,10 @@ header img {
     width: auto;
 }
 
-.tt-cursor {
+.tt-cursor, tt-highlight, .tt-suggestion:hover {
     background: #c00000;
     color: white;
+    cursor: pointer;
 }
 
 #course-list-manager {
@@ -336,4 +337,8 @@ header img {
 
 #message-box .feed-indent {
     margin-right: 2em;
+}
+
+.listeTing {
+    font-weight: 900;
 }

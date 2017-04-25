@@ -1,48 +1,26 @@
-{% load static %}
-<head>
-  <title>Profilside</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Roboto|Noto+Serif|Noto+Sans' type='text/css'>
-  <link rel='stylesheet' href="{% static 'frontend/profilStyle.css' %}" type='text/css'>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
-<body>
-{% block content %}
+{% extends 'frontend/base.html' %}
 
-	<header class="flex-container">
-		<img alt="" src="{% static 'frontend/crowbot.png' %}"/>
-        <h1>Crowbot</h1>
-		<div class="linker">
-		<a href="{% url 'logout' %}">Logout</a>/<a href="..">Home</a>
-		</div>
-	</header>
-	<div id="profil-block">
-	<br>
-	
-	<span class="listeTing"><p>Brukernavn:</p></span>
-		<div class="info"><p>{{ user.username }}</p>
-	</div>	
-	<div class="listeTing" ><p>  Navn:</p></div><div class="info"><p> {{ user.get_full_name }} </p></div>
-	<div class="listeTing"><p>  Institutt:</p></div>
-	<div class="info"><p>  {{ user.profile.institute }}</p> </div>
-	<div class="listeTing"><p>  Birthdate</p></div> 
-	<div class="info"><p> {{user.profile.birthdate}}</p></div>
-	<div class="listeTing"><p> Role:</p></div>
-	<div class="info"<p>  {{user.profile.role}}</p></div>
-	<div class="listeTing"> Email Adresse</div>
-	<div class="info" </div><p>  {{ user.email }}</p></div>
-	
-	<div id="profilbilde">
-		<!--<img src="profil.png" alt="Bilde">-->
-	</div>
-	</div>
-	
-	<div id="spørgesmål">
-	
-	
-</body>
+{% load static %}
+
+{% block content %}
+<div id="sign-block">
+
+<div class="listeTing"><p>Brukernavn</p></div>
+<div class="info"><p>{{ user.username }}</p> </div>
+<div class="listeTing"><p>Navn</p></div>
+<div class="info"><p>{{ user.get_full_name }} </p></div>
+<div class="listeTing"><p>Institutt</p></div>
+<div class="info"><p>{{ user.profile.institute }}</p></div>
+<div class="listeTing"><p>Birthdate</p></div>
+<div class="info"><p>{{ user.profile.birthdate }}</p></div>
+<div class="listeTing"><p>Role</p></div>
+<div class="info"><p>{{user.profile.role}}</p></div>
+<div class="listeTing">Email address</div>
+<div class="info"><p>{{ user.email }}</p></div>
+
+<div id="profilbilde">
+    <!--<img src="profil.png" alt="Bilde">-->
+</div>
+</div>
 {% endblock %}
 
