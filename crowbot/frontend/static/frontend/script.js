@@ -313,68 +313,6 @@ class ListManager {
         this.list.append(item);
     }
 
-    appendText(content, cssClasses){ //cssClasses er ei liste.
-        var li = $("<li/>").text(content).addClass(cssClasses.join(" ")); // lager liste-element med klasser.
-        this.list.append(li);
-    }
-
-    appendWithSubtext(maintext, subtext, cssClasses){
-        var listItem = $('<li/>')
-            .append($('<div/>', {text: maintext}))
-            .append($('<div/>', {text: subtext}).css('font-size', '10px'))
-            .addClass(cssClasses.join(" ")); // lager liste-element med klasser.
-        this.list.append(listItem);
-    }
-
-    addPendingQuestion(text, timestamp, number){
-        var subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16) + " #" + number;
-        this.appendWithSubtext(text, subtext, ["question-item"]);
-    }
-
-    chatReply(text, usertype, username, timestamp, cssClasses){
-        var subtext = "";
-
-        //Når Crowbot svarer (dvs. svaret kommer automatisk fra API.AI-boten:
-        if (username == "Crowbot"){
-            subtext = "Answer by " + username; //Vi gidder ikke ha med "bot" og tid når Crowbot svarer
-            var text = this.randomBirdSound() + ' ' + text;
-            this.play_audio();
-        }
-
-        //Hvis svaret er lagt inn av anon:
-        else if (username == undefined || username == "" || username == "Unknown"){
-            subtext = timestamp.substring(0,10) + " " + timestamp.substring(11,16);
-        }
-
-        //Hvis svaret er lagt inn av usertype 'instructor' eller 'student':
-        else{
-            subtext = "Answer by " + usertype + " " + username + " " + "[" + timestamp.substring(0,10)
-                + " " + timestamp.substring(11,16) + "]";
-        }
-
-
-        this.appendWithSubtext(text, subtext, cssClasses);
-    }
-
-    play_audio() {
-        if ($('#toggleaudio').is(":checked")) {
-            $(".crowsound").trigger('play');
-        }
-        else {
-            $(".crowsound").trigger('pause');
-            $(".crowsound").prop("currentTime", 0);
-        }
-    }
-
-    randomBirdSound() {
-        var birdSounds = ['Caw caw!', 'Squawk!', 'Chirp chirp!', ''];
-        var sound = '';
-        if (Math.random(0,10) < 2) {
-            sound = birdSounds[Math.floor(Math.random() * birdSounds.length)];
-        }
-        return sound;
-    }
-
 }
 
 class FeedManager {
