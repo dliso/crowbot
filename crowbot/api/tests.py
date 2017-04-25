@@ -1,17 +1,9 @@
-from django.test import TestCase
+from django.contrib.auth.models import AnonymousUser, User
+from django.test import TestCase, RequestFactory
 from django.urls import reverse
 import json, requests, pickle
 from api.views import *
 from backend.models import Course, Question, Answer
-from django.contrib.auth.models import User
-
-from django.contrib.auth.models import AnonymousUser, User
-from django.test import TestCase, RequestFactory
-
-from backend.models import Course
-
-import json
-
 from . import views
 from .messagetype import MESSAGETYPE
 
