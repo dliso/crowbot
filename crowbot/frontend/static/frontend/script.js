@@ -98,6 +98,11 @@ class FeedItem extends Message {
     makeBotLi() {
         let li = $('<li/>');
         li.append(this.msgBody);
+        let timestamp = this.timestamp ? new Date(this.timestamp).customTime() : '';
+        let infoText = `Crowbot ${timestamp}`;
+        let infoLine = $('<div/>').text(infoText);
+        infoLine.addClass('info-line');
+        li.append(infoLine);
         return li;
     }
 
@@ -121,7 +126,9 @@ class FeedItem extends Message {
         left.append(elements.infoLine);
 
         let right = $('<div/>');
-        right.append(elements.buttons);
+        if (loggedIn) {
+            right.append(elements.buttons);
+        }
 
         li.append(left);
         li.append(right);
@@ -213,8 +220,12 @@ class FeedItem extends Message {
         if (this.msgType == MESSAGETYPE.storedAnswer) {
             // console.log(this);
             let buttons = $('<div/>');
-            let upvote = $('<button/>').append('👍').addClass('label-button');
-            let downvote = $('<button/>').append('👎').addClass('label-button');
+            let upvoteImg = $('<img/>', {src: '/static/frontend/thumbup.png'});
+            upvoteImg.css('width', '1em');
+            let upvote = $('<button/>').append(upvoteImg).addClass('label-button');
+            let downvoteImg = $('<img/>', {src: '/static/frontend/thumbdown.png'});
+            downvoteImg.css('width', '1em');
+            let downvote = $('<button/>').append(downvoteImg).addClass('label-button');
             let score = $('<div/>').append(this.score).addClass('score-field');
 
             switch(this.thisUserVoted) {
@@ -289,10 +300,11 @@ class ChatMessage extends FeedItem {
         let info = $('<div/>');
         info.addClass('info-line');
         if (this.user) {
-            info.append(this.user.name)
+            info.append(this.user.name);
         }
         if (this.timestamp) {
-            info.append(this.timestamp)
+            let time = new Date(this.timestamp);
+            info.append(' ' + time.customTime());
         }
 
         li.append(content);
