@@ -155,8 +155,6 @@ class FeedItem extends Message {
         infoLine.addClass('info-line');
 
         let topDecoration = $('<div/>');
-        // topDecoration.append(`${this.msgType} #${this.pk}`);
-        // console.log(this.user);
         if (this.user && this.user.usertype == USERTYPE.instructor) {
             topDecoration.append("🌟 Instructor's post");
         }
@@ -188,8 +186,6 @@ class FeedItem extends Message {
                 // Update the view based on what the server responds with.
                 $.post('/api/toggle_interest/', {pk: this.pk})
                     .then(response => {
-                        // console.log(response);
-                        // console.log(response.thisUserAsked)
                         if(response.thisUserAsked) {
                             plusOne.addClass('active-button');
                         } else {
@@ -201,14 +197,11 @@ class FeedItem extends Message {
 
             buttons
                 .append(replyButton);
-                // .append(plusOne)
-                // .append(counter);
 
             elements.buttons = buttons;
         }
 
         if (this.msgType == MESSAGETYPE.storedAnswer) {
-            // console.log(this);
             let buttons = $('<div/>');
             let upvoteImg = $('<img/>', {src: '/static/frontend/thumbup.png'});
             upvoteImg.css('width', '1em');
@@ -232,8 +225,6 @@ class FeedItem extends Message {
                 //update the view based on the vote.
                 $.post('/api/vote_answer/', {button:'up', pk: this.pk})
                     .then(response => {
-                        // console.log(response);
-                        // console.log(response.vote);
                         score.html(response.score);
                         if (response.vote == ANSWERVOTE.up) {
                             upvote.addClass('active-button');
@@ -249,9 +240,6 @@ class FeedItem extends Message {
                 //update the view based on the vote.
                 $.post('/api/vote_answer/',{button:'down',pk:this.pk})
                     .then(response => {
-                        // console.log(response);
-                        // console.log(response.vote);
-                        //upvote.addClass('active-button');
                         score.html(response.score);
                         if (response.vote == ANSWERVOTE.down) {
                             downvote.addClass('active-button');
@@ -279,8 +267,6 @@ class ChatMessage extends FeedItem {
         let li = $('<li/>');
 
         if(!this.ownMessage) {
-            // let elements = this.makeElements();
-            // li.append(elements.topDecoration);
             return super.makeLi();
         }
 
@@ -317,7 +303,6 @@ class ListManager {
 
 class FeedManager {
     constructor() {
-        // this.container = feedContainer;
         this.header = $('#feed-toggles');
         this.items = $('#feed-items');
         this.manager = new ListManager($('#feed-items'));
@@ -335,7 +320,6 @@ class FeedManager {
         this.itemsByCourse[courseId].push(courseId);
 
         this.manager.addItem(li);
-        // console.log(this.itemsByCourse);
     }
 }
 
@@ -386,7 +370,6 @@ $( document).ready(function(){
             var regexArray = input.match(primaryKeyRegex);
             var q_pk = regexArray[1];
             let q_body = regexArray[2];
-            // console.log(regexArray);
             let submit_answer_route = "/api/submit_answer/";
             $.post(submit_answer_route, {q_pk: q_pk, body: q_body})
                 .then(function(conf){ //conf = confirmation that the bot received the instructors answer
@@ -399,12 +382,7 @@ $( document).ready(function(){
             $.post(ask_question_route, {body: input})
                 .then(function (messages) {
                     for(message of messages) {
-                        // console.log('received:');
-                        // console.log(message);
-                        // message.ownMessage = false;
                         message = new ChatMessage(message);
-                        // console.log('received:');
-                        // console.log(message);
                         msgListManager.addItem(
                             message.makeLi().addClass('message bot-msg')
                         );
@@ -509,8 +487,6 @@ $( document).ready(function(){
     $('#answer-modal-submit').click(e =>{
         let answer = $('#question-answer');
         let q_pk = $('#answer-modal-submit').attr('data-question-pk');
-        // console.log(x);
-        // console.log(answer);
         $.post('/api/submit_answer/', {
             q_pk: q_pk,
             body: answer.val()
@@ -542,7 +518,6 @@ $( document).ready(function(){
     let courseHound = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.whitespace,
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        // local: courses
         remote: {
             url: '/api/courses/%QUERY',
             wildcard: '%QUERY'
