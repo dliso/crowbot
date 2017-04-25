@@ -8,17 +8,7 @@ function pad(n, width, z) {
 
 Date.prototype.customTime = function() {
     let date = this.getDate();
-    let months = ['Jan',
-                  'Feb',
-                  'Mar',
-                  'Apr',
-                  'Jun',
-                  'Jul',
-                  'Aug',
-                  'Sep',
-                  'Oct',
-                  'Nov',
-                  'Dec']
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     let month = months[this.getMonth()];
     let year = this.getFullYear();
 
@@ -26,7 +16,7 @@ Date.prototype.customTime = function() {
     let minute = this.getMinutes();
 
     return `${date} ${month} ${year} ${pad(hour, 2)}:${pad(minute, 2)}`;
-}
+};
 
 let FEEDITEMTYPE = {
     question            : 'Question',
@@ -185,7 +175,7 @@ class FeedItem extends Message {
             });
 
             let buttons = $('<div/>');
-            let plusOne = $('<button/>', {text: 'Follow'})
+            let plusOne = $('<button/>', {text: 'Follow'});
             plusOne.addClass('label-button');
             if(this.thisUserAsked) {
                 plusOne.addClass('active-button');
@@ -206,8 +196,8 @@ class FeedItem extends Message {
                             plusOne.removeClass('active-button');
                         }
                         counter.html(response.askedCount);
-                    })
-            })
+                    });
+            });
 
             buttons
                 .append(replyButton);
@@ -251,8 +241,8 @@ class FeedItem extends Message {
                         } else {
                             upvote.removeClass('active-button');
                         }
-                    })
-            })
+                    });
+            });
 
             downvote.click(e =>{
                 //tell the server to check and subtract on the value stored
@@ -269,7 +259,7 @@ class FeedItem extends Message {
                         } else {
                             downvote.removeClass('active-button');
                         }
-                    })
+                    });
 			      });
 
 			      buttons
@@ -492,6 +482,8 @@ $( document).ready(function(){
             $("#message-form").submit();
             $("#user-input").val('');
             return false;
+        } else {
+            return true;
         }
     });
 
