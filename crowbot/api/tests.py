@@ -43,11 +43,6 @@ class ApiViewTests(TestCase):
         response = self.client.get(reverse('backend:add_course'))
         self.assertContains(response,"Send POST requests here to add courses to the database.")
 
-    def test_add_course_view_post_request(self):
-        response = requests.post('http://localhost:8000/api/add_course',
-                      data = json.dumps({'code':'TMA4100','name':'Calculus 1'}))
-        self.assertContains(response,"Added TMA4100 to the database.")
-
     def test_add_question(self):
         question = 'When is the exam in TMA4100?'
         add_question(question)
