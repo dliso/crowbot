@@ -359,3 +359,15 @@ header img {
 .listeTing {
     font-weight: 900;
 }
+
+.fake-btn {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid lightgrey;
+    background: white;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    padding: 6px 12px;
+}

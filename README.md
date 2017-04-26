@@ -7,7 +7,7 @@ You can try it [here](crowbotchat.pythonanywhere.com), or run it on your own com
 - Python 3
 
 ## Setup
-Unzip `crowbot-1.0.zip`. Open a terminal in the unzipped folder, then run the following commands.
+Unzip `crowbot-1.0.0.3.zip`. Open a terminal in the unzipped folder, then run the following commands.
 
 1. `pip3 install -r requirements.txt`
 2. `python3 crowbot/manage.py setup_nltk`
