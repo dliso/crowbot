@@ -7,7 +7,7 @@ class SignUpForm(UserCreationForm):
     CHOICES = (('1','Student'),('2','Professor'))
     first_name = forms.CharField(max_length=30, required=True, help_text='*')
     last_name = forms.CharField(max_length=30, required=True, help_text='*')
-    email = forms.EmailField(max_length=254, help_text='* Required to cotain @.')
+    email = forms.EmailField(max_length=254, help_text='* Must contain @.')
     # birth_date = forms.DateField(required=False,help_text=' Format: YYYY-MM-DD')
     roles = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
     # institute = forms.CharField(max_length=30, required=False, help_text='*')
