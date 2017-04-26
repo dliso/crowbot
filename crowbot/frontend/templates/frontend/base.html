@@ -21,11 +21,16 @@
 
     <body class="flex-container flex-column">
         <header class="flex-container">
-            <div>
-                <img alt="" src="{% static 'frontend/crowbot.png' %}"/>
-            </div>
-            <h1>Crowbot</h1>
-            <div class="linker">
+            <a href="/" class="header-side">
+                <div>
+                    <img alt="" src="{% static 'frontend/crowbot.png' %}"/>
+                </div>
+            </a>
+            <a href="/" class="dont-flex">
+                <h1>Crowbot</h1>
+            </a>
+            <div class="header-side flex-container" id="header-right">
+                <div class="do-flex"></div>
                 {% if user.is_authenticated %}
                 <a href="/profilside" class="btn btn-primary">{% firstof user.first_name user.username %}</a>
                 <a href="/accounts/logout" class="btn btn-primary">Log out</a>
@@ -41,14 +46,56 @@
         {% block content %}
         {% endblock %}
 
+        <div id="help-modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Crowbot — Intelligence by Asking</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>
+                            Crowbot is a chatbot that automates some student—instructor interactions, created by a group of students from NTNU. As a student, have you ever been tired of instructors never getting around to answer your question or you’d prefer information being provided just a bit earlier? Or as an instructor, have you ever been tired of answering the same questions over and over again, year after year?
+                            Crowbot will try to fix that.
+                        </p>
+
+                        <h4>Not signed in users</h4>
+                        <p>
+                            When you first enter the crowbot webpage you will see a chatwindow. Here you can ask Crowbot any course related questions. If Crowbot has the answer stored, you’ll get the answer right away. If not, it will be stored for other people to answer. Always include the course code in your questions. Type “help” in the chat window for some question examples. The usage is limited when you’re not signed in. 
+                        </p>
+
+                        <h4>Extra for signed in users</h4>
+                        <p>
+                            If you sign up and create an account you’ll be able to fully enjoy the functionality of crowbot.
+                            The main difference is that you’ll get an activity feed where you can subscribe to courses and stay up to date on pending questions from other students in the same course. If someone answer a question (student or instructor) this will show in the activity feed. You can help out and answer a question by pressing the “reply” button. You’ll be able to vote on answers given by other users, so that the answers maintain high quality. At the top of the activity feed you’ll be able to see what courses you’re subscribed to and can filter out what courses you’d like to see.
+                        </p>
+
+                        <h4>Extra for instructors</h4>
+                        <p>
+                            As a signed in instructor you’ll have the same functionality as a student, but the activity feed might be the most interesting part for you. Here you’ll be able to answer pending questions from students in your course, just subscribe to your course and use the “reply” button on the question you would like to answer. 
+                            The main difference is that you’ll get an e-mail notification a week before the semester starts, to remind you to update answers to frequently asked questions, like when and where the first lecture of the semester is held. 
+                        </p>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
     </body>
 
     <script type="text/javascript">
      {% if user.is_authenticated %}
-        let loggedIn = true;
+     let loggedIn = true;
      {% else %}
-        let loggedIn = false;
+     let loggedIn = false;
      {% endif %}
-     </script>
+    </script>
 
 </html>

@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block content %}
-<div id= "logg-block">
+<div class="account-form">
     <h2>Log in</h2>
     {% if user.is_authenticated %}
     <h3>You're already logged in</h3>
@@ -26,9 +26,9 @@
             {% endif %}
         </p>
         {% endfor %}
-        <button type="submit">Log in</button>
+        <button type="submit" class="btn btn-primary">Log in</button>
         <br>
-        No user?<a href="{% url 'signup' %}">Sign up</a>
+        No user? <a href="{% url 'signup' %}">Sign up</a>
     </form>
     {% endif %}
 </div>

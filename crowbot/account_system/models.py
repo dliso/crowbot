@@ -32,7 +32,7 @@ class Profile(models.Model):
     def to_dict(self):
         usertype = USERTYPE.from_profile_role(self.role)
         return {
-            'name': self.user.username,
+            'name': self.user.first_name,
             'pk': self.user.id,
             'usertype': usertype,
             'avatarUrl': '',

@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block content %}
-<div id="sign-block">
+<div class="account-form">
     {% if user.is_authenticated %}
     <h3> You're already logged in</h3>
     {% else %}
@@ -22,7 +22,7 @@
             {% endfor %}
         </p>
         {% endfor %}
-        <button type="submit">Sign up</button>
+        <button type="submit" class="btn btn-primary">Sign up</button>
 	  </form>
 
 	  {% endif %}
