@@ -296,25 +296,7 @@ header img {
 .number-display {
 }
 
-/* #feed-container button { */
-/*     background: white; */
-/*     border: 1px solid black; */
-/*     border-radius: 3px; */
-/*     color: black; */
-/* } */
-
-#sign-block{
-	background: white;
-	max-width:60em;
-	/* height:80%; */
-	margin:auto;
-  padding: 1em;
-	border-style:Solid;
-	border-width:2px;
-	border-color:#c00000;
-}
-
-#logg-block{
+.account-form {
 	  background: white;
 	  max-width:60em;
 	  margin:auto;
@@ -322,6 +304,17 @@ header img {
 	  border-style:Solid;
 	  border-width:2px;
 	  border-color:#c00000;
+}
+
+.account-form ul {
+    list-style: none;
+    padding-left: 2em;
+}
+
+.account-form input {
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 3px;
 }
 
 .tt-input, .tt-hint, .tt-menu {
