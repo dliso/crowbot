@@ -8,4 +8,4 @@
 2. python crowbot/manage.py runserver
 
 ## Revolution
-[[http://localhost:8000/]]
+[http://localhost:8000/]
