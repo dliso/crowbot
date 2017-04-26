@@ -20,15 +20,39 @@ header {
     box-shadow: 0 0 5px 5px rgba(0,0,0,0.2);
     align-items: center;
     justify-content: space-between;
+    padding: 0 1em 0 1em;
+    height: 4em;
+}
+
+.header-side {
+    flex: 1 0 1em;
+}
+
+.header-buttons {
+    display: flex;
+    flex-direction: row;
+}
+
+#header-right * {
+    flex: 0 0 auto;
+    margin-left: 3px;
+}
+
+#header-right div {
+    flex: 1 0 auto;
 }
 
 header h1 {
     display: inline-block;
 }
 
+header a {
+    color: inherit;
+}
+
 header img {
-    height: 4em;
-    padding: 9px;
+    height: 3.3em;
+    /* padding: 9px; */
 }
 
 .content-column {
